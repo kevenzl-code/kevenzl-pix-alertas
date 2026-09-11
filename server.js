@@ -91,8 +91,9 @@ app.post("/api/create-pix", async (req, res) => {
       processing_mode: "automatic",
 
       payer: {
-        email: String(email).trim()
-      },
+  email,
+  first_name: "APRO"
+}
 
       transactions: {
         payments: [
