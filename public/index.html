@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KevenZL Pix Alertas</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#0d0b16;color:#fff;max-width:720px;margin:40px auto;padding:20px}
+    .card{background:#171326;border:1px solid #33265c;border-radius:18px;padding:24px}
+    h1{margin-top:0;color:#b98cff}.grid{display:grid;gap:12px}
+    input,textarea,button{font:inherit;border-radius:10px;padding:12px;border:1px solid #45366d}
+    input,textarea{background:#0d0b16;color:#fff}button{cursor:pointer;background:#7c3aed;color:#fff;border:0}
+    .presets{display:flex;gap:8px;flex-wrap:wrap}.presets button{background:#30244d}
+    #result{margin-top:20px}.qr{max-width:260px;display:block;margin:15px auto}
+    .copy{word-break:break-all;background:#0d0b16;padding:12px;border-radius:10px}
+    .muted{color:#aaa;font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>KevenZL Pix Alertas</h1>
+    <p class="muted">Faça uma doação e sua mensagem poderá aparecer na live.</p>
+
+    <div class="grid">
+      <div class="presets">
+        <button type="button" onclick="setAmount(5)">R$ 5</button>
+        <button type="button" onclick="setAmount(10)">R$ 10</button>
+        <button type="button" onclick="setAmount(20)">R$ 20</button>
+        <button type="button" onclick="setAmount(50)">R$ 50</button>
+      </div>
+
+      <input id="amount" type="number" min="1" step="0.01" placeholder="Valor (R$)">
+      <input id="name" maxlength="60" placeholder="Seu nome">
+      <input id="email" type="email" placeholder="Seu e-mail">
+      <textarea id="message" maxlength="250" rows="4" placeholder="Mensagem para a live"></textarea>
+      <button id="pay" onclick="createPix()">Gerar Pix</button>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+<script>
+function setAmount(v){document.getElementById("amount").value=v}
+
+async function createPix(){
+  const button=document.getElementById("pay");
+  const result=document.getElementById("result");
+  button.disabled=true;
+  result.innerHTML="Gerando Pix...";
+
+  try{
+    const payload={
+      amount:Number(document.getElementById("amount").value),
+      name:document.getElementById("name").value,
+      email:document.getElementById("email").value,
+      message:document.getElementById("message").value
+    };
+
+    const r=await fetch("/api/create-pix",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||"Erro ao gerar Pix");
+
+    result.innerHTML=`
+      <h3>Pix criado</h3>
+      ${data.qrCodeBase64 ? `<img class="qr" src="data:image/png;base64,${data.qrCodeBase64}" alt="QR Code Pix">` : ""}
+      ${data.qrCode ? `<p class="copy" id="pixCode">${escapeHtml(data.qrCode)}</p><button onclick="copyPix()">Copiar Pix Copia e Cola</button>` : ""}
+      ${data.ticketUrl ? `<p><a href="${data.ticketUrl}" target="_blank" style="color:#b98cff">Abrir pagamento</a></p>` : ""}
+      <p class="muted">Depois do pagamento aprovado, o alerta será enviado ao overlay.</p>
+    `;
+    window.pixCode=data.qrCode||"";
+  }catch(e){
+    result.innerHTML=`<p style="color:#ff8a8a">${escapeHtml(e.message)}</p>`;
+  }finally{
+    button.disabled=false;
+  }
+}
+
+function copyPix(){
+  if(window.pixCode) navigator.clipboard.writeText(window.pixCode);
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+</script>
+</body>
+</html>
