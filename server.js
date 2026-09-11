@@ -132,14 +132,14 @@ app.post("/api/create-pix", async (req, res) => {
     }
 
     if (!response.ok) {
-      console.error(
-        "Mercado Pago recusou a criação do Pix:",
-        {
-          status: response.status,
-          statusText: response.statusText,
-          response: data
-        }
-      );
+     console.error(
+  "ERRO MERCADO PAGO COMPLETO:",
+  JSON.stringify({
+    status: response.status,
+    statusText: response.statusText,
+    response: data
+  }, null, 2)
+);
 
       return res.status(response.status || 502).json({
         error: "Mercado Pago recusou a criação do Pix.",
