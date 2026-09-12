@@ -15,10 +15,22 @@
 
     body {
       min-height: 100vh;
+
       background:
-        radial-gradient(circle at top, #25103b 0%, #0b0812 55%, #050507 100%);
+        radial-gradient(
+          circle at top,
+          #25103b 0%,
+          #0b0812 55%,
+          #050507 100%
+        );
+
       color: white;
-      font-family: Arial, Helvetica, sans-serif;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
       padding: 30px;
     }
 
@@ -39,16 +51,46 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
       gap: 20px;
     }
 
     .card {
-      background: rgba(18, 14, 26, 0.92);
-      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        rgba(
+          18,
+          14,
+          26,
+          0.92
+        );
+
+      border:
+        1px solid
+        rgba(
+          255,
+          255,
+          255,
+          0.08
+        );
+
       border-radius: 18px;
+
       padding: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+      box-shadow:
+        0 10px 30px
+        rgba(
+          0,
+          0,
+          0,
+          0.35
+        );
     }
 
     .card h2 {
@@ -79,26 +121,44 @@
     input[type="number"],
     select {
       width: 100%;
-      background: #0f0c14;
+
+      background:
+        #0f0c14;
+
       color: white;
-      border: 1px solid #40344c;
+
+      border:
+        1px solid
+        #40344c;
+
       border-radius: 10px;
+
       padding: 12px;
+
       outline: none;
     }
 
     .valor {
       min-width: 60px;
+
       text-align: right;
-      color: #d9c5ff;
+
+      color:
+        #d9c5ff;
+
       font-weight: 800;
     }
 
     .switch-row {
       display: flex;
+
       align-items: center;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
+
       gap: 20px;
+
       margin-bottom: 16px;
     }
 
@@ -108,6 +168,7 @@
 
     .switch {
       position: relative;
+
       width: 54px;
       height: 30px;
     }
@@ -118,45 +179,91 @@
 
     .slider {
       position: absolute;
+
       inset: 0;
-      background: #40394a;
-      border-radius: 999px;
+
+      background:
+        #40394a;
+
+      border-radius:
+        999px;
+
       cursor: pointer;
-      transition: .2s;
+
+      transition:
+        0.2s;
     }
 
     .slider::before {
       content: "";
+
       position: absolute;
+
       width: 22px;
       height: 22px;
+
       top: 4px;
       left: 4px;
+
       border-radius: 50%;
-      background: white;
-      transition: .2s;
+
+      background:
+        white;
+
+      transition:
+        0.2s;
     }
 
-    .switch input:checked + .slider {
-      background: #a84dff;
+    .switch input:checked +
+    .slider {
+      background:
+        #a84dff;
     }
 
-    .switch input:checked + .slider::before {
-      transform: translateX(24px);
+    .switch input:checked +
+    .slider::before {
+      transform:
+        translateX(
+          24px
+        );
     }
 
     .tiers {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+
+      grid-template-columns:
+        repeat(
+          5,
+          1fr
+        );
+
       gap: 12px;
+
       margin-top: 16px;
     }
 
     .tier {
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
+      border:
+        1px solid
+        rgba(
+          255,
+          255,
+          255,
+          0.08
+        );
+
+      border-radius:
+        14px;
+
       padding: 14px;
-      background: rgba(255,255,255,0.025);
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.025
+        );
     }
 
     .tier strong {
@@ -165,64 +272,174 @@
     }
 
     .tier small {
-      color: #aaa1b5;
+      display: block;
+
+      color:
+        #aaa1b5;
+
+      margin-bottom:
+        10px;
     }
 
     button {
       border: none;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 800;
+
+      border-radius:
+        10px;
+
+      padding:
+        12px 16px;
+
+      font-weight:
+        800;
+
       cursor: pointer;
-      transition: .2s;
+
+      transition:
+        0.2s;
     }
 
     button:hover {
-      transform: translateY(-1px);
+      transform:
+        translateY(
+          -1px
+        );
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: wait;
+      transform: none;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #9d3cff, #e24cff);
+      background:
+        linear-gradient(
+          135deg,
+          #9d3cff,
+          #e24cff
+        );
+
       color: white;
     }
 
     .btn-secundario {
-      background: #211a29;
+      background:
+        #211a29;
+
       color: white;
-      border: 1px solid #493d59;
+
+      border:
+        1px solid
+        #493d59;
     }
 
     .acoes {
       display: flex;
+
       gap: 12px;
-      margin-top: 24px;
-      flex-wrap: wrap;
+
+      margin-top:
+        24px;
+
+      flex-wrap:
+        wrap;
     }
 
     .status {
-      margin-top: 18px;
-      padding: 12px;
-      border-radius: 10px;
+      margin-top:
+        18px;
+
+      padding:
+        12px;
+
+      border-radius:
+        10px;
+
       display: none;
     }
 
     .status.ok {
       display: block;
-      background: rgba(52, 211, 153, 0.14);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      color: #8bf0c5;
+
+      background:
+        rgba(
+          52,
+          211,
+          153,
+          0.14
+        );
+
+      border:
+        1px solid
+        rgba(
+          52,
+          211,
+          153,
+          0.35
+        );
+
+      color:
+        #8bf0c5;
     }
 
     .status.erro {
       display: block;
-      background: rgba(239, 68, 68, 0.14);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      color: #ff9d9d;
+
+      background:
+        rgba(
+          239,
+          68,
+          68,
+          0.14
+        );
+
+      border:
+        1px solid
+        rgba(
+          239,
+          68,
+          68,
+          0.35
+        );
+
+      color:
+        #ff9d9d;
+    }
+
+    .status.carregando {
+      display: block;
+
+      background:
+        rgba(
+          168,
+          77,
+          255,
+          0.12
+        );
+
+      border:
+        1px solid
+        rgba(
+          168,
+          77,
+          255,
+          0.35
+        );
+
+      color:
+        #d7b7ff;
     }
 
     .teste-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+
+      grid-template-columns:
+        repeat(
+          5,
+          1fr
+        );
+
       gap: 12px;
     }
 
@@ -230,35 +447,75 @@
       min-height: 58px;
     }
 
-    @media (max-width: 900px) {
+    .basic {
+      border-color:
+        #555;
+    }
+
+    .medium {
+      border-color:
+        #ad39ff;
+    }
+
+    .epic {
+      border-color:
+        #586cff;
+    }
+
+    .special {
+      border-color:
+        #e69b00;
+    }
+
+    .legendary {
+      border-color:
+        #ff263d;
+    }
+
+    @media (
+      max-width: 900px
+    ) {
+
       .grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
 
       .tiers,
       .teste-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:
+          1fr 1fr;
       }
+
     }
 
-    @media (max-width: 560px) {
+    @media (
+      max-width: 560px
+    ) {
+
       body {
         padding: 16px;
       }
 
       .tiers,
       .teste-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          1fr;
       }
+
     }
   </style>
 </head>
+
 
 <body>
 
 <div class="container">
 
-  <h1>Painel de Alertas KevenZL</h1>
+  <h1>
+    🎛️ Painel de Alertas KevenZL
+  </h1>
+
   <div class="subtitulo">
     Controle dos alertas Pix da live
   </div>
@@ -266,13 +523,26 @@
 
   <div class="grid">
 
+    <!-- ================================
+         ÁUDIO
+    ================================= -->
+
     <div class="card">
-      <h2>Áudio</h2>
+
+      <h2>
+        🔊 Áudio
+      </h2>
+
 
       <div class="grupo">
-        <label>Volume do meme</label>
+
+        <label>
+          Volume do meme
+        </label>
+
 
         <div class="linha">
+
           <input
             id="volumeMeme"
             type="range"
@@ -281,20 +551,28 @@
             value="100"
           />
 
+
           <div
             id="volumeMemeValor"
             class="valor"
           >
             100%
           </div>
+
         </div>
+
       </div>
 
 
       <div class="grupo">
-        <label>Volume da voz IA</label>
+
+        <label>
+          Volume da voz IA
+        </label>
+
 
         <div class="linha">
+
           <input
             id="volumeVoz"
             type="range"
@@ -303,54 +581,88 @@
             value="100"
           />
 
+
           <div
             id="volumeVozValor"
             class="valor"
           >
             100%
           </div>
+
         </div>
+
       </div>
 
 
       <div class="switch-row">
-        <span>Tocar memes</span>
+
+        <span>
+          Tocar memes
+        </span>
+
 
         <label class="switch">
+
           <input
             id="memesAtivos"
             type="checkbox"
             checked
           />
 
-          <span class="slider"></span>
+
+          <span
+            class="slider"
+          ></span>
+
         </label>
+
       </div>
 
 
       <div class="switch-row">
-        <span>Voz da IA</span>
+
+        <span>
+          Voz da IA
+        </span>
+
 
         <label class="switch">
+
           <input
             id="vozAtiva"
             type="checkbox"
             checked
           />
 
-          <span class="slider"></span>
+
+          <span
+            class="slider"
+          ></span>
+
         </label>
+
       </div>
+
     </div>
 
 
+    <!-- ================================
+         EFEITOS
+    ================================= -->
+
     <div class="card">
-      <h2>Tempo e efeitos</h2>
+
+      <h2>
+        ✨ Tempo e efeitos
+      </h2>
+
 
       <div class="grupo">
+
         <label>
           Tempo mínimo do alerta
         </label>
+
 
         <div class="linha">
 
@@ -362,244 +674,380 @@
             value="12"
           />
 
-          <span>segundos</span>
+          <span>
+            segundos
+          </span>
 
         </div>
+
       </div>
 
 
       <div class="switch-row">
-        <span>Flash de entrada</span>
+
+        <span>
+          Flash de entrada
+        </span>
+
 
         <label class="switch">
+
           <input
             id="flashAtivo"
             type="checkbox"
             checked
           />
 
-          <span class="slider"></span>
+          <span
+            class="slider"
+          ></span>
+
         </label>
+
       </div>
 
 
       <div class="switch-row">
-        <span>Partículas</span>
+
+        <span>
+          Partículas
+        </span>
+
 
         <label class="switch">
+
           <input
             id="particulasAtivas"
             type="checkbox"
             checked
           />
 
-          <span class="slider"></span>
+          <span
+            class="slider"
+          ></span>
+
         </label>
+
       </div>
+
     </div>
 
   </div>
 
 
-  <div class="card" style="margin-top:20px;">
-    <h2>Sons por faixa</h2>
+  <!-- ================================
+       SONS
+  ================================= -->
+
+  <div
+    class="card"
+    style="margin-top:20px;"
+  >
+
+    <h2>
+      🎵 Sons por faixa
+    </h2>
+
 
     <div class="tiers">
 
-      <div class="tier">
-        <strong>Básico</strong>
-        <small>R$1–9,99</small>
+      <div class="tier basic">
+
+        <strong>
+          💰 Básico
+        </strong>
+
+        <small>
+          R$1–9,99
+        </small>
+
 
         <select id="somBasic">
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
 
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-        </select>
-      </div>
-
-
-      <div class="tier">
-        <strong>Destacado</strong>
-        <small>R$10–24,99</small>
-
-        <select id="somMedium">
-          <option value="/sounds/basico.mp3">
+          <option
+            value="/sounds/basico.mp3"
+          >
             basico.mp3
           </option>
 
           <option
             value="/sounds/medio.mp3"
-            selected
           >
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-        </select>
-      </div>
-
-
-      <div class="tier">
-        <strong>Épico</strong>
-        <small>R$25–49,99</small>
-
-        <select id="somEpic">
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
-
-          <option value="/sounds/medio.mp3">
             medio.mp3
           </option>
 
           <option
             value="/sounds/epico.mp3"
-            selected
           >
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-        </select>
-      </div>
-
-
-      <div class="tier">
-        <strong>Especial</strong>
-        <small>R$50–99,99</small>
-
-        <select id="somSpecial">
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
-
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
             epico.mp3
           </option>
 
           <option
             value="/sounds/especial.mp3"
-            selected
           >
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-        </select>
-      </div>
-
-
-      <div class="tier">
-        <strong>Lendário</strong>
-        <small>R$100+</small>
-
-        <select id="somLegendary">
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
-
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
             especial.mp3
           </option>
 
           <option
             value="/sounds/lendario.mp3"
-            selected
           >
             lendario.mp3
           </option>
+
         </select>
+
+      </div>
+
+
+      <div class="tier medium">
+
+        <strong>
+          💎 Destacado
+        </strong>
+
+        <small>
+          R$10–24,99
+        </small>
+
+
+        <select id="somMedium">
+
+          <option
+            value="/sounds/basico.mp3"
+          >
+            basico.mp3
+          </option>
+
+          <option
+            value="/sounds/medio.mp3"
+          >
+            medio.mp3
+          </option>
+
+          <option
+            value="/sounds/epico.mp3"
+          >
+            epico.mp3
+          </option>
+
+          <option
+            value="/sounds/especial.mp3"
+          >
+            especial.mp3
+          </option>
+
+          <option
+            value="/sounds/lendario.mp3"
+          >
+            lendario.mp3
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="tier epic">
+
+        <strong>
+          🔥 Épico
+        </strong>
+
+        <small>
+          R$25–49,99
+        </small>
+
+
+        <select id="somEpic">
+
+          <option
+            value="/sounds/basico.mp3"
+          >
+            basico.mp3
+          </option>
+
+          <option
+            value="/sounds/medio.mp3"
+          >
+            medio.mp3
+          </option>
+
+          <option
+            value="/sounds/epico.mp3"
+          >
+            epico.mp3
+          </option>
+
+          <option
+            value="/sounds/especial.mp3"
+          >
+            especial.mp3
+          </option>
+
+          <option
+            value="/sounds/lendario.mp3"
+          >
+            lendario.mp3
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="tier special">
+
+        <strong>
+          🏆 Especial
+        </strong>
+
+        <small>
+          R$50–99,99
+        </small>
+
+
+        <select id="somSpecial">
+
+          <option
+            value="/sounds/basico.mp3"
+          >
+            basico.mp3
+          </option>
+
+          <option
+            value="/sounds/medio.mp3"
+          >
+            medio.mp3
+          </option>
+
+          <option
+            value="/sounds/epico.mp3"
+          >
+            epico.mp3
+          </option>
+
+          <option
+            value="/sounds/especial.mp3"
+          >
+            especial.mp3
+          </option>
+
+          <option
+            value="/sounds/lendario.mp3"
+          >
+            lendario.mp3
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="tier legendary">
+
+        <strong>
+          👑 Lendário
+        </strong>
+
+        <small>
+          R$100+
+        </small>
+
+
+        <select id="somLegendary">
+
+          <option
+            value="/sounds/basico.mp3"
+          >
+            basico.mp3
+          </option>
+
+          <option
+            value="/sounds/medio.mp3"
+          >
+            medio.mp3
+          </option>
+
+          <option
+            value="/sounds/epico.mp3"
+          >
+            epico.mp3
+          </option>
+
+          <option
+            value="/sounds/especial.mp3"
+          >
+            especial.mp3
+          </option>
+
+          <option
+            value="/sounds/lendario.mp3"
+          >
+            lendario.mp3
+          </option>
+
+        </select>
+
       </div>
 
     </div>
+
   </div>
 
 
-  <div class="card" style="margin-top:20px;">
+  <!-- ================================
+       TESTES
+  ================================= -->
 
-    <h2>Testar alertas</h2>
+  <div
+    class="card"
+    style="margin-top:20px;"
+  >
+
+    <h2>
+      🧪 Testar alertas
+    </h2>
+
 
     <div class="teste-grid">
 
       <button
-        class="btn-secundario"
-        onclick="testar('basic')"
+        class="btn-secundario basic"
+        onclick="testar('basic', this)"
       >
-        Testar R$5
+        💰 Testar R$5
       </button>
 
-      <button
-        class="btn-secundario"
-        onclick="testar('medium')"
-      >
-        Testar R$15
-      </button>
 
       <button
-        class="btn-secundario"
-        onclick="testar('epic')"
+        class="btn-secundario medium"
+        onclick="testar('medium', this)"
       >
-        Testar R$30
+        💎 Testar R$15
       </button>
 
-      <button
-        class="btn-secundario"
-        onclick="testar('special')"
-      >
-        Testar R$50
-      </button>
 
       <button
-        class="btn-secundario"
-        onclick="testar('legendary')"
+        class="btn-secundario epic"
+        onclick="testar('epic', this)"
       >
-        Testar R$100
+        🔥 Testar R$30
+      </button>
+
+
+      <button
+        class="btn-secundario special"
+        onclick="testar('special', this)"
+      >
+        🏆 Testar R$50
+      </button>
+
+
+      <button
+        class="btn-secundario legendary"
+        onclick="testar('legendary', this)"
+      >
+        👑 Testar R$100
       </button>
 
     </div>
@@ -608,17 +1056,27 @@
     <div class="acoes">
 
       <button
+        id="btnSalvar"
         class="btn-primary"
         onclick="salvarConfiguracoes()"
       >
-        Salvar configurações
+        💾 Salvar configurações
       </button>
+
+
+      <button
+        class="btn-secundario"
+        onclick="recarregarConfiguracoes()"
+      >
+        🔄 Recarregar
+      </button>
+
 
       <button
         class="btn-secundario"
         onclick="restaurarPadrao()"
       >
-        Restaurar padrão
+        ↩ Restaurar padrão
       </button>
 
     </div>
@@ -636,306 +1094,706 @@
 
 <script>
 
-  const campos = {
+const campos = {
+
+  volumeMeme:
+    document.getElementById(
+      "volumeMeme"
+    ),
+
+  volumeVoz:
+    document.getElementById(
+      "volumeVoz"
+    ),
+
+  memesAtivos:
+    document.getElementById(
+      "memesAtivos"
+    ),
+
+  vozAtiva:
+    document.getElementById(
+      "vozAtiva"
+    ),
+
+  duracao:
+    document.getElementById(
+      "duracao"
+    ),
+
+  flashAtivo:
+    document.getElementById(
+      "flashAtivo"
+    ),
+
+  particulasAtivas:
+    document.getElementById(
+      "particulasAtivas"
+    ),
+
+  somBasic:
+    document.getElementById(
+      "somBasic"
+    ),
+
+  somMedium:
+    document.getElementById(
+      "somMedium"
+    ),
+
+  somEpic:
+    document.getElementById(
+      "somEpic"
+    ),
+
+  somSpecial:
+    document.getElementById(
+      "somSpecial"
+    ),
+
+  somLegendary:
+    document.getElementById(
+      "somLegendary"
+    )
+
+};
+
+
+const volumeMemeValor =
+  document.getElementById(
+    "volumeMemeValor"
+  );
+
+
+const volumeVozValor =
+  document.getElementById(
+    "volumeVozValor"
+  );
+
+
+const statusEl =
+  document.getElementById(
+    "status"
+  );
+
+
+// =====================================
+// SLIDERS
+// =====================================
+
+campos.volumeMeme
+  .addEventListener(
+    "input",
+    () => {
+
+      volumeMemeValor.textContent =
+        campos.volumeMeme.value +
+        "%";
+
+    }
+  );
+
+
+campos.volumeVoz
+  .addEventListener(
+    "input",
+    () => {
+
+      volumeVozValor.textContent =
+        campos.volumeVoz.value +
+        "%";
+
+    }
+  );
+
+
+// =====================================
+// OBTER CONFIGURAÇÃO DA TELA
+// =====================================
+
+function obterConfiguracoes() {
+
+  return {
+
     volumeMeme:
-      document.getElementById("volumeMeme"),
+
+      Number(
+        campos.volumeMeme.value
+      ) / 100,
+
 
     volumeVoz:
-      document.getElementById("volumeVoz"),
+
+      Number(
+        campos.volumeVoz.value
+      ) / 100,
+
 
     memesAtivos:
-      document.getElementById("memesAtivos"),
+
+      campos
+        .memesAtivos
+        .checked,
+
 
     vozAtiva:
-      document.getElementById("vozAtiva"),
+
+      campos
+        .vozAtiva
+        .checked,
+
 
     duracao:
-      document.getElementById("duracao"),
+
+      Number(
+        campos.duracao.value
+      ),
+
 
     flashAtivo:
-      document.getElementById("flashAtivo"),
+
+      campos
+        .flashAtivo
+        .checked,
+
 
     particulasAtivas:
-      document.getElementById("particulasAtivas"),
 
-    somBasic:
-      document.getElementById("somBasic"),
+      campos
+        .particulasAtivas
+        .checked,
 
-    somMedium:
-      document.getElementById("somMedium"),
 
-    somEpic:
-      document.getElementById("somEpic"),
+    sons: {
 
-    somSpecial:
-      document.getElementById("somSpecial"),
+      basic:
+        campos
+          .somBasic
+          .value,
 
-    somLegendary:
-      document.getElementById("somLegendary")
+      medium:
+        campos
+          .somMedium
+          .value,
+
+      epic:
+        campos
+          .somEpic
+          .value,
+
+      special:
+        campos
+          .somSpecial
+          .value,
+
+      legendary:
+        campos
+          .somLegendary
+          .value
+
+    }
+
   };
 
+}
 
-  const volumeMemeValor =
-    document.getElementById(
-      "volumeMemeValor"
+
+// =====================================
+// COLOCAR CONFIG NA TELA
+// =====================================
+
+function aplicarConfiguracoes(
+  config
+) {
+
+  campos.volumeMeme.value =
+    Math.round(
+      (
+        config.volumeMeme ??
+        1
+      ) *
+      100
     );
 
 
-  const volumeVozValor =
-    document.getElementById(
-      "volumeVozValor"
+  campos.volumeVoz.value =
+    Math.round(
+      (
+        config.volumeVoz ??
+        1
+      ) *
+      100
     );
 
 
-  campos.volumeMeme.addEventListener(
-    "input",
-    () => {
+  campos.memesAtivos.checked =
+    config.memesAtivos !==
+    false;
 
-      volumeMemeValor.textContent =
-        campos.volumeMeme.value + "%";
 
-    }
-  );
+  campos.vozAtiva.checked =
+    config.vozAtiva !==
+    false;
 
 
-  campos.volumeVoz.addEventListener(
-    "input",
-    () => {
+  campos.duracao.value =
+    config.duracao ??
+    12;
 
-      volumeVozValor.textContent =
-        campos.volumeVoz.value + "%";
 
-    }
-  );
+  campos.flashAtivo.checked =
+    config.flashAtivo !==
+    false;
 
 
-  function obterConfiguracoes() {
+  campos.particulasAtivas.checked =
+    config.particulasAtivas !==
+    false;
 
-    return {
 
-      volumeMeme:
-        Number(
-          campos.volumeMeme.value
-        ) / 100,
-
-      volumeVoz:
-        Number(
-          campos.volumeVoz.value
-        ) / 100,
-
-      memesAtivos:
-        campos.memesAtivos.checked,
-
-      vozAtiva:
-        campos.vozAtiva.checked,
-
-      duracao:
-        Number(
-          campos.duracao.value
-        ),
-
-      flashAtivo:
-        campos.flashAtivo.checked,
-
-      particulasAtivas:
-        campos.particulasAtivas.checked,
-
-      sons: {
-
-        basic:
-          campos.somBasic.value,
-
-        medium:
-          campos.somMedium.value,
-
-        epic:
-          campos.somEpic.value,
-
-        special:
-          campos.somSpecial.value,
-
-        legendary:
-          campos.somLegendary.value
-      }
-    };
-  }
-
-
-  function salvarConfiguracoes() {
-
-    const config =
-      obterConfiguracoes();
-
-
-    localStorage.setItem(
-      "kevenzlAlertConfig",
-      JSON.stringify(config)
-    );
-
-
-    mostrarStatus(
-      "Configurações salvas neste navegador.",
-      true
-    );
-  }
-
-
-  function carregarConfiguracoes() {
-
-    const salvo =
-      localStorage.getItem(
-        "kevenzlAlertConfig"
-      );
-
-
-    if (!salvo) {
-      return;
-    }
-
-
-    try {
-
-      const config =
-        JSON.parse(salvo);
-
-
-      campos.volumeMeme.value =
-        Math.round(
-          (config.volumeMeme ?? 1) * 100
-        );
-
-
-      campos.volumeVoz.value =
-        Math.round(
-          (config.volumeVoz ?? 1) * 100
-        );
-
-
-      campos.memesAtivos.checked =
-        config.memesAtivos !== false;
-
-
-      campos.vozAtiva.checked =
-        config.vozAtiva !== false;
-
-
-      campos.duracao.value =
-        config.duracao ?? 12;
-
-
-      campos.flashAtivo.checked =
-        config.flashAtivo !== false;
-
-
-      campos.particulasAtivas.checked =
-        config.particulasAtivas !== false;
-
-
-      if (config.sons) {
-
-        campos.somBasic.value =
-          config.sons.basic ||
-          "/sounds/basico.mp3";
-
-
-        campos.somMedium.value =
-          config.sons.medium ||
-          "/sounds/medio.mp3";
-
-
-        campos.somEpic.value =
-          config.sons.epic ||
-          "/sounds/epico.mp3";
-
-
-        campos.somSpecial.value =
-          config.sons.special ||
-          "/sounds/especial.mp3";
-
-
-        campos.somLegendary.value =
-          config.sons.legendary ||
-          "/sounds/lendario.mp3";
-      }
-
-
-      volumeMemeValor.textContent =
-        campos.volumeMeme.value + "%";
-
-
-      volumeVozValor.textContent =
-        campos.volumeVoz.value + "%";
-
-
-    } catch (error) {
-
-      console.error(
-        error
-      );
-    }
-  }
-
-
-  function restaurarPadrao() {
-
-    localStorage.removeItem(
-      "kevenzlAlertConfig"
-    );
-
-
-    location.reload();
-  }
-
-
-  function mostrarStatus(
-    texto,
-    ok
+  if (
+    config.sons
   ) {
 
-    const status =
-      document.getElementById(
-        "status"
+    campos.somBasic.value =
+      config.sons.basic ||
+      "/sounds/basico.mp3";
+
+
+    campos.somMedium.value =
+      config.sons.medium ||
+      "/sounds/medio.mp3";
+
+
+    campos.somEpic.value =
+      config.sons.epic ||
+      "/sounds/epico.mp3";
+
+
+    campos.somSpecial.value =
+      config.sons.special ||
+      "/sounds/especial.mp3";
+
+
+    campos.somLegendary.value =
+      config.sons.legendary ||
+      "/sounds/lendario.mp3";
+
+  }
+
+
+  volumeMemeValor.textContent =
+    campos.volumeMeme.value +
+    "%";
+
+
+  volumeVozValor.textContent =
+    campos.volumeVoz.value +
+    "%";
+
+}
+
+
+// =====================================
+// STATUS
+// =====================================
+
+function mostrarStatus(
+  texto,
+  tipo = "ok"
+) {
+
+  statusEl.textContent =
+    texto;
+
+
+  statusEl.className =
+    "status " +
+    tipo;
+
+}
+
+
+// =====================================
+// CARREGAR CONFIG DO SERVIDOR
+// =====================================
+
+async function carregarConfiguracoes() {
+
+  mostrarStatus(
+    "Carregando configurações...",
+    "carregando"
+  );
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/config",
+        {
+          cache:
+            "no-store"
+        }
       );
 
 
-    status.textContent =
-      texto;
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+        "Servidor respondeu " +
+        response.status
+      );
+
+    }
 
 
-    status.className =
-      ok
-        ? "status ok"
-        : "status erro";
+    const config =
+      await response.json();
 
 
-    setTimeout(
-      () => {
-
-        status.className =
-          "status";
-
-      },
-      3500
+    aplicarConfiguracoes(
+      config
     );
-  }
 
-
-  function testar(tier) {
 
     mostrarStatus(
-      "O botão de teste será conectado ao overlay no próximo passo.",
-      true
+      "✅ Configurações carregadas do servidor.",
+      "ok"
     );
 
 
-    console.log(
-      "Teste solicitado:",
-      tier
+  } catch (error) {
+
+    console.error(
+      error
     );
+
+
+    mostrarStatus(
+      "❌ Não foi possível carregar as configurações.",
+      "erro"
+    );
+
   }
 
+}
+
+
+// =====================================
+// SALVAR NO SERVIDOR
+// =====================================
+
+async function salvarConfiguracoes(
+  mostrarMensagem = true
+) {
+
+  const config =
+    obterConfiguracoes();
+
+
+  try {
+
+    if (
+      mostrarMensagem
+    ) {
+
+      mostrarStatus(
+        "Salvando configurações...",
+        "carregando"
+      );
+
+    }
+
+
+    const response =
+      await fetch(
+
+        "/api/config",
+
+        {
+
+          method:
+            "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify(
+              config
+            )
+
+        }
+
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+
+        data.error ||
+        "Erro ao salvar"
+
+      );
+
+    }
+
+
+    if (
+      mostrarMensagem
+    ) {
+
+      mostrarStatus(
+        "✅ Configurações salvas no servidor!",
+        "ok"
+      );
+
+    }
+
+
+    return true;
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    mostrarStatus(
+      "❌ Erro ao salvar configurações.",
+      "erro"
+    );
+
+
+    return false;
+
+  }
+
+}
+
+
+// =====================================
+// TESTAR ALERTA
+// =====================================
+
+async function testar(
+  tier,
+  botao
+) {
+
+  const textoOriginal =
+    botao.textContent;
+
+
+  botao.disabled =
+    true;
+
+
+  botao.textContent =
+    "Enviando...";
+
+
+  mostrarStatus(
+    "Preparando alerta de teste...",
+    "carregando"
+  );
+
+
+  try {
+
+    // Primeiro salva as configurações
+    // atuais do painel.
+
+    const salvo =
+      await salvarConfiguracoes(
+        false
+      );
+
+
+    if (
+      !salvo
+    ) {
+
+      throw new Error(
+        "Não foi possível salvar a configuração."
+      );
+
+    }
+
+
+    const response =
+      await fetch(
+
+        "/api/test-alert",
+
+        {
+
+          method:
+            "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify({
+
+              tier
+
+            })
+
+        }
+
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok
+    ) {
+
+      throw new Error(
+
+        data.error ||
+        "Erro no teste"
+
+      );
+
+    }
+
+
+    mostrarStatus(
+      "✅ Alerta enviado! Veja o Streamlabs.",
+      "ok"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    mostrarStatus(
+      "❌ Não foi possível enviar o alerta de teste.",
+      "erro"
+    );
+
+  } finally {
+
+    botao.disabled =
+      false;
+
+
+    botao.textContent =
+      textoOriginal;
+
+  }
+
+}
+
+
+// =====================================
+// RECARREGAR CONFIGURAÇÕES
+// =====================================
+
+function recarregarConfiguracoes() {
 
   carregarConfiguracoes();
+
+}
+
+
+// =====================================
+// RESTAURAR PADRÃO
+// =====================================
+
+async function restaurarPadrao() {
+
+  campos.volumeMeme.value =
+    100;
+
+  campos.volumeVoz.value =
+    100;
+
+  campos.memesAtivos.checked =
+    true;
+
+  campos.vozAtiva.checked =
+    true;
+
+  campos.duracao.value =
+    12;
+
+  campos.flashAtivo.checked =
+    true;
+
+  campos.particulasAtivas.checked =
+    true;
+
+  campos.somBasic.value =
+    "/sounds/basico.mp3";
+
+  campos.somMedium.value =
+    "/sounds/medio.mp3";
+
+  campos.somEpic.value =
+    "/sounds/epico.mp3";
+
+  campos.somSpecial.value =
+    "/sounds/especial.mp3";
+
+  campos.somLegendary.value =
+    "/sounds/lendario.mp3";
+
+
+  volumeMemeValor.textContent =
+    "100%";
+
+
+  volumeVozValor.textContent =
+    "100%";
+
+
+  await salvarConfiguracoes();
+
+
+  mostrarStatus(
+    "✅ Configurações padrão restauradas.",
+    "ok"
+  );
+
+}
+
+
+// =====================================
+// INICIAR
+// =====================================
+
+carregarConfiguracoes();
 
 </script>
 
