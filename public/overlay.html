@@ -1,66 +1,883 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KevenZL Overlay</title>
-<style>
-html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden;font-family:Arial,sans-serif}
-#alert{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);opacity:0;
-  min-width:420px;max-width:80%;padding:24px;border-radius:18px;background:rgba(15,10,28,.94);
-  border:2px solid #9b6cff;box-shadow:0 0 40px rgba(124,58,237,.45);color:#fff;text-align:center;
-  transition:.35s ease}
-#alert.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-#amount{font-size:34px;font-weight:800;color:#c7a7ff}
-#name{font-size:24px;font-weight:700;margin-top:8px}
-#message{font-size:20px;margin-top:12px;white-space:pre-wrap}
-</style>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>KevenZL Overlay</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+
+      padding-top: 80px;
+
+      pointer-events: none;
+    }
+
+    #alerta {
+      min-width: 500px;
+      max-width: 800px;
+
+      padding: 24px 32px;
+
+      border-radius: 20px;
+
+      background: rgba(12, 8, 25, 0.94);
+
+      border: 2px solid rgba(255, 255, 255, 0.15);
+
+      box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.5);
+
+      text-align: center;
+
+      color: white;
+
+      opacity: 0;
+      transform:
+        translateY(-70px)
+        scale(0.85);
+
+      transition:
+        opacity 0.4s ease,
+        transform 0.4s ease;
+    }
+
+    #alerta.mostrar {
+      opacity: 1;
+
+      transform:
+        translateY(0)
+        scale(1);
+    }
+
+    .titulo {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .nome {
+      font-size: 34px;
+      font-weight: 900;
+
+      margin-bottom: 5px;
+    }
+
+    .valor {
+      font-size: 30px;
+      font-weight: 900;
+
+      margin-bottom: 15px;
+    }
+
+    .mensagem {
+      font-size: 24px;
+      line-height: 1.3;
+
+      word-break: break-word;
+    }
+
+    .basic {
+      border-color: #a970ff;
+
+      box-shadow:
+        0 0 30px rgba(169, 112, 255, 0.55);
+    }
+
+    .basic .nome,
+    .basic .valor {
+      color: #bb86fc;
+    }
+
+    .medium {
+      border-color: #00bfff;
+
+      box-shadow:
+        0 0 35px rgba(0, 191, 255, 0.65);
+    }
+
+    .medium .nome,
+    .medium .valor {
+      color: #4fd5ff;
+    }
+
+    .epic {
+      border-color: #ff00ff;
+
+      box-shadow:
+        0 0 45px rgba(255, 0, 255, 0.75);
+    }
+
+    .epic .nome,
+    .epic .valor {
+      color: #ff5cff;
+    }
+
+    .special {
+      border-color: #ff9500;
+
+      box-shadow:
+        0 0 55px rgba(255, 149, 0, 0.85);
+
+      animation:
+        specialGlow 1s infinite alternate;
+    }
+
+    .special .nome,
+    .special .valor {
+      color: #ffb347;
+    }
+
+    .legendary {
+      border-color: #ffd700;
+
+      box-shadow:
+        0 0 70px rgba(255, 215, 0, 1);
+
+      animation:
+        legendaryGlow 0.6s infinite alternate;
+    }
+
+    .legendary .nome,
+    .legendary .valor {
+      color: #ffd700;
+    }
+
+    @keyframes specialGlow {
+      from {
+        box-shadow:
+          0 0 25px rgba(255, 149, 0, 0.5);
+      }
+
+      to {
+        box-shadow:
+          0 0 65px rgba(255, 149, 0, 1);
+      }
+    }
+
+    @keyframes legendaryGlow {
+      from {
+        transform:
+          translateY(0)
+          scale(1);
+
+        box-shadow:
+          0 0 35px rgba(255, 215, 0, 0.7);
+      }
+
+      to {
+        transform:
+          translateY(0)
+          scale(1.04);
+
+        box-shadow:
+          0 0 90px rgba(255, 215, 0, 1);
+      }
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+  </style>
 </head>
+
 <body>
-<div id="alert">
-  <div id="amount"></div>
-  <div id="name"></div>
-  <div id="message"></div>
-</div>
-<script>
-const box=document.getElementById("alert");
-const amount=document.getElementById("amount");
-const nameEl=document.getElementById("name");
-const message=document.getElementById("message");
-let hideTimer;
 
-function beep(tier){
-  const ctx=new (window.AudioContext||window.webkitAudioContext)();
-  const osc=ctx.createOscillator();
-  const gain=ctx.createGain();
-  const freq={basic:440,medium:520,epic:660,special:780,legendary:920}[tier]||440;
-  osc.frequency.value=freq;
-  osc.type="sine";
-  gain.gain.setValueAtTime(.001,ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(.12,ctx.currentTime+.02);
-  gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.6);
-  osc.connect(gain).connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime+.65);
-}
+  <div id="overlay">
 
-function show(d){
-  amount.textContent=`R$ ${Number(d.amount).toFixed(2).replace(".",",")}`;
-  nameEl.textContent=d.name||"Anônimo";
-  message.textContent=d.message||"";
-  box.classList.add("show");
-  beep(d.tier);
-  clearTimeout(hideTimer);
-  hideTimer=setTimeout(()=>box.classList.remove("show"),7000);
-}
+    <div id="alerta">
 
-const source=new EventSource("/api/overlay/stream");
-source.onmessage=(event)=>{
-  try{
-    const d=JSON.parse(event.data);
-    if(d.type==="donation") show(d);
-  }catch{}
-};
-</script>
+      <div
+        id="emoji"
+        class="emoji"
+      >
+        💜
+      </div>
+
+      <div
+        id="titulo"
+        class="titulo"
+      >
+        NOVA DOAÇÃO
+      </div>
+
+      <div
+        id="nome"
+        class="nome"
+      >
+        Keven
+      </div>
+
+      <div
+        id="valor"
+        class="valor"
+      >
+        R$ 10,00
+      </div>
+
+      <div
+        id="mensagem"
+        class="mensagem"
+      >
+        Teste
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const alerta =
+      document.getElementById("alerta");
+
+    const nomeEl =
+      document.getElementById("nome");
+
+    const valorEl =
+      document.getElementById("valor");
+
+    const mensagemEl =
+      document.getElementById("mensagem");
+
+    const emojiEl =
+      document.getElementById("emoji");
+
+    const tituloEl =
+      document.getElementById("titulo");
+
+
+    let alertaAtual = null;
+
+    let fila = [];
+
+    let vozesDisponiveis = [];
+
+
+    // ==============================
+    // CARREGAR VOZES
+    // ==============================
+
+    function carregarVozes() {
+
+      if (!("speechSynthesis" in window)) {
+        return;
+      }
+
+      vozesDisponiveis =
+        window.speechSynthesis.getVoices();
+    }
+
+
+    carregarVozes();
+
+
+    if ("speechSynthesis" in window) {
+
+      window.speechSynthesis.onvoiceschanged =
+        carregarVozes;
+    }
+
+
+
+    // ==============================
+    // ESCOLHER VOZ PORTUGUESA
+    // ==============================
+
+    function escolherVoz() {
+
+      if (!vozesDisponiveis.length) {
+        carregarVozes();
+      }
+
+
+      // Prioriza vozes brasileiras
+
+      let voz =
+        vozesDisponiveis.find(
+          v =>
+            v.lang
+              .toLowerCase()
+              .includes("pt-br")
+        );
+
+
+      // Se não encontrar,
+      // tenta português genérico
+
+      if (!voz) {
+
+        voz =
+          vozesDisponiveis.find(
+            v =>
+              v.lang
+                .toLowerCase()
+                .startsWith("pt")
+          );
+      }
+
+
+      return voz || null;
+    }
+
+
+
+    // ==============================
+    // LIMPAR TEXTO
+    // ==============================
+
+    function limparTexto(texto) {
+
+      if (!texto) return "";
+
+
+      return String(texto)
+
+        // remove links
+        .replace(
+          /(https?:\/\/[^\s]+)/gi,
+          ""
+        )
+
+        // remove excesso de espaços
+        .replace(
+          /\s+/g,
+          " "
+        )
+
+        .trim()
+
+        // máximo de caracteres lidos
+        .slice(0, 250);
+    }
+
+
+
+    // ==============================
+    // VOZ DA DOAÇÃO
+    // ==============================
+
+    function falarDoacao(
+      name,
+      amount,
+      message
+    ) {
+
+      if (
+        !(
+          "speechSynthesis"
+          in window
+        )
+      ) {
+        return;
+      }
+
+
+      window.speechSynthesis.cancel();
+
+
+      const nomeSeguro =
+        limparTexto(name) ||
+        "Alguém";
+
+
+      const mensagemSegura =
+        limparTexto(message);
+
+
+      const valor =
+        Number(amount);
+
+
+      const valorFalado =
+        valor.toLocaleString(
+          "pt-BR",
+          {
+            style: "currency",
+            currency: "BRL"
+          }
+        );
+
+
+      let texto =
+        `${nomeSeguro} enviou ${valorFalado}.`;
+
+
+      if (mensagemSegura) {
+
+        texto +=
+          ` ${mensagemSegura}`;
+
+      }
+
+
+      const fala =
+        new SpeechSynthesisUtterance(
+          texto
+        );
+
+
+      fala.lang =
+        "pt-BR";
+
+
+      fala.rate =
+        1.02;
+
+
+      fala.pitch =
+        1;
+
+
+      fala.volume =
+        1;
+
+
+      const voz =
+        escolherVoz();
+
+
+      if (voz) {
+
+        fala.voice =
+          voz;
+
+      }
+
+
+      window.speechSynthesis.speak(
+        fala
+      );
+    }
+
+
+
+    // ==============================
+    // SOM DO ALERTA
+    // ==============================
+
+    function tocarSom(tier) {
+
+      try {
+
+        const AudioContext =
+          window.AudioContext ||
+          window.webkitAudioContext;
+
+
+        const audio =
+          new AudioContext();
+
+
+        const oscillator =
+          audio.createOscillator();
+
+
+        const gain =
+          audio.createGain();
+
+
+        oscillator.connect(
+          gain
+        );
+
+
+        gain.connect(
+          audio.destination
+        );
+
+
+        let frequencia = 500;
+
+        let duracao = 0.35;
+
+
+        if (
+          tier === "medium"
+        ) {
+
+          frequencia = 650;
+
+        }
+
+
+        if (
+          tier === "epic"
+        ) {
+
+          frequencia = 800;
+
+          duracao = 0.45;
+
+        }
+
+
+        if (
+          tier === "special"
+        ) {
+
+          frequencia = 950;
+
+          duracao = 0.55;
+
+        }
+
+
+        if (
+          tier === "legendary"
+        ) {
+
+          frequencia = 1200;
+
+          duracao = 0.75;
+
+        }
+
+
+        oscillator.frequency.value =
+          frequencia;
+
+
+        oscillator.type =
+          "sine";
+
+
+        gain.gain.setValueAtTime(
+          0.2,
+          audio.currentTime
+        );
+
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          audio.currentTime +
+          duracao
+        );
+
+
+        oscillator.start();
+
+
+        oscillator.stop(
+          audio.currentTime +
+          duracao
+        );
+
+
+      } catch (error) {
+
+        console.log(
+          "Não foi possível tocar o som.",
+          error
+        );
+
+      }
+    }
+
+
+
+    // ==============================
+    // DEFINIR VISUAL POR VALOR
+    // ==============================
+
+    function configuracaoTier(
+      tier
+    ) {
+
+      const config = {
+
+        basic: {
+          emoji: "💜",
+          titulo: "NOVA DOAÇÃO"
+        },
+
+        medium: {
+          emoji: "💙",
+          titulo: "DOAÇÃO!"
+        },
+
+        epic: {
+          emoji: "💥",
+          titulo: "DOAÇÃO ÉPICA!"
+        },
+
+        special: {
+          emoji: "🔥",
+          titulo: "DOAÇÃO ESPECIAL!"
+        },
+
+        legendary: {
+          emoji: "👑",
+          titulo: "DOAÇÃO LENDÁRIA!"
+        }
+
+      };
+
+
+      return (
+        config[tier] ||
+        config.basic
+      );
+    }
+
+
+
+    // ==============================
+    // MOSTRAR ALERTA
+    // ==============================
+
+    function mostrarAlerta(
+      data
+    ) {
+
+      if (alertaAtual) {
+
+        fila.push(data);
+
+        return;
+
+      }
+
+
+      alertaAtual = data;
+
+
+      const tier =
+        data.tier ||
+        "basic";
+
+
+      const config =
+        configuracaoTier(
+          tier
+        );
+
+
+      alerta.className =
+        tier;
+
+
+      emojiEl.textContent =
+        config.emoji;
+
+
+      tituloEl.textContent =
+        config.titulo;
+
+
+      nomeEl.textContent =
+        limparTexto(
+          data.name
+        );
+
+
+      valorEl.textContent =
+        Number(
+          data.amount
+        )
+        .toLocaleString(
+          "pt-BR",
+          {
+            style: "currency",
+            currency: "BRL"
+          }
+        );
+
+
+      mensagemEl.textContent =
+        limparTexto(
+          data.message
+        ) ||
+        "Obrigado pela doação!";
+
+
+      tocarSom(
+        tier
+      );
+
+
+      alerta.classList.add(
+        "mostrar"
+      );
+
+
+      // espera um pouco antes
+      // de começar a voz
+
+      setTimeout(
+        () => {
+
+          falarDoacao(
+            data.name,
+            data.amount,
+            data.message
+          );
+
+        },
+        700
+      );
+
+
+      // tempo do alerta na tela
+
+      setTimeout(
+        esconderAlerta,
+        9000
+      );
+    }
+
+
+
+    // ==============================
+    // ESCONDER ALERTA
+    // ==============================
+
+    function esconderAlerta() {
+
+      alerta.classList.remove(
+        "mostrar"
+      );
+
+
+      setTimeout(
+        () => {
+
+          alertaAtual = null;
+
+
+          if (
+            fila.length > 0
+          ) {
+
+            const proximo =
+              fila.shift();
+
+
+            mostrarAlerta(
+              proximo
+            );
+          }
+
+        },
+        600
+      );
+    }
+
+
+
+    // ==============================
+    // CONEXÃO COM O SERVIDOR
+    // ==============================
+
+    function conectarOverlay() {
+
+      const source =
+        new EventSource(
+          "/api/overlay/stream"
+        );
+
+
+      source.onopen =
+        () => {
+
+          console.log(
+            "Overlay conectado."
+          );
+
+        };
+
+
+      source.onmessage =
+        event => {
+
+          try {
+
+            const data =
+              JSON.parse(
+                event.data
+              );
+
+
+            if (
+              data.type ===
+              "connected"
+            ) {
+
+              console.log(
+                "Conectado ao servidor."
+              );
+
+              return;
+            }
+
+
+            if (
+              data.type ===
+              "donation"
+            ) {
+
+              mostrarAlerta(
+                data
+              );
+
+            }
+
+          }
+
+          catch (error) {
+
+            console.error(
+              "Erro no alerta:",
+              error
+            );
+
+          }
+
+        };
+
+
+      source.onerror =
+        () => {
+
+          console.log(
+            "Reconectando overlay..."
+          );
+
+        };
+    }
+
+
+
+    conectarOverlay();
+
+  </script>
+
 </body>
 </html>
