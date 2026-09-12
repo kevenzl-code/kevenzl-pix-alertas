@@ -14,6 +14,52 @@ app.use(express.static("public"));
 
 
 // ======================================================
+// SEGURANÇA DO PAINEL
+// ======================================================
+
+function protegerPainel(req, res, next) {
+
+  const segredoServidor =
+    process.env.PANEL_SECRET;
+
+
+  if (!segredoServidor) {
+
+    console.error(
+      "PANEL_SECRET não configurado no servidor."
+    );
+
+
+    return res.status(500).json({
+      error:
+        "Segurança do painel não configurada."
+    });
+
+  }
+
+
+  const segredoRecebido =
+    req.headers["x-panel-secret"];
+
+
+  if (
+    !segredoRecebido ||
+    segredoRecebido !== segredoServidor
+  ) {
+
+    return res.status(401).json({
+      error:
+        "Acesso não autorizado."
+    });
+
+  }
+
+
+  next();
+}
+
+
+// ======================================================
 // MEMÓRIA TEMPORÁRIA
 // ======================================================
 
@@ -356,8 +402,6 @@ async function generateTTS(
   );
 
 
-  // Apaga o áudio depois de 2 minutos.
-
   setTimeout(
 
     () => {
@@ -410,6 +454,13 @@ app.get(
 
         Boolean(
           process.env.ELEVENLABS_API_KEY
+        ),
+
+
+      painelProtegido:
+
+        Boolean(
+          process.env.PANEL_SECRET
         )
 
     });
@@ -421,11 +472,14 @@ app.get(
 
 // ======================================================
 // PEGAR CONFIGURAÇÕES
+// PROTEGIDO
 // ======================================================
 
 app.get(
 
   "/api/config",
+
+  protegerPainel,
 
   (req, res) => {
 
@@ -440,11 +494,14 @@ app.get(
 
 // ======================================================
 // SALVAR CONFIGURAÇÕES
+// PROTEGIDO
 // ======================================================
 
 app.post(
 
   "/api/config",
+
+  protegerPainel,
 
   (req, res) => {
 
@@ -608,8 +665,6 @@ app.post(
       }
 
 
-      // Atualiza overlays conectados.
-
       broadcast({
 
         type:
@@ -663,11 +718,14 @@ app.post(
 
 // ======================================================
 // TESTE MANUAL DE ALERTA
+// PROTEGIDO
 // ======================================================
 
 app.post(
 
   "/api/test-alert",
+
+  protegerPainel,
 
   async (req, res) => {
 
@@ -721,8 +779,6 @@ app.post(
       let audioId =
         null;
 
-
-      // Gera voz no teste se estiver ativa.
 
       if (
         alertConfig.vozAtiva
@@ -865,10 +921,6 @@ app.post(
         Number(amount);
 
 
-      // --------------------------------------------------
-      // VALIDAR VALOR
-      // --------------------------------------------------
-
       if (
 
         !Number.isFinite(
@@ -893,10 +945,6 @@ app.post(
       }
 
 
-      // --------------------------------------------------
-      // VALIDAR NOME
-      // --------------------------------------------------
-
       if (
 
         !name ||
@@ -919,10 +967,6 @@ app.post(
       }
 
 
-      // --------------------------------------------------
-      // VALIDAR EMAIL
-      // --------------------------------------------------
-
       if (
 
         !email ||
@@ -943,10 +987,6 @@ app.post(
 
       }
 
-
-      // --------------------------------------------------
-      // MERCADO PAGO CONFIGURADO?
-      // --------------------------------------------------
 
       if (
         !process.env.MP_ACCESS_TOKEN
@@ -1004,10 +1044,6 @@ app.post(
       };
 
 
-      // ==================================================
-      // BODY DA ORDEM MERCADO PAGO
-      // ==================================================
-
       const orderBody = {
 
         type:
@@ -1028,8 +1064,6 @@ app.post(
           email:
             String(email)
               .trim(),
-
-          // Necessário para nosso ambiente de teste.
 
           first_name:
             "APRO"
@@ -1064,10 +1098,6 @@ app.post(
 
       };
 
-
-      // ==================================================
-      // ENVIAR ORDEM AO MERCADO PAGO
-      // ==================================================
 
       const response =
         await fetch(
@@ -1132,10 +1162,6 @@ app.post(
 
       }
 
-
-      // ==================================================
-      // ERRO MERCADO PAGO
-      // ==================================================
 
       if (
         !response.ok
@@ -1223,10 +1249,6 @@ app.post(
       );
 
 
-      // ==================================================
-      // RESPONDER AO SITE
-      // ==================================================
-
       res.json({
 
         orderId:
@@ -1311,8 +1333,6 @@ app.post(
 
   async (req, res) => {
 
-    // Responde rapidamente ao Mercado Pago.
-
     res.sendStatus(200);
 
 
@@ -1347,10 +1367,6 @@ app.post(
 
       }
 
-
-      // ==================================================
-      // CONSULTAR ORDEM
-      // ==================================================
 
       const response =
         await fetch(
@@ -1451,10 +1467,6 @@ app.post(
       );
 
 
-      // ==================================================
-      // VERIFICAR APROVAÇÃO
-      // ==================================================
-
       const approved =
 
         order.status ===
@@ -1481,10 +1493,6 @@ app.post(
         donation.alertSent =
           true;
 
-
-        // =================================================
-        // GERAR VOZ
-        // =================================================
 
         let audioId =
           null;
@@ -1522,10 +1530,6 @@ app.post(
 
         }
 
-
-        // =================================================
-        // ENVIAR ALERTA AO STREAMLABS
-        // =================================================
 
         broadcast({
 
@@ -1586,7 +1590,7 @@ app.post(
 
 
 // ======================================================
-// SERVIR ÁUDIO GERADO PELA ELEVENLABS
+// SERVIR ÁUDIO GERADO
 // ======================================================
 
 app.get(
@@ -1757,9 +1761,6 @@ app.get(
     );
 
 
-    // Avisa que o overlay conectou
-    // e já manda as configurações atuais.
-
     res.write(
 
       `data: ${JSON.stringify(
@@ -1897,6 +1898,19 @@ app.listen(
         ? "OK"
 
         : "NÃO CONFIGURADO"
+
+    );
+
+
+    console.log(
+
+      "Proteção do painel:",
+
+      process.env.PANEL_SECRET
+
+        ? "ATIVA"
+
+        : "NÃO CONFIGURADA"
 
     );
 
