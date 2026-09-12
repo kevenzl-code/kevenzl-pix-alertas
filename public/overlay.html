@@ -2,11 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KevenZL Overlay</title>
 
   <style>
@@ -45,8 +41,10 @@
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
       text-align: center;
       color: white;
+
       opacity: 0;
       transform: translateY(-70px) scale(0.85);
+
       transition:
         opacity 0.4s ease,
         transform 0.4s ease;
@@ -55,6 +53,11 @@
     #alerta.mostrar {
       opacity: 1;
       transform: translateY(0) scale(1);
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 8px;
     }
 
     .titulo {
@@ -79,11 +82,6 @@
       font-size: 24px;
       line-height: 1.3;
       word-break: break-word;
-    }
-
-    .emoji {
-      font-size: 40px;
-      margin-bottom: 8px;
     }
 
     .basic {
@@ -190,7 +188,9 @@
     </div>
   </div>
 
+
   <script>
+
     const alerta =
       document.getElementById("alerta");
 
@@ -212,7 +212,11 @@
 
     let alertaAtual = null;
     let fila = [];
-    let audioAtual = null;
+
+    let audioMemeAtual = null;
+    let audioVozAtual = null;
+
+    let timeoutSeguranca = null;
 
 
     function limparTexto(texto) {
@@ -221,14 +225,8 @@
       }
 
       return String(texto)
-        .replace(
-          /(https?:\/\/[^\s]+)/gi,
-          ""
-        )
-        .replace(
-          /\s+/g,
-          " "
-        )
+        .replace(/(https?:\/\/[^\s]+)/gi, "")
+        .replace(/\s+/g, " ")
         .trim()
         .slice(0, 250);
     }
@@ -236,29 +234,35 @@
 
     function configuracaoTier(tier) {
       const config = {
+
         basic: {
           emoji: "💜",
-          titulo: "NOVA DOAÇÃO"
+          titulo: "NOVA DOAÇÃO",
+          som: "/sounds/basico.mp3"
         },
 
         medium: {
           emoji: "💙",
-          titulo: "DOAÇÃO!"
+          titulo: "DOAÇÃO!",
+          som: "/sounds/medio.mp3"
         },
 
         epic: {
           emoji: "💥",
-          titulo: "DOAÇÃO ÉPICA!"
+          titulo: "DOAÇÃO ÉPICA!",
+          som: "/sounds/epico.mp3"
         },
 
         special: {
           emoji: "🔥",
-          titulo: "DOAÇÃO ESPECIAL!"
+          titulo: "DOAÇÃO ESPECIAL!",
+          som: "/sounds/especial.mp3"
         },
 
         legendary: {
           emoji: "👑",
-          titulo: "DOAÇÃO LENDÁRIA!"
+          titulo: "DOAÇÃO LENDÁRIA!",
+          som: "/sounds/lendario.mp3"
         }
       };
 
@@ -266,137 +270,211 @@
     }
 
 
-    function tocarSomCurto(tier) {
-      try {
-        const AudioContext =
-          window.AudioContext ||
-          window.webkitAudioContext;
+    function pararAudios() {
 
-        const audio =
-          new AudioContext();
+      if (audioMemeAtual) {
+        audioMemeAtual.pause();
+        audioMemeAtual.currentTime = 0;
+        audioMemeAtual = null;
+      }
 
-        const oscillator =
-          audio.createOscillator();
+      if (audioVozAtual) {
+        audioVozAtual.pause();
+        audioVozAtual.currentTime = 0;
+        audioVozAtual = null;
+      }
 
-        const gain =
-          audio.createGain();
-
-        oscillator.connect(gain);
-        gain.connect(audio.destination);
-
-        let frequencia = 500;
-        let duracao = 0.25;
-
-        if (tier === "medium") {
-          frequencia = 650;
-        }
-
-        if (tier === "epic") {
-          frequencia = 800;
-        }
-
-        if (tier === "special") {
-          frequencia = 950;
-        }
-
-        if (tier === "legendary") {
-          frequencia = 1200;
-          duracao = 0.4;
-        }
-
-        oscillator.frequency.value =
-          frequencia;
-
-        oscillator.type =
-          "sine";
-
-        gain.gain.setValueAtTime(
-          0.15,
-          audio.currentTime
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-          0.001,
-          audio.currentTime + duracao
-        );
-
-        oscillator.start();
-
-        oscillator.stop(
-          audio.currentTime + duracao
-        );
-
-      } catch (error) {
-        console.log(
-          "Não foi possível tocar o som curto.",
-          error
-        );
+      if (timeoutSeguranca) {
+        clearTimeout(timeoutSeguranca);
+        timeoutSeguranca = null;
       }
     }
 
 
     async function tocarVoz(audioUrl) {
+
       if (!audioUrl) {
         console.log(
           "Alerta chegou sem áudio da ElevenLabs."
         );
 
+        esconderAlerta();
         return;
       }
 
       try {
-        if (audioAtual) {
-          audioAtual.pause();
-          audioAtual = null;
-        }
 
-        audioAtual =
+        audioVozAtual =
           new Audio(audioUrl);
 
-        audioAtual.volume =
+        audioVozAtual.volume =
           1;
 
-        await audioAtual.play();
+        audioVozAtual.onended =
+          () => {
+            esconderAlerta();
+          };
+
+        audioVozAtual.onerror =
+          () => {
+            console.error(
+              "Erro ao carregar voz da ElevenLabs."
+            );
+
+            esconderAlerta();
+          };
+
+        await audioVozAtual.play();
 
         console.log(
           "Voz ElevenLabs reproduzida."
         );
 
       } catch (error) {
+
         console.error(
           "Erro ao reproduzir voz:",
           error
+        );
+
+        esconderAlerta();
+      }
+    }
+
+
+    async function tocarMemeDepoisVoz(
+      memeUrl,
+      voiceUrl
+    ) {
+
+      try {
+
+        audioMemeAtual =
+          new Audio(memeUrl);
+
+        audioMemeAtual.volume =
+          1;
+
+
+        audioMemeAtual.onended =
+          () => {
+
+            audioMemeAtual = null;
+
+            setTimeout(
+              () => {
+                tocarVoz(voiceUrl);
+              },
+              350
+            );
+          };
+
+
+        audioMemeAtual.onerror =
+          () => {
+
+            console.error(
+              "Erro ao carregar meme:",
+              memeUrl
+            );
+
+            tocarVoz(
+              voiceUrl
+            );
+          };
+
+
+        await audioMemeAtual.play();
+
+        console.log(
+          "Meme reproduzindo:",
+          memeUrl
+        );
+
+
+        // Segurança:
+        // se algum MP3 travar,
+        // continua para a voz depois de 20s
+
+        timeoutSeguranca =
+          setTimeout(
+            () => {
+
+              if (
+                audioMemeAtual &&
+                !audioMemeAtual.ended
+              ) {
+
+                audioMemeAtual.pause();
+
+                audioMemeAtual = null;
+
+                tocarVoz(
+                  voiceUrl
+                );
+              }
+
+            },
+            20000
+          );
+
+
+      } catch (error) {
+
+        console.error(
+          "Erro ao reproduzir meme:",
+          error
+        );
+
+        tocarVoz(
+          voiceUrl
         );
       }
     }
 
 
     function mostrarAlerta(data) {
+
       if (alertaAtual) {
+
         fila.push(data);
+
         return;
       }
 
+
       alertaAtual = data;
 
+
       const tier =
-        data.tier || "basic";
+        data.tier ||
+        "basic";
+
 
       const config =
-        configuracaoTier(tier);
+        configuracaoTier(
+          tier
+        );
+
 
       alerta.className =
         tier;
 
+
       emojiEl.textContent =
         config.emoji;
+
 
       tituloEl.textContent =
         config.titulo;
 
+
       nomeEl.textContent =
-        limparTexto(data.name) ||
+        limparTexto(
+          data.name
+        ) ||
         "Anônimo";
+
 
       valorEl.textContent =
         Number(data.amount)
@@ -408,12 +486,13 @@
             }
           );
 
+
       mensagemEl.textContent =
-        limparTexto(data.message) ||
+        limparTexto(
+          data.message
+        ) ||
         "Obrigado pela doação!";
 
-
-      tocarSomCurto(tier);
 
       alerta.classList.add(
         "mostrar"
@@ -422,38 +501,45 @@
 
       setTimeout(
         () => {
-          tocarVoz(
+
+          tocarMemeDepoisVoz(
+            config.som,
             data.audioUrl
           );
+
         },
-        600
-      );
-
-
-      setTimeout(
-        esconderAlerta,
-        12000
+        500
       );
     }
 
 
     function esconderAlerta() {
+
+      pararAudios();
+
+
       alerta.classList.remove(
         "mostrar"
       );
 
+
       setTimeout(
         () => {
+
           alertaAtual = null;
 
+
           if (fila.length > 0) {
+
             const proximo =
               fila.shift();
+
 
             mostrarAlerta(
               proximo
             );
           }
+
         },
         600
       );
@@ -461,30 +547,38 @@
 
 
     function conectarOverlay() {
+
       const source =
         new EventSource(
           "/api/overlay/stream"
         );
 
+
       source.onopen =
         () => {
+
           console.log(
             "Overlay conectado."
           );
         };
 
+
       source.onmessage =
         event => {
+
           try {
+
             const data =
               JSON.parse(
                 event.data
               );
 
+
             if (
               data.type ===
               "connected"
             ) {
+
               console.log(
                 "Conectado ao servidor."
               );
@@ -492,21 +586,26 @@
               return;
             }
 
+
             if (
               data.type ===
               "donation"
             ) {
+
               console.log(
                 "Doação recebida:",
                 data
               );
+
 
               mostrarAlerta(
                 data
               );
             }
 
+
           } catch (error) {
+
             console.error(
               "Erro no alerta:",
               error
@@ -514,16 +613,19 @@
           }
         };
 
+
       source.onerror =
         () => {
+
           console.log(
-            "Conexão perdida. O navegador tentará reconectar."
+            "Conexão perdida. Reconectando..."
           );
         };
     }
 
 
     conectarOverlay();
+
   </script>
 
 </body>
