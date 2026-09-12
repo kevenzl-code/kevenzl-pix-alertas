@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
 <title>KevenZL Pix Alertas</title>
+
 
 <style>
 
@@ -14,60 +21,98 @@
   padding: 0;
 }
 
+
 html,
 body {
+
   width: 100%;
   height: 100%;
+
   overflow: hidden;
+
   background: transparent;
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
+
+/* =====================================
+   OVERLAY
+===================================== */
+
 #overlay {
+
   position: fixed;
+
   inset: 0;
 
   display: flex;
+
   justify-content: center;
+
   align-items: flex-start;
 
   padding-top: 70px;
 
   pointer-events: none;
+
 }
 
 
 /* =====================================
-   FLASH DA TELA
+   FLASH
 ===================================== */
 
 #flash {
+
   position: fixed;
+
   inset: 0;
 
   opacity: 0;
+
   pointer-events: none;
 
   z-index: 50;
+
 }
 
+
 #flash.ativo {
-  animation: flashTela 0.55s ease-out;
+
+  animation:
+    flashTela
+    0.55s
+    ease-out;
+
 }
+
 
 @keyframes flashTela {
 
   0% {
+
     opacity: 0;
+
   }
+
 
   15% {
+
     opacity: 0.65;
+
   }
 
+
   100% {
+
     opacity: 0;
+
   }
+
 }
 
 
@@ -76,7 +121,9 @@ body {
 ===================================== */
 
 #particles {
+
   position: fixed;
+
   inset: 0;
 
   overflow: hidden;
@@ -84,47 +131,72 @@ body {
   pointer-events: none;
 
   z-index: 1;
+
 }
 
+
 .particula {
+
   position: absolute;
 
   width: 6px;
+
   height: 6px;
 
   border-radius: 50%;
 
-  background: var(--particle-color);
+  background:
+    var(--particle-color);
 
   box-shadow:
-    0 0 10px var(--particle-color),
-    0 0 20px var(--particle-color);
+
+    0 0 10px
+    var(--particle-color),
+
+    0 0 20px
+    var(--particle-color);
+
 
   animation:
-    subirParticula 2.3s linear forwards;
+
+    subirParticula
+    2.3s
+    linear
+    forwards;
+
 }
+
 
 @keyframes subirParticula {
 
   0% {
+
     transform:
       translateY(0)
       scale(0.4);
 
     opacity: 0;
+
   }
+
 
   20% {
+
     opacity: 1;
+
   }
 
+
   100% {
+
     transform:
       translateY(-350px)
       scale(1.4);
 
     opacity: 0;
+
   }
+
 }
 
 
@@ -135,56 +207,97 @@ body {
 #alerta {
 
   --cor: #ffffff;
-  --glow: rgba(255,255,255,.4);
+
+  --glow:
+    rgba(
+      255,
+      255,
+      255,
+      0.4
+    );
+
 
   position: relative;
 
+
   width: 720px;
+
   min-height: 210px;
 
-  padding: 28px 38px;
 
-  border-radius: 18px;
+  padding:
+    28px
+    38px;
 
-  color: white;
+
+  border-radius:
+    18px;
+
+
+  color:
+    white;
+
 
   background:
+
     linear-gradient(
       135deg,
       rgba(5,5,10,.98),
       rgba(20,15,28,.96)
     );
 
+
   border:
-    2px solid var(--cor);
+
+    2px solid
+    var(--cor);
+
 
   box-shadow:
-    0 0 30px var(--glow);
+
+    0 0 30px
+    var(--glow);
+
 
   opacity: 0;
 
+
   transform:
+
     translateY(-100px)
     scale(.65);
 
-  overflow: hidden;
+
+  overflow:
+    visible;
+
 
   z-index: 10;
+
 }
 
 
 /* =====================================
-   ALERTA VISÍVEL
+   MOSTRAR
 ===================================== */
 
 #alerta.mostrar {
 
   opacity: 1;
 
+
   animation:
-    entradaBase .65s
-    cubic-bezier(.18,.89,.32,1.4)
+
+    entradaBase
+    .65s
+    cubic-bezier(
+      .18,
+      .89,
+      .32,
+      1.4
+    )
     forwards;
+
 }
 
 
@@ -194,39 +307,57 @@ body {
 
     opacity: 0;
 
+
     transform:
+
       translateY(-120px)
       scale(.55);
 
+
     filter:
+
       brightness(3)
       blur(8px);
+
   }
+
 
   60% {
 
     opacity: 1;
 
+
     transform:
+
       translateY(10px)
       scale(1.06);
 
+
     filter:
+
       brightness(1.6)
       blur(0);
+
   }
+
 
   100% {
 
     opacity: 1;
 
+
     transform:
+
       translateY(0)
       scale(1);
 
+
     filter:
+
       brightness(1);
+
   }
+
 }
 
 
@@ -237,8 +368,12 @@ body {
 #alerta.saindo {
 
   animation:
-    saidaAlerta .55s
-    ease-in forwards;
+
+    saidaAlerta
+    .55s
+    ease-in
+    forwards;
+
 }
 
 
@@ -248,22 +383,31 @@ body {
 
     opacity: 1;
 
+
     transform:
+
       translateY(0)
       scale(1);
+
   }
+
 
   100% {
 
     opacity: 0;
 
+
     transform:
+
       translateY(-80px)
       scale(.85);
 
+
     filter:
       blur(8px);
+
   }
+
 }
 
 
@@ -275,59 +419,93 @@ body {
 
   content: "";
 
+
   position: absolute;
 
-  inset: -100px;
+  inset: -50px;
+
+
+  border-radius:
+    40px;
+
 
   background:
+
     radial-gradient(
       circle,
       var(--glow) 0%,
       transparent 65%
     );
 
+
   opacity: .25;
 
+
   animation:
-    respirar 1.5s
+
+    respirar
+    1.5s
     ease-in-out
-    infinite alternate;
+    infinite
+    alternate;
+
 
   pointer-events: none;
+
+
+  z-index: -1;
+
 }
 
 
 @keyframes respirar {
 
   from {
-    transform: scale(.9);
+
+    transform:
+      scale(.9);
+
     opacity: .16;
+
   }
 
+
   to {
-    transform: scale(1.25);
+
+    transform:
+      scale(1.25);
+
     opacity: .45;
+
   }
+
 }
 
 
 /* =====================================
-   LINHA NEON INFERIOR
+   LINHA NEON
 ===================================== */
 
 #alerta::after {
 
   content: "";
 
+
   position: absolute;
 
+
   left: 8%;
+
   right: 8%;
+
   bottom: 0;
+
 
   height: 3px;
 
+
   background:
+
     linear-gradient(
       90deg,
       transparent,
@@ -337,26 +515,42 @@ body {
       transparent
     );
 
+
   box-shadow:
-    0 0 15px var(--cor),
-    0 0 30px var(--cor);
+
+    0 0 15px
+    var(--cor),
+
+    0 0 30px
+    var(--cor);
+
 
   animation:
-    linhaNeon 1s
+
+    linhaNeon
+    1s
     ease-in-out
-    infinite alternate;
+    infinite
+    alternate;
+
 }
 
 
 @keyframes linhaNeon {
 
   from {
+
     opacity: .3;
+
   }
 
+
   to {
+
     opacity: 1;
+
   }
+
 }
 
 
@@ -370,243 +564,382 @@ body {
 
   z-index: 5;
 
+
   display: flex;
 
   align-items: center;
 
   gap: 25px;
+
 }
 
 
 .icone {
 
   width: 90px;
+
   height: 90px;
 
+
   flex-shrink: 0;
+
 
   display: flex;
 
   align-items: center;
+
   justify-content: center;
+
 
   border-radius: 18px;
 
+
   font-size: 48px;
 
-  color: var(--cor);
+
+  color:
+    var(--cor);
+
 
   border:
-    1px solid var(--cor);
+
+    1px solid
+    var(--cor);
+
 
   background:
-    rgba(0,0,0,.4);
+
+    rgba(
+      0,
+      0,
+      0,
+      .4
+    );
+
 
   box-shadow:
-    0 0 18px var(--glow);
+
+    0 0 18px
+    var(--glow);
+
 
   animation:
-    iconePulse 1s
+
+    iconePulse
+    1s
     ease-in-out
-    infinite alternate;
+    infinite
+    alternate;
+
 }
 
 
 @keyframes iconePulse {
 
   from {
-    transform: scale(1);
+
+    transform:
+      scale(1);
+
   }
 
+
   to {
-    transform: scale(1.08);
+
+    transform:
+      scale(1.08);
+
   }
+
 }
 
 
 .texto {
+
   flex: 1;
+
 }
 
 
 .categoria {
 
-  font-size: 14px;
+  font-size:
+    14px;
 
-  letter-spacing: 5px;
 
-  font-weight: 900;
+  letter-spacing:
+    5px;
 
-  color: var(--cor);
 
-  margin-bottom: 5px;
+  font-weight:
+    900;
+
+
+  color:
+    var(--cor);
+
+
+  margin-bottom:
+    5px;
+
 }
 
 
 .titulo {
 
-  font-size: 15px;
+  font-size:
+    15px;
 
-  letter-spacing: 5px;
 
-  font-weight: 800;
+  letter-spacing:
+    5px;
+
+
+  font-weight:
+    800;
+
 
   color:
-    rgba(255,255,255,.75);
 
-  margin-bottom: 8px;
+    rgba(
+      255,
+      255,
+      255,
+      .75
+    );
+
+
+  margin-bottom:
+    8px;
+
 }
 
 
 .nome {
 
-  font-size: 30px;
+  font-size:
+    30px;
 
-  font-weight: 900;
+
+  font-weight:
+    900;
+
 
   text-shadow:
-    0 0 15px var(--glow);
 
-  margin-bottom: 4px;
+    0 0 15px
+    var(--glow);
+
+
+  margin-bottom:
+    4px;
+
 }
 
 
 .valor {
 
-  color: var(--cor);
+  color:
+    var(--cor);
 
-  font-size: 34px;
 
-  font-weight: 900;
+  font-size:
+    34px;
+
+
+  font-weight:
+    900;
+
 
   text-shadow:
-    0 0 20px var(--glow);
 
-  margin-bottom: 10px;
+    0 0 20px
+    var(--glow);
+
+
+  margin-bottom:
+    10px;
+
 }
 
 
 .mensagem {
 
-  font-size: 21px;
+  font-size:
+    21px;
+
 
   color:
-    rgba(255,255,255,.92);
 
-  line-height: 1.3;
+    rgba(
+      255,
+      255,
+      255,
+      .92
+    );
 
-  word-break: break-word;
+
+  line-height:
+    1.3;
+
+
+  word-break:
+    break-word;
+
 }
 
 
 .kevenzl {
 
-  position: absolute;
+  position:
+    absolute;
 
-  right: 22px;
-  bottom: 10px;
 
-  z-index: 6;
+  right:
+    22px;
 
-  font-size: 15px;
 
-  font-style: italic;
+  bottom:
+    10px;
 
-  font-weight: 900;
 
-  letter-spacing: 2px;
+  z-index:
+    6;
 
-  color: var(--cor);
 
-  opacity: .85;
+  font-size:
+    15px;
+
+
+  font-style:
+    italic;
+
+
+  font-weight:
+    900;
+
+
+  letter-spacing:
+    2px;
+
+
+  color:
+    var(--cor);
+
+
+  opacity:
+    .85;
+
 }
 
 
 /* =====================================
    BÁSICO
-   R$1 - 9,99
 ===================================== */
 
 .basic {
 
-  --cor: #ffffff;
+  --cor:
+    #ffffff;
+
 
   --glow:
-    rgba(255,255,255,.38);
+
+    rgba(
+      255,
+      255,
+      255,
+      .38
+    );
+
 
   background:
+
     linear-gradient(
       135deg,
       rgba(0,0,0,.97),
       rgba(30,30,30,.96)
     );
+
 }
 
 
 /* =====================================
    DESTACADO
-   R$10 - 24,99
 ===================================== */
 
 .medium {
 
-  --cor: #df43ff;
+  --cor:
+    #df43ff;
+
 
   --glow:
-    rgba(220,40,255,.85);
 
-  animation:
-    neonRoxo 1.05s
-    ease-in-out
-    infinite alternate;
-}
+    rgba(
+      220,
+      40,
+      255,
+      .85
+    );
 
 
-@keyframes neonRoxo {
+  background:
 
-  from {
+    linear-gradient(
+      135deg,
+      rgba(20,0,30,.98),
+      rgba(50,0,70,.96)
+    );
 
-    box-shadow:
-      0 0 20px #b000ff,
-      0 0 40px rgba(255,0,255,.3);
-  }
-
-  to {
-
-    box-shadow:
-      0 0 45px #ff39ff,
-      0 0 90px rgba(180,0,255,.9);
-  }
 }
 
 
 /* =====================================
    ÉPICO
-   R$25 - 49,99
 ===================================== */
 
 .epic {
 
-  --cor: #6381ff;
+  --cor:
+    #6381ff;
+
 
   --glow:
-    rgba(70,80,255,.95);
+
+    rgba(
+      70,
+      80,
+      255,
+      .95
+    );
+
 
   background:
+
     linear-gradient(
       135deg,
       rgba(3,6,28,.98),
       rgba(20,0,45,.96)
     );
+
 }
 
 
 .epic.mostrar {
 
   animation:
-    entradaEpica .7s
-    cubic-bezier(.15,.85,.3,1.4)
+
+    entradaEpica
+    .7s
+    cubic-bezier(
+      .15,
+      .85,
+      .3,
+      1.4
+    )
     forwards;
+
 }
 
 
@@ -616,70 +949,105 @@ body {
 
     opacity: 0;
 
+
     transform:
+
       translateX(-150px)
       scale(.6);
+
   }
+
 
   45% {
 
     opacity: 1;
 
+
     transform:
+
       translateX(15px)
       scale(1.08);
+
   }
+
 
   55% {
 
     transform:
+
       translateX(-7px)
       scale(1.04);
+
   }
+
 
   70% {
 
     transform:
+
       translateX(5px)
       scale(1.02);
+
   }
+
 
   100% {
 
     transform:
+
       translateX(0)
       scale(1);
+
   }
+
 }
 
 
 /* =====================================
    ESPECIAL
-   R$50 - 99,99
 ===================================== */
 
 .special {
 
-  --cor: #ffb300;
+  --cor:
+    #ffb300;
+
 
   --glow:
-    rgba(255,140,0,.95);
+
+    rgba(
+      255,
+      140,
+      0,
+      .95
+    );
+
 
   background:
+
     linear-gradient(
       135deg,
       rgba(22,10,0,.98),
       rgba(50,18,0,.97)
     );
+
 }
 
 
 .special.mostrar {
 
   animation:
-    entradaEspecial .8s
-    cubic-bezier(.2,.9,.3,1.4)
+
+    entradaEspecial
+    .8s
+    cubic-bezier(
+      .2,
+      .9,
+      .3,
+      1.4
+    )
     forwards;
+
 }
 
 
@@ -689,93 +1057,141 @@ body {
 
     opacity: 0;
 
+
     transform:
+
       scale(.2)
       rotate(-3deg);
 
+
     filter:
       brightness(4);
+
   }
+
 
   60% {
 
     opacity: 1;
 
+
     transform:
+
       scale(1.12)
       rotate(1deg);
 
+
     filter:
       brightness(1.7);
+
   }
+
 
   100% {
 
     transform:
+
       scale(1)
       rotate(0deg);
 
+
     filter:
       brightness(1);
+
   }
+
 }
 
 
 /* =====================================
    LENDÁRIO
-   R$100+
 ===================================== */
 
 .legendary {
 
-  --cor: #ff263d;
+  --cor:
+    #ff263d;
+
 
   --glow:
-    rgba(255,0,35,.98);
 
-  width: 880px;
+    rgba(
+      255,
+      0,
+      35,
+      .98
+    );
 
-  min-height: 240px;
+
+  width:
+    880px;
+
+
+  min-height:
+    240px;
+
 
   background:
+
     linear-gradient(
       135deg,
       rgba(12,0,2,.99),
       rgba(65,0,8,.97)
     );
 
+
   border:
-    3px solid #ff263d;
+
+    3px solid
+    #ff263d;
+
 }
 
 
 .legendary .icone {
 
-  width: 115px;
-  height: 115px;
+  width:
+    115px;
 
-  font-size: 65px;
+  height:
+    115px;
+
+  font-size:
+    65px;
+
 }
 
 
 .legendary .nome {
 
-  font-size: 38px;
+  font-size:
+    38px;
+
 }
 
 
 .legendary .valor {
 
-  font-size: 46px;
+  font-size:
+    46px;
+
 }
 
 
 .legendary.mostrar {
 
   animation:
-    entradaLendaria .95s
-    cubic-bezier(.15,.85,.3,1.35)
+
+    entradaLendaria
+    .95s
+    cubic-bezier(
+      .15,
+      .85,
+      .3,
+      1.35
+    )
     forwards;
+
 }
 
 
@@ -790,7 +1206,9 @@ body {
 
     filter:
       brightness(5);
+
   }
+
 
   45% {
 
@@ -798,80 +1216,118 @@ body {
 
     transform:
       scale(1.15);
+
   }
+
 
   55% {
 
     transform:
+
       translateX(-9px)
       scale(1.08);
+
   }
+
 
   62% {
 
     transform:
+
       translateX(10px)
       scale(1.06);
+
   }
+
 
   70% {
 
     transform:
+
       translateX(-7px)
       scale(1.04);
+
   }
+
 
   78% {
 
     transform:
+
       translateX(6px)
       scale(1.02);
+
   }
+
 
   100% {
 
     transform:
+
       translateX(0)
       scale(1);
+
   }
+
 }
 
 
 /* =====================================
-   COROA LENDÁRIA
+   COROA
 ===================================== */
 
 #coroa {
 
   position: absolute;
 
+
   left: 50%;
+
   top: -55px;
 
+
   transform:
+
     translateX(-50%)
     scale(0);
 
-  font-size: 70px;
+
+  font-size:
+    70px;
+
 
   opacity: 0;
 
-  z-index: 20;
+
+  z-index:
+    20;
+
 
   filter:
+
     drop-shadow(
-      0 0 18px #ffd700
+      0 0 18px
+      #ffd700
     );
+
 }
 
 
 .legendary #coroa {
 
   animation:
-    coroaEntrada .8s
+
+    coroaEntrada
+    .8s
     .35s
-    cubic-bezier(.2,.9,.2,1.4)
+    cubic-bezier(
+      .2,
+      .9,
+      .2,
+      1.4
+    )
     forwards;
+
 }
 
 
@@ -881,30 +1337,40 @@ body {
 
     opacity: 0;
 
+
     transform:
+
       translateX(-50%)
       translateY(-50px)
       scale(.2)
       rotate(-15deg);
+
   }
+
 
   to {
 
     opacity: 1;
 
+
     transform:
+
       translateX(-50%)
       translateY(0)
       scale(1)
       rotate(0deg);
+
   }
+
 }
 
 </style>
+
 </head>
 
 
 <body>
+
 
 <div id="flash"></div>
 
@@ -913,35 +1379,47 @@ body {
 
 <div id="overlay">
 
+
   <div id="alerta">
 
+
     <div id="coroa">
+
       👑
+
     </div>
 
 
     <div class="conteudo">
 
+
       <div
         id="icone"
         class="icone"
       >
+
         💰
+
       </div>
 
 
       <div class="texto">
 
+
         <div
           id="categoria"
           class="categoria"
         >
+
           BÁSICO
+
         </div>
 
 
         <div class="titulo">
+
           NOVO PIX
+
         </div>
 
 
@@ -949,7 +1427,9 @@ body {
           id="nome"
           class="nome"
         >
+
           Keven
+
         </div>
 
 
@@ -957,7 +1437,9 @@ body {
           id="valor"
           class="valor"
         >
+
           R$ 5,00
+
         </div>
 
 
@@ -965,89 +1447,332 @@ body {
           id="mensagem"
           class="mensagem"
         >
+
           Obrigado pelo apoio!
+
         </div>
 
+
       </div>
+
 
     </div>
 
 
     <div class="kevenzl">
+
       KEVENZL
+
     </div>
 
+
   </div>
+
 
 </div>
 
 
 <script>
 
+
+// =====================================
+// ELEMENTOS
+// =====================================
+
 const alerta =
-  document.getElementById("alerta");
+  document.getElementById(
+    "alerta"
+  );
+
 
 const nomeEl =
-  document.getElementById("nome");
+  document.getElementById(
+    "nome"
+  );
+
 
 const valorEl =
-  document.getElementById("valor");
+  document.getElementById(
+    "valor"
+  );
+
 
 const mensagemEl =
-  document.getElementById("mensagem");
+  document.getElementById(
+    "mensagem"
+  );
+
 
 const iconeEl =
-  document.getElementById("icone");
+  document.getElementById(
+    "icone"
+  );
+
 
 const categoriaEl =
-  document.getElementById("categoria");
+  document.getElementById(
+    "categoria"
+  );
+
 
 const flash =
-  document.getElementById("flash");
+  document.getElementById(
+    "flash"
+  );
+
 
 const particles =
-  document.getElementById("particles");
+  document.getElementById(
+    "particles"
+  );
 
 
-let alertaAtual = null;
+// =====================================
+// ESTADO
+// =====================================
 
-let fila = [];
-
-let audioMemeAtual = null;
-
-let audioVozAtual = null;
-
-let timeoutSeguranca = null;
-
-let timeoutFechamento = null;
-
-let alertaMostradoEm = 0;
+let alertaAtual =
+  null;
 
 
-const TEMPO_MINIMO_ALERTA =
-  12000;
+let fila =
+  [];
+
+
+let audioMemeAtual =
+  null;
+
+
+let audioVozAtual =
+  null;
+
+
+let timeoutSeguranca =
+  null;
+
+
+let timeoutFechamento =
+  null;
+
+
+let alertaMostradoEm =
+  0;
+
+
+// =====================================
+// CONFIGURAÇÃO PADRÃO
+// =====================================
+
+let config = {
+
+  volumeMeme:
+    1,
+
+  volumeVoz:
+    1,
+
+  memesAtivos:
+    true,
+
+  vozAtiva:
+    true,
+
+  duracao:
+    12,
+
+  flashAtivo:
+    true,
+
+  particulasAtivas:
+    true,
+
+  sons: {
+
+    basic:
+      "/sounds/basico.mp3",
+
+    medium:
+      "/sounds/medio.mp3",
+
+    epic:
+      "/sounds/epico.mp3",
+
+    special:
+      "/sounds/especial.mp3",
+
+    legendary:
+      "/sounds/lendario.mp3"
+
+  }
+
+};
+
 
 const LIMITE_MEME =
   30000;
 
 
+// =====================================
+// APLICAR CONFIGURAÇÕES
+// =====================================
 
-function limparTexto(texto) {
+function aplicarConfig(
+  novaConfig
+) {
 
-  if (!texto) {
-    return "";
+  if (
+    !novaConfig
+  ) {
+
+    return;
+
   }
+
+
+  config = {
+
+    ...config,
+
+    ...novaConfig,
+
+    sons: {
+
+      ...config.sons,
+
+      ...(
+        novaConfig.sons ||
+        {}
+      )
+
+    }
+
+  };
+
+
+  if (
+    audioMemeAtual
+  ) {
+
+    audioMemeAtual.volume =
+      Number(
+        config.volumeMeme
+      );
+
+  }
+
+
+  if (
+    audioVozAtual
+  ) {
+
+    audioVozAtual.volume =
+      Number(
+        config.volumeVoz
+      );
+
+  }
+
+
+  console.log(
+
+    "Configuração aplicada:",
+
+    config
+
+  );
+
+}
+
+
+// =====================================
+// BUSCAR CONFIGURAÇÃO DO SERVIDOR
+// =====================================
+
+async function carregarConfig() {
+
+  try {
+
+    const response =
+      await fetch(
+
+        "/api/config",
+
+        {
+
+          cache:
+            "no-store"
+
+        }
+
+      );
+
+
+    if (
+      !response.ok
+    ) {
+
+      return;
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    aplicarConfig(
+      data
+    );
+
+
+  } catch (error) {
+
+    console.error(
+
+      "Erro ao carregar configuração:",
+
+      error
+
+    );
+
+  }
+
+}
+
+
+// =====================================
+// LIMPAR TEXTO
+// =====================================
+
+function limparTexto(
+  texto
+) {
+
+  if (
+    !texto
+  ) {
+
+    return "";
+
+  }
+
 
   return String(texto)
 
     .replace(
+
       /(https?:\/\/[^\s]+)/gi,
+
       ""
+
     )
 
     .replace(
+
       /\s+/g,
+
       " "
+
     )
 
     .trim()
@@ -1056,13 +1781,20 @@ function limparTexto(texto) {
       0,
       250
     );
+
 }
 
 
+// =====================================
+// CONFIGURAÇÃO VISUAL DOS TIERS
+// =====================================
 
-function configuracaoTier(tier) {
+function configuracaoTier(
+  tier
+) {
 
-  const config = {
+  const tiers = {
+
 
     basic: {
 
@@ -1072,9 +1804,6 @@ function configuracaoTier(tier) {
       categoria:
         "BÁSICO",
 
-      som:
-        "/sounds/basico.mp3",
-
       flash:
         "rgba(255,255,255,.8)",
 
@@ -1083,6 +1812,7 @@ function configuracaoTier(tier) {
 
       quantidade:
         8
+
     },
 
 
@@ -1094,9 +1824,6 @@ function configuracaoTier(tier) {
       categoria:
         "DESTACADO",
 
-      som:
-        "/sounds/medio.mp3",
-
       flash:
         "rgba(220,40,255,.65)",
 
@@ -1105,6 +1832,7 @@ function configuracaoTier(tier) {
 
       quantidade:
         15
+
     },
 
 
@@ -1116,9 +1844,6 @@ function configuracaoTier(tier) {
       categoria:
         "ÉPICO",
 
-      som:
-        "/sounds/epico.mp3",
-
       flash:
         "rgba(70,90,255,.65)",
 
@@ -1127,6 +1852,7 @@ function configuracaoTier(tier) {
 
       quantidade:
         22
+
     },
 
 
@@ -1138,9 +1864,6 @@ function configuracaoTier(tier) {
       categoria:
         "ESPECIAL",
 
-      som:
-        "/sounds/especial.mp3",
-
       flash:
         "rgba(255,165,0,.75)",
 
@@ -1149,6 +1872,7 @@ function configuracaoTier(tier) {
 
       quantidade:
         30
+
     },
 
 
@@ -1160,9 +1884,6 @@ function configuracaoTier(tier) {
       categoria:
         "LENDÁRIO",
 
-      som:
-        "/sounds/lendario.mp3",
-
       flash:
         "rgba(255,0,30,.85)",
 
@@ -1171,36 +1892,59 @@ function configuracaoTier(tier) {
 
       quantidade:
         55
+
     }
 
   };
 
 
   return (
-    config[tier] ||
-    config.basic
+    tiers[tier] ||
+    tiers.basic
   );
+
 }
 
 
+// =====================================
+// FLASH
+// =====================================
 
-function efeitoFlash(cor) {
+function efeitoFlash(
+  cor
+) {
+
+  if (
+    !config.flashAtivo
+  ) {
+
+    return;
+
+  }
+
 
   flash.style.background =
     cor;
+
 
   flash.classList.remove(
     "ativo"
   );
 
+
   void flash.offsetWidth;
+
 
   flash.classList.add(
     "ativo"
   );
+
 }
 
 
+// =====================================
+// PARTÍCULAS
+// =====================================
 
 function criarParticulas(
   cor,
@@ -1209,6 +1953,15 @@ function criarParticulas(
 
   particles.innerHTML =
     "";
+
+
+  if (
+    !config.particulasAtivas
+  ) {
+
+    return;
+
+  }
 
 
   for (
@@ -1228,132 +1981,208 @@ function criarParticulas(
 
 
     p.style.setProperty(
+
       "--particle-color",
+
       cor
+
     );
 
 
     p.style.left =
+
       (
         15 +
         Math.random() *
         70
-      ) + "%";
+      ) +
+      "%";
 
 
     p.style.top =
+
       (
         30 +
         Math.random() *
         45
-      ) + "%";
+      ) +
+      "%";
 
 
     p.style.animationDelay =
+
       (
         Math.random() *
         .8
-      ) + "s";
+      ) +
+      "s";
 
 
     p.style.animationDuration =
+
       (
         1.5 +
         Math.random() *
         1.5
-      ) + "s";
+      ) +
+      "s";
 
 
     particles.appendChild(
       p
     );
+
   }
 
 
   setTimeout(
+
     () => {
 
       particles.innerHTML =
         "";
 
     },
+
     4000
+
   );
+
 }
 
 
+// =====================================
+// PARAR ÁUDIOS
+// =====================================
 
 function pararAudios() {
 
-  if (audioMemeAtual) {
+  if (
+    audioMemeAtual
+  ) {
 
     audioMemeAtual.pause();
 
+
     audioMemeAtual =
       null;
+
   }
 
 
-  if (audioVozAtual) {
+  if (
+    audioVozAtual
+  ) {
 
     audioVozAtual.pause();
 
+
     audioVozAtual =
       null;
+
   }
 
 
-  if (timeoutSeguranca) {
+  if (
+    timeoutSeguranca
+  ) {
 
     clearTimeout(
       timeoutSeguranca
     );
+
+
+    timeoutSeguranca =
+      null;
+
   }
 
 
-  if (timeoutFechamento) {
+  if (
+    timeoutFechamento
+  ) {
 
     clearTimeout(
       timeoutFechamento
     );
+
+
+    timeoutFechamento =
+      null;
+
   }
+
 }
 
 
+// =====================================
+// FECHAR RESPEITANDO DURAÇÃO
+// =====================================
 
 function agendarFechamento() {
 
+  const duracaoSegundos =
+
+    Number(
+      config.duracao
+    ) ||
+    12;
+
+
+  const tempoMinimo =
+
+    duracaoSegundos *
+    1000;
+
+
   const passou =
+
     Date.now() -
     alertaMostradoEm;
 
 
   const restante =
+
     Math.max(
+
       0,
-      TEMPO_MINIMO_ALERTA -
+
+      tempoMinimo -
       passou
+
     );
 
 
   timeoutFechamento =
+
     setTimeout(
+
       esconderAlerta,
+
       restante
+
     );
+
 }
 
 
+// =====================================
+// VOZ IA
+// =====================================
 
 async function tocarVoz(
   audioUrl
 ) {
 
-  if (!audioUrl) {
+  if (
+    !config.vozAtiva ||
+    !audioUrl
+  ) {
 
     agendarFechamento();
 
     return;
+
   }
 
 
@@ -1366,7 +2195,22 @@ async function tocarVoz(
 
 
     audioVozAtual.volume =
-      1;
+
+      Math.min(
+
+        1,
+
+        Math.max(
+
+          0,
+
+          Number(
+            config.volumeVoz
+          )
+
+        )
+
+      );
 
 
     audioVozAtual.onended =
@@ -1375,7 +2219,9 @@ async function tocarVoz(
         audioVozAtual =
           null;
 
+
         agendarFechamento();
+
       };
 
 
@@ -1385,7 +2231,9 @@ async function tocarVoz(
         audioVozAtual =
           null;
 
+
         agendarFechamento();
+
       };
 
 
@@ -1395,21 +2243,55 @@ async function tocarVoz(
   } catch (error) {
 
     console.error(
+
       "Erro voz:",
+
       error
+
     );
 
 
     agendarFechamento();
+
   }
+
 }
 
 
+// =====================================
+// MEME → VOZ
+// =====================================
 
 async function tocarMemeDepoisVoz(
   memeUrl,
   voiceUrl
 ) {
+
+  if (
+    !config.memesAtivos
+  ) {
+
+    tocarVoz(
+      voiceUrl
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !memeUrl
+  ) {
+
+    tocarVoz(
+      voiceUrl
+    );
+
+    return;
+
+  }
+
 
   try {
 
@@ -1420,11 +2302,27 @@ async function tocarMemeDepoisVoz(
 
 
     audioMemeAtual.volume =
-      1;
+
+      Math.min(
+
+        1,
+
+        Math.max(
+
+          0,
+
+          Number(
+            config.volumeMeme
+          )
+
+        )
+
+      );
 
 
     audioMemeAtual.onended =
       () => {
+
 
         if (
           timeoutSeguranca
@@ -1433,6 +2331,11 @@ async function tocarMemeDepoisVoz(
           clearTimeout(
             timeoutSeguranca
           );
+
+
+          timeoutSeguranca =
+            null;
+
         }
 
 
@@ -1441,6 +2344,7 @@ async function tocarMemeDepoisVoz(
 
 
         setTimeout(
+
           () => {
 
             tocarVoz(
@@ -1448,8 +2352,11 @@ async function tocarMemeDepoisVoz(
             );
 
           },
+
           350
+
         );
+
       };
 
 
@@ -1463,6 +2370,7 @@ async function tocarMemeDepoisVoz(
         tocarVoz(
           voiceUrl
         );
+
       };
 
 
@@ -1470,15 +2378,22 @@ async function tocarMemeDepoisVoz(
 
 
     timeoutSeguranca =
+
       setTimeout(
+
         () => {
 
+
           if (
+
             audioMemeAtual &&
+
             !audioMemeAtual.ended
+
           ) {
 
             audioMemeAtual.pause();
+
 
             audioMemeAtual =
               null;
@@ -1487,34 +2402,67 @@ async function tocarMemeDepoisVoz(
             tocarVoz(
               voiceUrl
             );
+
           }
 
+
         },
+
         LIMITE_MEME
+
       );
 
 
   } catch (error) {
 
+    console.error(
+
+      "Erro meme:",
+
+      error
+
+    );
+
+
     tocarVoz(
       voiceUrl
     );
+
   }
+
 }
 
 
+// =====================================
+// MOSTRAR ALERTA
+// =====================================
 
 function mostrarAlerta(
   data
 ) {
 
-  if (alertaAtual) {
+  if (
+    alertaAtual
+  ) {
 
     fila.push(
       data
     );
 
+
     return;
+
+  }
+
+
+  if (
+    data.config
+  ) {
+
+    aplicarConfig(
+      data.config
+    );
+
   }
 
 
@@ -1531,7 +2479,7 @@ function mostrarAlerta(
     "basic";
 
 
-  const config =
+  const visual =
     configuracaoTier(
       tier
     );
@@ -1542,51 +2490,65 @@ function mostrarAlerta(
 
 
   iconeEl.textContent =
-    config.icone;
+    visual.icone;
 
 
   categoriaEl.textContent =
-    config.categoria;
+    visual.categoria;
 
 
   nomeEl.textContent =
+
     limparTexto(
       data.name
     ) ||
+
     "Anônimo";
 
 
   valorEl.textContent =
+
     Number(
       data.amount
     )
-    .toLocaleString(
-      "pt-BR",
-      {
-        style:
-          "currency",
 
-        currency:
-          "BRL"
-      }
-    );
+      .toLocaleString(
+
+        "pt-BR",
+
+        {
+
+          style:
+            "currency",
+
+          currency:
+            "BRL"
+
+        }
+
+      );
 
 
   mensagemEl.textContent =
+
     limparTexto(
       data.message
     ) ||
+
     "Obrigado pelo apoio!";
 
 
   efeitoFlash(
-    config.flash
+    visual.flash
   );
 
 
   criarParticulas(
-    config.particles,
-    config.quantidade
+
+    visual.particles,
+
+    visual.quantidade
+
   );
 
 
@@ -1595,20 +2557,37 @@ function mostrarAlerta(
   );
 
 
+  const memeUrl =
+
+    config.sons?.[tier] ||
+
+    `/sounds/${tier}.mp3`;
+
+
   setTimeout(
+
     () => {
 
       tocarMemeDepoisVoz(
-        config.som,
+
+        memeUrl,
+
         data.audioUrl
+
       );
 
     },
+
     500
+
   );
+
 }
 
 
+// =====================================
+// ESCONDER ALERTA
+// =====================================
 
 function esconderAlerta() {
 
@@ -1626,6 +2605,7 @@ function esconderAlerta() {
 
 
   setTimeout(
+
     () => {
 
       alerta.classList.remove(
@@ -1641,8 +2621,13 @@ function esconderAlerta() {
         null;
 
 
+      particles.innerHTML =
+        "";
+
+
       if (
-        fila.length > 0
+        fila.length >
+        0
       ) {
 
         const proximo =
@@ -1652,21 +2637,40 @@ function esconderAlerta() {
         mostrarAlerta(
           proximo
         );
+
       }
 
+
     },
+
     600
+
   );
+
 }
 
 
+// =====================================
+// CONECTAR SSE
+// =====================================
 
 function conectarOverlay() {
 
   const source =
+
     new EventSource(
       "/api/overlay/stream"
     );
+
+
+  source.onopen =
+    () => {
+
+      console.log(
+        "Overlay conectado."
+      );
+
+    };
 
 
   source.onmessage =
@@ -1680,6 +2684,48 @@ function conectarOverlay() {
           );
 
 
+        // Servidor acabou de conectar.
+
+        if (
+          data.type ===
+          "connected"
+        ) {
+
+          if (
+            data.config
+          ) {
+
+            aplicarConfig(
+              data.config
+            );
+
+          }
+
+
+          return;
+
+        }
+
+
+        // Configuração alterada no painel.
+
+        if (
+          data.type ===
+          "config"
+        ) {
+
+          aplicarConfig(
+            data.config
+          );
+
+
+          return;
+
+        }
+
+
+        // Pix ou alerta de teste.
+
         if (
           data.type ===
           "donation"
@@ -1688,22 +2734,57 @@ function conectarOverlay() {
           mostrarAlerta(
             data
           );
+
         }
+
 
       } catch (error) {
 
         console.error(
+
+          "Erro no evento:",
+
           error
+
         );
+
       }
+
     };
+
+
+  source.onerror =
+    () => {
+
+      console.log(
+        "Reconectando overlay..."
+      );
+
+    };
+
 }
 
 
+// =====================================
+// INICIAR
+// =====================================
 
-conectarOverlay();
+async function iniciar() {
+
+  await carregarConfig();
+
+
+  conectarOverlay();
+
+}
+
+
+iniciar();
+
 
 </script>
 
+
 </body>
+
 </html>
