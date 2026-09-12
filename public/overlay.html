@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
@@ -29,40 +28,25 @@
     #overlay {
       position: fixed;
       inset: 0;
-
       display: flex;
       justify-content: center;
       align-items: flex-start;
-
       padding-top: 80px;
-
       pointer-events: none;
     }
 
     #alerta {
       min-width: 500px;
       max-width: 800px;
-
       padding: 24px 32px;
-
       border-radius: 20px;
-
       background: rgba(12, 8, 25, 0.94);
-
       border: 2px solid rgba(255, 255, 255, 0.15);
-
-      box-shadow:
-        0 0 30px rgba(0, 0, 0, 0.5);
-
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
       text-align: center;
-
       color: white;
-
       opacity: 0;
-      transform:
-        translateY(-70px)
-        scale(0.85);
-
+      transform: translateY(-70px) scale(0.85);
       transition:
         opacity 0.4s ease,
         transform 0.4s ease;
@@ -70,10 +54,7 @@
 
     #alerta.mostrar {
       opacity: 1;
-
-      transform:
-        translateY(0)
-        scale(1);
+      transform: translateY(0) scale(1);
     }
 
     .titulo {
@@ -85,29 +66,29 @@
     .nome {
       font-size: 34px;
       font-weight: 900;
-
       margin-bottom: 5px;
     }
 
     .valor {
       font-size: 30px;
       font-weight: 900;
-
       margin-bottom: 15px;
     }
 
     .mensagem {
       font-size: 24px;
       line-height: 1.3;
-
       word-break: break-word;
+    }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 8px;
     }
 
     .basic {
       border-color: #a970ff;
-
-      box-shadow:
-        0 0 30px rgba(169, 112, 255, 0.55);
+      box-shadow: 0 0 30px rgba(169, 112, 255, 0.55);
     }
 
     .basic .nome,
@@ -117,9 +98,7 @@
 
     .medium {
       border-color: #00bfff;
-
-      box-shadow:
-        0 0 35px rgba(0, 191, 255, 0.65);
+      box-shadow: 0 0 35px rgba(0, 191, 255, 0.65);
     }
 
     .medium .nome,
@@ -129,9 +108,7 @@
 
     .epic {
       border-color: #ff00ff;
-
-      box-shadow:
-        0 0 45px rgba(255, 0, 255, 0.75);
+      box-shadow: 0 0 45px rgba(255, 0, 255, 0.75);
     }
 
     .epic .nome,
@@ -141,12 +118,8 @@
 
     .special {
       border-color: #ff9500;
-
-      box-shadow:
-        0 0 55px rgba(255, 149, 0, 0.85);
-
-      animation:
-        specialGlow 1s infinite alternate;
+      box-shadow: 0 0 55px rgba(255, 149, 0, 0.85);
+      animation: specialGlow 1s infinite alternate;
     }
 
     .special .nome,
@@ -156,12 +129,8 @@
 
     .legendary {
       border-color: #ffd700;
-
-      box-shadow:
-        0 0 70px rgba(255, 215, 0, 1);
-
-      animation:
-        legendaryGlow 0.6s infinite alternate;
+      box-shadow: 0 0 70px rgba(255, 215, 0, 1);
+      animation: legendaryGlow 0.6s infinite alternate;
     }
 
     .legendary .nome,
@@ -171,39 +140,24 @@
 
     @keyframes specialGlow {
       from {
-        box-shadow:
-          0 0 25px rgba(255, 149, 0, 0.5);
+        box-shadow: 0 0 25px rgba(255, 149, 0, 0.5);
       }
 
       to {
-        box-shadow:
-          0 0 65px rgba(255, 149, 0, 1);
+        box-shadow: 0 0 65px rgba(255, 149, 0, 1);
       }
     }
 
     @keyframes legendaryGlow {
       from {
-        transform:
-          translateY(0)
-          scale(1);
-
-        box-shadow:
-          0 0 35px rgba(255, 215, 0, 0.7);
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 35px rgba(255, 215, 0, 0.7);
       }
 
       to {
-        transform:
-          translateY(0)
-          scale(1.04);
-
-        box-shadow:
-          0 0 90px rgba(255, 215, 0, 1);
+        transform: translateY(0) scale(1.04);
+        box-shadow: 0 0 90px rgba(255, 215, 0, 1);
       }
-    }
-
-    .emoji {
-      font-size: 40px;
-      margin-bottom: 8px;
     }
   </style>
 </head>
@@ -211,50 +165,32 @@
 <body>
 
   <div id="overlay">
-
     <div id="alerta">
 
-      <div
-        id="emoji"
-        class="emoji"
-      >
+      <div id="emoji" class="emoji">
         💜
       </div>
 
-      <div
-        id="titulo"
-        class="titulo"
-      >
+      <div id="titulo" class="titulo">
         NOVA DOAÇÃO
       </div>
 
-      <div
-        id="nome"
-        class="nome"
-      >
+      <div id="nome" class="nome">
         Keven
       </div>
 
-      <div
-        id="valor"
-        class="valor"
-      >
+      <div id="valor" class="valor">
         R$ 10,00
       </div>
 
-      <div
-        id="mensagem"
-        class="mensagem"
-      >
+      <div id="mensagem" class="mensagem">
         Teste
       </div>
 
     </div>
-
   </div>
 
   <script>
-
     const alerta =
       document.getElementById("alerta");
 
@@ -275,344 +211,31 @@
 
 
     let alertaAtual = null;
-
     let fila = [];
+    let audioAtual = null;
 
-    let vozesDisponiveis = [];
-
-
-    // ==============================
-    // CARREGAR VOZES
-    // ==============================
-
-    function carregarVozes() {
-
-      if (!("speechSynthesis" in window)) {
-        return;
-      }
-
-      vozesDisponiveis =
-        window.speechSynthesis.getVoices();
-    }
-
-
-    carregarVozes();
-
-
-    if ("speechSynthesis" in window) {
-
-      window.speechSynthesis.onvoiceschanged =
-        carregarVozes;
-    }
-
-
-
-    // ==============================
-    // ESCOLHER VOZ PORTUGUESA
-    // ==============================
-
-    function escolherVoz() {
-
-      if (!vozesDisponiveis.length) {
-        carregarVozes();
-      }
-
-
-      // Prioriza vozes brasileiras
-
-      let voz =
-        vozesDisponiveis.find(
-          v =>
-            v.lang
-              .toLowerCase()
-              .includes("pt-br")
-        );
-
-
-      // Se não encontrar,
-      // tenta português genérico
-
-      if (!voz) {
-
-        voz =
-          vozesDisponiveis.find(
-            v =>
-              v.lang
-                .toLowerCase()
-                .startsWith("pt")
-          );
-      }
-
-
-      return voz || null;
-    }
-
-
-
-    // ==============================
-    // LIMPAR TEXTO
-    // ==============================
 
     function limparTexto(texto) {
-
-      if (!texto) return "";
-
+      if (!texto) {
+        return "";
+      }
 
       return String(texto)
-
-        // remove links
         .replace(
           /(https?:\/\/[^\s]+)/gi,
           ""
         )
-
-        // remove excesso de espaços
         .replace(
           /\s+/g,
           " "
         )
-
         .trim()
-
-        // máximo de caracteres lidos
         .slice(0, 250);
     }
 
 
-
-    // ==============================
-    // VOZ DA DOAÇÃO
-    // ==============================
-
-    function falarDoacao(
-      name,
-      amount,
-      message
-    ) {
-
-      if (
-        !(
-          "speechSynthesis"
-          in window
-        )
-      ) {
-        return;
-      }
-
-
-      window.speechSynthesis.cancel();
-
-
-      const nomeSeguro =
-        limparTexto(name) ||
-        "Alguém";
-
-
-      const mensagemSegura =
-        limparTexto(message);
-
-
-      const valor =
-        Number(amount);
-
-
-      const valorFalado =
-        valor.toLocaleString(
-          "pt-BR",
-          {
-            style: "currency",
-            currency: "BRL"
-          }
-        );
-
-
-      let texto =
-        `${nomeSeguro} enviou ${valorFalado}.`;
-
-
-      if (mensagemSegura) {
-
-        texto +=
-          ` ${mensagemSegura}`;
-
-      }
-
-
-      const fala =
-        new SpeechSynthesisUtterance(
-          texto
-        );
-
-
-      fala.lang =
-        "pt-BR";
-
-
-      fala.rate =
-        1.02;
-
-
-      fala.pitch =
-        1;
-
-
-      fala.volume =
-        1;
-
-
-      const voz =
-        escolherVoz();
-
-
-      if (voz) {
-
-        fala.voice =
-          voz;
-
-      }
-
-
-      window.speechSynthesis.speak(
-        fala
-      );
-    }
-
-
-
-    // ==============================
-    // SOM DO ALERTA
-    // ==============================
-
-    function tocarSom(tier) {
-
-      try {
-
-        const AudioContext =
-          window.AudioContext ||
-          window.webkitAudioContext;
-
-
-        const audio =
-          new AudioContext();
-
-
-        const oscillator =
-          audio.createOscillator();
-
-
-        const gain =
-          audio.createGain();
-
-
-        oscillator.connect(
-          gain
-        );
-
-
-        gain.connect(
-          audio.destination
-        );
-
-
-        let frequencia = 500;
-
-        let duracao = 0.35;
-
-
-        if (
-          tier === "medium"
-        ) {
-
-          frequencia = 650;
-
-        }
-
-
-        if (
-          tier === "epic"
-        ) {
-
-          frequencia = 800;
-
-          duracao = 0.45;
-
-        }
-
-
-        if (
-          tier === "special"
-        ) {
-
-          frequencia = 950;
-
-          duracao = 0.55;
-
-        }
-
-
-        if (
-          tier === "legendary"
-        ) {
-
-          frequencia = 1200;
-
-          duracao = 0.75;
-
-        }
-
-
-        oscillator.frequency.value =
-          frequencia;
-
-
-        oscillator.type =
-          "sine";
-
-
-        gain.gain.setValueAtTime(
-          0.2,
-          audio.currentTime
-        );
-
-
-        gain.gain.exponentialRampToValueAtTime(
-          0.001,
-          audio.currentTime +
-          duracao
-        );
-
-
-        oscillator.start();
-
-
-        oscillator.stop(
-          audio.currentTime +
-          duracao
-        );
-
-
-      } catch (error) {
-
-        console.log(
-          "Não foi possível tocar o som.",
-          error
-        );
-
-      }
-    }
-
-
-
-    // ==============================
-    // DEFINIR VISUAL POR VALOR
-    // ==============================
-
-    function configuracaoTier(
-      tier
-    ) {
-
+    function configuracaoTier(tier) {
       const config = {
-
         basic: {
           emoji: "💜",
           titulo: "NOVA DOAÇÃO"
@@ -637,199 +260,231 @@
           emoji: "👑",
           titulo: "DOAÇÃO LENDÁRIA!"
         }
-
       };
 
-
-      return (
-        config[tier] ||
-        config.basic
-      );
+      return config[tier] || config.basic;
     }
 
 
+    function tocarSomCurto(tier) {
+      try {
+        const AudioContext =
+          window.AudioContext ||
+          window.webkitAudioContext;
 
-    // ==============================
-    // MOSTRAR ALERTA
-    // ==============================
+        const audio =
+          new AudioContext();
 
-    function mostrarAlerta(
-      data
-    ) {
+        const oscillator =
+          audio.createOscillator();
 
-      if (alertaAtual) {
+        const gain =
+          audio.createGain();
 
-        fila.push(data);
+        oscillator.connect(gain);
+        gain.connect(audio.destination);
+
+        let frequencia = 500;
+        let duracao = 0.25;
+
+        if (tier === "medium") {
+          frequencia = 650;
+        }
+
+        if (tier === "epic") {
+          frequencia = 800;
+        }
+
+        if (tier === "special") {
+          frequencia = 950;
+        }
+
+        if (tier === "legendary") {
+          frequencia = 1200;
+          duracao = 0.4;
+        }
+
+        oscillator.frequency.value =
+          frequencia;
+
+        oscillator.type =
+          "sine";
+
+        gain.gain.setValueAtTime(
+          0.15,
+          audio.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          audio.currentTime + duracao
+        );
+
+        oscillator.start();
+
+        oscillator.stop(
+          audio.currentTime + duracao
+        );
+
+      } catch (error) {
+        console.log(
+          "Não foi possível tocar o som curto.",
+          error
+        );
+      }
+    }
+
+
+    async function tocarVoz(audioUrl) {
+      if (!audioUrl) {
+        console.log(
+          "Alerta chegou sem áudio da ElevenLabs."
+        );
 
         return;
-
       }
 
+      try {
+        if (audioAtual) {
+          audioAtual.pause();
+          audioAtual = null;
+        }
+
+        audioAtual =
+          new Audio(audioUrl);
+
+        audioAtual.volume =
+          1;
+
+        await audioAtual.play();
+
+        console.log(
+          "Voz ElevenLabs reproduzida."
+        );
+
+      } catch (error) {
+        console.error(
+          "Erro ao reproduzir voz:",
+          error
+        );
+      }
+    }
+
+
+    function mostrarAlerta(data) {
+      if (alertaAtual) {
+        fila.push(data);
+        return;
+      }
 
       alertaAtual = data;
 
-
       const tier =
-        data.tier ||
-        "basic";
-
+        data.tier || "basic";
 
       const config =
-        configuracaoTier(
-          tier
-        );
-
+        configuracaoTier(tier);
 
       alerta.className =
         tier;
 
-
       emojiEl.textContent =
         config.emoji;
-
 
       tituloEl.textContent =
         config.titulo;
 
-
       nomeEl.textContent =
-        limparTexto(
-          data.name
-        );
-
+        limparTexto(data.name) ||
+        "Anônimo";
 
       valorEl.textContent =
-        Number(
-          data.amount
-        )
-        .toLocaleString(
-          "pt-BR",
-          {
-            style: "currency",
-            currency: "BRL"
-          }
-        );
-
+        Number(data.amount)
+          .toLocaleString(
+            "pt-BR",
+            {
+              style: "currency",
+              currency: "BRL"
+            }
+          );
 
       mensagemEl.textContent =
-        limparTexto(
-          data.message
-        ) ||
+        limparTexto(data.message) ||
         "Obrigado pela doação!";
 
 
-      tocarSom(
-        tier
-      );
-
+      tocarSomCurto(tier);
 
       alerta.classList.add(
         "mostrar"
       );
 
 
-      // espera um pouco antes
-      // de começar a voz
-
       setTimeout(
         () => {
-
-          falarDoacao(
-            data.name,
-            data.amount,
-            data.message
+          tocarVoz(
+            data.audioUrl
           );
-
         },
-        700
+        600
       );
 
 
-      // tempo do alerta na tela
-
       setTimeout(
         esconderAlerta,
-        9000
+        12000
       );
     }
 
 
-
-    // ==============================
-    // ESCONDER ALERTA
-    // ==============================
-
     function esconderAlerta() {
-
       alerta.classList.remove(
         "mostrar"
       );
 
-
       setTimeout(
         () => {
-
           alertaAtual = null;
 
-
-          if (
-            fila.length > 0
-          ) {
-
+          if (fila.length > 0) {
             const proximo =
               fila.shift();
-
 
             mostrarAlerta(
               proximo
             );
           }
-
         },
         600
       );
     }
 
 
-
-    // ==============================
-    // CONEXÃO COM O SERVIDOR
-    // ==============================
-
     function conectarOverlay() {
-
       const source =
         new EventSource(
           "/api/overlay/stream"
         );
 
-
       source.onopen =
         () => {
-
           console.log(
             "Overlay conectado."
           );
-
         };
-
 
       source.onmessage =
         event => {
-
           try {
-
             const data =
               JSON.parse(
                 event.data
               );
 
-
             if (
               data.type ===
               "connected"
             ) {
-
               console.log(
                 "Conectado ao servidor."
               );
@@ -837,46 +492,38 @@
               return;
             }
 
-
             if (
               data.type ===
               "donation"
             ) {
+              console.log(
+                "Doação recebida:",
+                data
+              );
 
               mostrarAlerta(
                 data
               );
-
             }
 
-          }
-
-          catch (error) {
-
+          } catch (error) {
             console.error(
               "Erro no alerta:",
               error
             );
-
           }
-
         };
-
 
       source.onerror =
         () => {
-
           console.log(
-            "Reconectando overlay..."
+            "Conexão perdida. O navegador tentará reconectar."
           );
-
         };
     }
 
 
-
     conectarOverlay();
-
   </script>
 
 </body>
