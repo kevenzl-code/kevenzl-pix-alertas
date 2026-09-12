@@ -1,885 +1,1484 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>KevenZL Pix Alertas</title>
+<title>KevenZL Pix Alertas</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: transparent;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    #overlay {
-      position: fixed;
-      inset: 0;
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
+#overlay {
+  position: fixed;
+  inset: 0;
 
-      padding-top: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 
-      pointer-events: none;
-    }
+  padding-top: 70px;
 
-    #alerta {
-      position: relative;
+  pointer-events: none;
+}
 
-      width: 720px;
-      min-height: 210px;
 
-      padding: 28px 38px;
+/* =====================================
+   FLASH DA TELA
+===================================== */
 
-      border-radius: 18px;
+#flash {
+  position: fixed;
+  inset: 0;
 
-      color: white;
+  opacity: 0;
+  pointer-events: none;
 
-      background:
-        linear-gradient(
-          135deg,
-          rgba(8, 8, 12, 0.97),
-          rgba(20, 15, 28, 0.96)
-        );
+  z-index: 50;
+}
 
-      border: 2px solid white;
+#flash.ativo {
+  animation: flashTela 0.55s ease-out;
+}
 
-      opacity: 0;
+@keyframes flashTela {
 
-      transform:
-        translateY(-80px)
-        scale(0.82);
+  0% {
+    opacity: 0;
+  }
 
-      transition:
-        opacity 0.45s ease,
-        transform 0.45s ease;
+  15% {
+    opacity: 0.65;
+  }
 
-      overflow: hidden;
-    }
+  100% {
+    opacity: 0;
+  }
+}
 
-    #alerta.mostrar {
-      opacity: 1;
 
-      transform:
-        translateY(0)
-        scale(1);
-    }
+/* =====================================
+   PARTÍCULAS
+===================================== */
 
+#particles {
+  position: fixed;
+  inset: 0;
 
-    /* =========================
-       BRILHO DE FUNDO
-    ========================= */
+  overflow: hidden;
 
-    #alerta::before {
-      content: "";
+  pointer-events: none;
 
-      position: absolute;
-      inset: -100px;
+  z-index: 1;
+}
 
-      background:
-        radial-gradient(
-          circle,
-          var(--glow) 0%,
-          transparent 65%
-        );
+.particula {
+  position: absolute;
 
-      opacity: 0.25;
+  width: 6px;
+  height: 6px;
 
-      animation:
-        respirar 1.5s ease-in-out infinite alternate;
+  border-radius: 50%;
 
-      pointer-events: none;
-    }
-
-
-    /* =========================
-       LINHA NEON
-    ========================= */
-
-    #alerta::after {
-      content: "";
-
-      position: absolute;
+  background: var(--particle-color);
 
-      left: 8%;
-      right: 8%;
-      bottom: 0;
+  box-shadow:
+    0 0 10px var(--particle-color),
+    0 0 20px var(--particle-color);
 
-      height: 3px;
+  animation:
+    subirParticula 2.3s linear forwards;
+}
 
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          var(--cor),
-          white,
-          var(--cor),
-          transparent
-        );
+@keyframes subirParticula {
 
-      box-shadow:
-        0 0 12px var(--cor),
-        0 0 25px var(--cor);
+  0% {
+    transform:
+      translateY(0)
+      scale(0.4);
 
-      animation:
-        neonLinha 1.2s ease-in-out infinite alternate;
-    }
+    opacity: 0;
+  }
 
+  20% {
+    opacity: 1;
+  }
 
-    @keyframes respirar {
-      from {
-        transform: scale(0.9);
-        opacity: 0.15;
-      }
+  100% {
+    transform:
+      translateY(-350px)
+      scale(1.4);
 
-      to {
-        transform: scale(1.2);
-        opacity: 0.42;
-      }
-    }
+    opacity: 0;
+  }
+}
 
 
-    @keyframes neonLinha {
-      from {
-        opacity: 0.5;
-      }
+/* =====================================
+   ALERTA
+===================================== */
 
-      to {
-        opacity: 1;
-      }
-    }
+#alerta {
 
+  --cor: #ffffff;
+  --glow: rgba(255,255,255,.4);
 
-    @keyframes pulseNeon {
-      0% {
-        box-shadow:
-          0 0 15px var(--cor),
-          0 0 35px var(--glow);
-      }
+  position: relative;
 
-      100% {
-        box-shadow:
-          0 0 35px var(--cor),
-          0 0 85px var(--glow);
-      }
-    }
+  width: 720px;
+  min-height: 210px;
 
+  padding: 28px 38px;
 
-    @keyframes legendaryPulse {
-      0% {
-        box-shadow:
-          0 0 25px #ff1f35,
-          0 0 50px rgba(255, 0, 30, 0.5);
+  border-radius: 18px;
 
-        transform:
-          translateY(0)
-          scale(1);
-      }
+  color: white;
 
-      100% {
-        box-shadow:
-          0 0 55px #ff1f35,
-          0 0 120px rgba(255, 0, 30, 0.9);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(5,5,10,.98),
+      rgba(20,15,28,.96)
+    );
 
-        transform:
-          translateY(0)
-          scale(1.035);
-      }
-    }
+  border:
+    2px solid var(--cor);
 
+  box-shadow:
+    0 0 30px var(--glow);
 
-    /* =========================
-       CONTEÚDO
-    ========================= */
+  opacity: 0;
 
-    .conteudo {
-      position: relative;
-      z-index: 5;
+  transform:
+    translateY(-100px)
+    scale(.65);
 
-      display: flex;
-      align-items: center;
+  overflow: hidden;
 
-      gap: 25px;
-    }
+  z-index: 10;
+}
 
 
-    .icone {
-      width: 90px;
-      height: 90px;
+/* =====================================
+   ALERTA VISÍVEL
+===================================== */
 
-      flex-shrink: 0;
+#alerta.mostrar {
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  opacity: 1;
 
-      border-radius: 18px;
+  animation:
+    entradaBase .65s
+    cubic-bezier(.18,.89,.32,1.4)
+    forwards;
+}
 
-      font-size: 48px;
 
-      color: var(--cor);
+@keyframes entradaBase {
 
-      border:
-        1px solid var(--cor);
+  0% {
 
-      background:
-        rgba(0, 0, 0, 0.35);
+    opacity: 0;
 
-      box-shadow:
-        0 0 18px var(--glow);
+    transform:
+      translateY(-120px)
+      scale(.55);
 
-      animation:
-        respirar 1.3s ease-in-out infinite alternate;
-    }
+    filter:
+      brightness(3)
+      blur(8px);
+  }
 
+  60% {
 
-    .texto {
-      flex: 1;
-    }
+    opacity: 1;
 
+    transform:
+      translateY(10px)
+      scale(1.06);
 
-    .categoria {
-      font-size: 14px;
+    filter:
+      brightness(1.6)
+      blur(0);
+  }
 
-      letter-spacing: 5px;
+  100% {
 
-      font-weight: 800;
+    opacity: 1;
 
-      color: var(--cor);
+    transform:
+      translateY(0)
+      scale(1);
 
-      margin-bottom: 5px;
-    }
+    filter:
+      brightness(1);
+  }
+}
 
 
-    .titulo {
-      font-size: 16px;
+/* =====================================
+   SAÍDA
+===================================== */
 
-      letter-spacing: 4px;
+#alerta.saindo {
 
-      font-weight: 800;
+  animation:
+    saidaAlerta .55s
+    ease-in forwards;
+}
 
-      color: rgba(255, 255, 255, 0.75);
 
-      margin-bottom: 8px;
-    }
+@keyframes saidaAlerta {
 
+  0% {
 
-    .nome {
-      font-size: 30px;
+    opacity: 1;
 
-      font-weight: 900;
+    transform:
+      translateY(0)
+      scale(1);
+  }
 
-      text-shadow:
-        0 0 15px var(--glow);
+  100% {
 
-      margin-bottom: 4px;
-    }
+    opacity: 0;
 
+    transform:
+      translateY(-80px)
+      scale(.85);
 
-    .valor {
-      color: var(--cor);
+    filter:
+      blur(8px);
+  }
+}
 
-      font-size: 34px;
 
-      font-weight: 900;
+/* =====================================
+   FUNDO NEON
+===================================== */
 
-      text-shadow:
-        0 0 20px var(--glow);
+#alerta::before {
 
-      margin-bottom: 10px;
-    }
+  content: "";
 
+  position: absolute;
 
-    .mensagem {
-      font-size: 21px;
+  inset: -100px;
 
-      color: rgba(255, 255, 255, 0.9);
+  background:
+    radial-gradient(
+      circle,
+      var(--glow) 0%,
+      transparent 65%
+    );
 
-      line-height: 1.3;
+  opacity: .25;
 
-      word-break: break-word;
-    }
+  animation:
+    respirar 1.5s
+    ease-in-out
+    infinite alternate;
 
+  pointer-events: none;
+}
 
-    .kevenzl {
-      position: absolute;
 
-      right: 22px;
-      bottom: 10px;
+@keyframes respirar {
 
-      z-index: 6;
+  from {
+    transform: scale(.9);
+    opacity: .16;
+  }
 
-      font-style: italic;
-      font-size: 15px;
-      font-weight: 900;
+  to {
+    transform: scale(1.25);
+    opacity: .45;
+  }
+}
 
-      letter-spacing: 2px;
 
-      color: var(--cor);
+/* =====================================
+   LINHA NEON INFERIOR
+===================================== */
 
-      opacity: 0.85;
-    }
+#alerta::after {
 
+  content: "";
 
-    /* =========================
-       R$1 - 9,99
-       PRETO / BRANCO
-    ========================= */
+  position: absolute;
 
-    .basic {
-      --cor: #ffffff;
-      --glow: rgba(255, 255, 255, 0.35);
+  left: 8%;
+  right: 8%;
+  bottom: 0;
 
-      border-color:
-        rgba(255, 255, 255, 0.85);
+  height: 3px;
 
-      background:
-        linear-gradient(
-          135deg,
-          rgba(5, 5, 5, 0.97),
-          rgba(25, 25, 25, 0.96)
-        );
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--cor),
+      white,
+      var(--cor),
+      transparent
+    );
 
-      box-shadow:
-        0 0 25px rgba(255, 255, 255, 0.18);
-    }
+  box-shadow:
+    0 0 15px var(--cor),
+    0 0 30px var(--cor);
 
+  animation:
+    linhaNeon 1s
+    ease-in-out
+    infinite alternate;
+}
 
-    /* =========================
-       R$10 - 24,99
-       ROXO / ROSA
-    ========================= */
 
-    .medium {
-      --cor: #d743ff;
-      --glow: rgba(203, 44, 255, 0.75);
+@keyframes linhaNeon {
 
-      border-color:
-        #d743ff;
+  from {
+    opacity: .3;
+  }
 
-      box-shadow:
-        0 0 30px rgba(203, 44, 255, 0.6);
+  to {
+    opacity: 1;
+  }
+}
 
-      animation:
-        pulseNeon 1.1s ease-in-out infinite alternate;
-    }
 
+/* =====================================
+   CONTEÚDO
+===================================== */
 
-    /* =========================
-       R$25 - 49,99
-       AZUL / ROXO
-    ========================= */
+.conteudo {
 
-    .epic {
-      --cor: #5d7cff;
-      --glow: rgba(55, 80, 255, 0.8);
+  position: relative;
 
-      border-color:
-        #5d7cff;
+  z-index: 5;
 
-      background:
-        linear-gradient(
-          135deg,
-          rgba(5, 8, 25, 0.97),
-          rgba(15, 5, 35, 0.96)
-        );
+  display: flex;
 
-      animation:
-        pulseNeon 0.85s ease-in-out infinite alternate;
-    }
+  align-items: center;
 
+  gap: 25px;
+}
 
-    /* =========================
-       R$50 - 99,99
-       DOURADO
-    ========================= */
 
-    .special {
-      --cor: #ffb200;
-      --glow: rgba(255, 145, 0, 0.9);
+.icone {
 
-      border-color:
-        #ffb200;
+  width: 90px;
+  height: 90px;
 
-      background:
-        linear-gradient(
-          135deg,
-          rgba(20, 10, 0, 0.98),
-          rgba(40, 18, 0, 0.96)
-        );
+  flex-shrink: 0;
 
-      animation:
-        pulseNeon 0.65s ease-in-out infinite alternate;
-    }
+  display: flex;
 
+  align-items: center;
+  justify-content: center;
 
-    /* =========================
-       R$100+
-       LENDÁRIO VERMELHO
-    ========================= */
+  border-radius: 18px;
 
-    .legendary {
-      --cor: #ff253a;
-      --glow: rgba(255, 0, 30, 0.95);
+  font-size: 48px;
 
-      width: 850px;
+  color: var(--cor);
 
-      border-color:
-        #ff253a;
+  border:
+    1px solid var(--cor);
 
-      background:
-        linear-gradient(
-          135deg,
-          rgba(10, 0, 2, 0.98),
-          rgba(45, 0, 5, 0.97)
-        );
+  background:
+    rgba(0,0,0,.4);
 
-      animation:
-        legendaryPulse
-        0.6s ease-in-out
-        infinite alternate;
-    }
+  box-shadow:
+    0 0 18px var(--glow);
 
+  animation:
+    iconePulse 1s
+    ease-in-out
+    infinite alternate;
+}
 
-    .legendary .icone {
-      font-size: 58px;
 
-      width: 105px;
-      height: 105px;
-    }
+@keyframes iconePulse {
 
+  from {
+    transform: scale(1);
+  }
 
-    .legendary .nome {
-      font-size: 36px;
-    }
+  to {
+    transform: scale(1.08);
+  }
+}
 
 
-    .legendary .valor {
-      font-size: 42px;
-    }
+.texto {
+  flex: 1;
+}
 
-  </style>
+
+.categoria {
+
+  font-size: 14px;
+
+  letter-spacing: 5px;
+
+  font-weight: 900;
+
+  color: var(--cor);
+
+  margin-bottom: 5px;
+}
+
+
+.titulo {
+
+  font-size: 15px;
+
+  letter-spacing: 5px;
+
+  font-weight: 800;
+
+  color:
+    rgba(255,255,255,.75);
+
+  margin-bottom: 8px;
+}
+
+
+.nome {
+
+  font-size: 30px;
+
+  font-weight: 900;
+
+  text-shadow:
+    0 0 15px var(--glow);
+
+  margin-bottom: 4px;
+}
+
+
+.valor {
+
+  color: var(--cor);
+
+  font-size: 34px;
+
+  font-weight: 900;
+
+  text-shadow:
+    0 0 20px var(--glow);
+
+  margin-bottom: 10px;
+}
+
+
+.mensagem {
+
+  font-size: 21px;
+
+  color:
+    rgba(255,255,255,.92);
+
+  line-height: 1.3;
+
+  word-break: break-word;
+}
+
+
+.kevenzl {
+
+  position: absolute;
+
+  right: 22px;
+  bottom: 10px;
+
+  z-index: 6;
+
+  font-size: 15px;
+
+  font-style: italic;
+
+  font-weight: 900;
+
+  letter-spacing: 2px;
+
+  color: var(--cor);
+
+  opacity: .85;
+}
+
+
+/* =====================================
+   BÁSICO
+   R$1 - 9,99
+===================================== */
+
+.basic {
+
+  --cor: #ffffff;
+
+  --glow:
+    rgba(255,255,255,.38);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(0,0,0,.97),
+      rgba(30,30,30,.96)
+    );
+}
+
+
+/* =====================================
+   DESTACADO
+   R$10 - 24,99
+===================================== */
+
+.medium {
+
+  --cor: #df43ff;
+
+  --glow:
+    rgba(220,40,255,.85);
+
+  animation:
+    neonRoxo 1.05s
+    ease-in-out
+    infinite alternate;
+}
+
+
+@keyframes neonRoxo {
+
+  from {
+
+    box-shadow:
+      0 0 20px #b000ff,
+      0 0 40px rgba(255,0,255,.3);
+  }
+
+  to {
+
+    box-shadow:
+      0 0 45px #ff39ff,
+      0 0 90px rgba(180,0,255,.9);
+  }
+}
+
+
+/* =====================================
+   ÉPICO
+   R$25 - 49,99
+===================================== */
+
+.epic {
+
+  --cor: #6381ff;
+
+  --glow:
+    rgba(70,80,255,.95);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(3,6,28,.98),
+      rgba(20,0,45,.96)
+    );
+}
+
+
+.epic.mostrar {
+
+  animation:
+    entradaEpica .7s
+    cubic-bezier(.15,.85,.3,1.4)
+    forwards;
+}
+
+
+@keyframes entradaEpica {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      translateX(-150px)
+      scale(.6);
+  }
+
+  45% {
+
+    opacity: 1;
+
+    transform:
+      translateX(15px)
+      scale(1.08);
+  }
+
+  55% {
+
+    transform:
+      translateX(-7px)
+      scale(1.04);
+  }
+
+  70% {
+
+    transform:
+      translateX(5px)
+      scale(1.02);
+  }
+
+  100% {
+
+    transform:
+      translateX(0)
+      scale(1);
+  }
+}
+
+
+/* =====================================
+   ESPECIAL
+   R$50 - 99,99
+===================================== */
+
+.special {
+
+  --cor: #ffb300;
+
+  --glow:
+    rgba(255,140,0,.95);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(22,10,0,.98),
+      rgba(50,18,0,.97)
+    );
+}
+
+
+.special.mostrar {
+
+  animation:
+    entradaEspecial .8s
+    cubic-bezier(.2,.9,.3,1.4)
+    forwards;
+}
+
+
+@keyframes entradaEspecial {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      scale(.2)
+      rotate(-3deg);
+
+    filter:
+      brightness(4);
+  }
+
+  60% {
+
+    opacity: 1;
+
+    transform:
+      scale(1.12)
+      rotate(1deg);
+
+    filter:
+      brightness(1.7);
+  }
+
+  100% {
+
+    transform:
+      scale(1)
+      rotate(0deg);
+
+    filter:
+      brightness(1);
+  }
+}
+
+
+/* =====================================
+   LENDÁRIO
+   R$100+
+===================================== */
+
+.legendary {
+
+  --cor: #ff263d;
+
+  --glow:
+    rgba(255,0,35,.98);
+
+  width: 880px;
+
+  min-height: 240px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(12,0,2,.99),
+      rgba(65,0,8,.97)
+    );
+
+  border:
+    3px solid #ff263d;
+}
+
+
+.legendary .icone {
+
+  width: 115px;
+  height: 115px;
+
+  font-size: 65px;
+}
+
+
+.legendary .nome {
+
+  font-size: 38px;
+}
+
+
+.legendary .valor {
+
+  font-size: 46px;
+}
+
+
+.legendary.mostrar {
+
+  animation:
+    entradaLendaria .95s
+    cubic-bezier(.15,.85,.3,1.35)
+    forwards;
+}
+
+
+@keyframes entradaLendaria {
+
+  0% {
+
+    opacity: 0;
+
+    transform:
+      scale(.15);
+
+    filter:
+      brightness(5);
+  }
+
+  45% {
+
+    opacity: 1;
+
+    transform:
+      scale(1.15);
+  }
+
+  55% {
+
+    transform:
+      translateX(-9px)
+      scale(1.08);
+  }
+
+  62% {
+
+    transform:
+      translateX(10px)
+      scale(1.06);
+  }
+
+  70% {
+
+    transform:
+      translateX(-7px)
+      scale(1.04);
+  }
+
+  78% {
+
+    transform:
+      translateX(6px)
+      scale(1.02);
+  }
+
+  100% {
+
+    transform:
+      translateX(0)
+      scale(1);
+  }
+}
+
+
+/* =====================================
+   COROA LENDÁRIA
+===================================== */
+
+#coroa {
+
+  position: absolute;
+
+  left: 50%;
+  top: -55px;
+
+  transform:
+    translateX(-50%)
+    scale(0);
+
+  font-size: 70px;
+
+  opacity: 0;
+
+  z-index: 20;
+
+  filter:
+    drop-shadow(
+      0 0 18px #ffd700
+    );
+}
+
+
+.legendary #coroa {
+
+  animation:
+    coroaEntrada .8s
+    .35s
+    cubic-bezier(.2,.9,.2,1.4)
+    forwards;
+}
+
+
+@keyframes coroaEntrada {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateX(-50%)
+      translateY(-50px)
+      scale(.2)
+      rotate(-15deg);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateX(-50%)
+      translateY(0)
+      scale(1)
+      rotate(0deg);
+  }
+}
+
+</style>
 </head>
 
 
 <body>
 
-  <div id="overlay">
+<div id="flash"></div>
 
-    <div id="alerta">
-
-      <div class="conteudo">
-
-        <div
-          id="icone"
-          class="icone"
-        >
-          $
-        </div>
+<div id="particles"></div>
 
 
-        <div class="texto">
+<div id="overlay">
 
-          <div
-            id="categoria"
-            class="categoria"
-          >
-            BÁSICO
-          </div>
+  <div id="alerta">
 
-
-          <div class="titulo">
-            NOVO PIX
-          </div>
+    <div id="coroa">
+      👑
+    </div>
 
 
-          <div
-            id="nome"
-            class="nome"
-          >
-            Keven
-          </div>
+    <div class="conteudo">
 
-
-          <div
-            id="valor"
-            class="valor"
-          >
-            R$ 5,00
-          </div>
-
-
-          <div
-            id="mensagem"
-            class="mensagem"
-          >
-            Obrigado pelo apoio!
-          </div>
-
-        </div>
-
+      <div
+        id="icone"
+        class="icone"
+      >
+        💰
       </div>
 
 
-      <div class="kevenzl">
-        KEVENZL
+      <div class="texto">
+
+        <div
+          id="categoria"
+          class="categoria"
+        >
+          BÁSICO
+        </div>
+
+
+        <div class="titulo">
+          NOVO PIX
+        </div>
+
+
+        <div
+          id="nome"
+          class="nome"
+        >
+          Keven
+        </div>
+
+
+        <div
+          id="valor"
+          class="valor"
+        >
+          R$ 5,00
+        </div>
+
+
+        <div
+          id="mensagem"
+          class="mensagem"
+        >
+          Obrigado pelo apoio!
+        </div>
+
       </div>
 
     </div>
 
+
+    <div class="kevenzl">
+      KEVENZL
+    </div>
+
   </div>
 
-
-  <script>
-
-    const alerta =
-      document.getElementById("alerta");
-
-    const nomeEl =
-      document.getElementById("nome");
-
-    const valorEl =
-      document.getElementById("valor");
-
-    const mensagemEl =
-      document.getElementById("mensagem");
-
-    const iconeEl =
-      document.getElementById("icone");
-
-    const categoriaEl =
-      document.getElementById("categoria");
+</div>
 
 
-    let alertaAtual = null;
+<script>
 
-    let fila = [];
+const alerta =
+  document.getElementById("alerta");
 
-    let audioMemeAtual = null;
+const nomeEl =
+  document.getElementById("nome");
 
-    let audioVozAtual = null;
+const valorEl =
+  document.getElementById("valor");
 
-    let timeoutSeguranca = null;
+const mensagemEl =
+  document.getElementById("mensagem");
 
-    let timeoutFechamento = null;
+const iconeEl =
+  document.getElementById("icone");
 
-    let alertaMostradoEm = 0;
+const categoriaEl =
+  document.getElementById("categoria");
 
+const flash =
+  document.getElementById("flash");
 
-    const TEMPO_MINIMO_ALERTA =
-      12000;
-
-
-    const LIMITE_MEME =
-      30000;
-
-
-    function limparTexto(texto) {
-
-      if (!texto) {
-        return "";
-      }
+const particles =
+  document.getElementById("particles");
 
 
-      return String(texto)
+let alertaAtual = null;
 
-        .replace(
-          /(https?:\/\/[^\s]+)/gi,
-          ""
-        )
+let fila = [];
 
-        .replace(
-          /\s+/g,
-          " "
-        )
+let audioMemeAtual = null;
 
-        .trim()
+let audioVozAtual = null;
 
-        .slice(
-          0,
-          250
-        );
+let timeoutSeguranca = null;
+
+let timeoutFechamento = null;
+
+let alertaMostradoEm = 0;
+
+
+const TEMPO_MINIMO_ALERTA =
+  12000;
+
+const LIMITE_MEME =
+  30000;
+
+
+
+function limparTexto(texto) {
+
+  if (!texto) {
+    return "";
+  }
+
+  return String(texto)
+
+    .replace(
+      /(https?:\/\/[^\s]+)/gi,
+      ""
+    )
+
+    .replace(
+      /\s+/g,
+      " "
+    )
+
+    .trim()
+
+    .slice(
+      0,
+      250
+    );
+}
+
+
+
+function configuracaoTier(tier) {
+
+  const config = {
+
+    basic: {
+
+      icone:
+        "💰",
+
+      categoria:
+        "BÁSICO",
+
+      som:
+        "/sounds/basico.mp3",
+
+      flash:
+        "rgba(255,255,255,.8)",
+
+      particles:
+        "#ffffff",
+
+      quantidade:
+        8
+    },
+
+
+    medium: {
+
+      icone:
+        "💎",
+
+      categoria:
+        "DESTACADO",
+
+      som:
+        "/sounds/medio.mp3",
+
+      flash:
+        "rgba(220,40,255,.65)",
+
+      particles:
+        "#e13cff",
+
+      quantidade:
+        15
+    },
+
+
+    epic: {
+
+      icone:
+        "🔥",
+
+      categoria:
+        "ÉPICO",
+
+      som:
+        "/sounds/epico.mp3",
+
+      flash:
+        "rgba(70,90,255,.65)",
+
+      particles:
+        "#627cff",
+
+      quantidade:
+        22
+    },
+
+
+    special: {
+
+      icone:
+        "🏆",
+
+      categoria:
+        "ESPECIAL",
+
+      som:
+        "/sounds/especial.mp3",
+
+      flash:
+        "rgba(255,165,0,.75)",
+
+      particles:
+        "#ffae00",
+
+      quantidade:
+        30
+    },
+
+
+    legendary: {
+
+      icone:
+        "👑",
+
+      categoria:
+        "LENDÁRIO",
+
+      som:
+        "/sounds/lendario.mp3",
+
+      flash:
+        "rgba(255,0,30,.85)",
+
+      particles:
+        "#ff263d",
+
+      quantidade:
+        55
     }
 
-
-    function configuracaoTier(tier) {
-
-      const config = {
-
-        basic: {
-
-          icone:
-            "💰",
-
-          categoria:
-            "BÁSICO",
-
-          som:
-            "/sounds/basico.mp3"
-        },
+  };
 
 
-        medium: {
-
-          icone:
-            "💎",
-
-          categoria:
-            "DESTACADO",
-
-          som:
-            "/sounds/medio.mp3"
-        },
+  return (
+    config[tier] ||
+    config.basic
+  );
+}
 
 
-        epic: {
 
-          icone:
-            "🔥",
+function efeitoFlash(cor) {
 
-          categoria:
-            "ÉPICO",
+  flash.style.background =
+    cor;
 
-          som:
-            "/sounds/epico.mp3"
-        },
+  flash.classList.remove(
+    "ativo"
+  );
 
+  void flash.offsetWidth;
 
-        special: {
-
-          icone:
-            "🏆",
-
-          categoria:
-            "ESPECIAL",
-
-          som:
-            "/sounds/especial.mp3"
-        },
+  flash.classList.add(
+    "ativo"
+  );
+}
 
 
-        legendary: {
 
-          icone:
-            "👑",
+function criarParticulas(
+  cor,
+  quantidade
+) {
 
-          categoria:
-            "LENDÁRIO",
+  particles.innerHTML =
+    "";
 
-          som:
-            "/sounds/lendario.mp3"
-        }
 
+  for (
+    let i = 0;
+    i < quantidade;
+    i++
+  ) {
+
+    const p =
+      document.createElement(
+        "div"
+      );
+
+
+    p.className =
+      "particula";
+
+
+    p.style.setProperty(
+      "--particle-color",
+      cor
+    );
+
+
+    p.style.left =
+      (
+        15 +
+        Math.random() *
+        70
+      ) + "%";
+
+
+    p.style.top =
+      (
+        30 +
+        Math.random() *
+        45
+      ) + "%";
+
+
+    p.style.animationDelay =
+      (
+        Math.random() *
+        .8
+      ) + "s";
+
+
+    p.style.animationDuration =
+      (
+        1.5 +
+        Math.random() *
+        1.5
+      ) + "s";
+
+
+    particles.appendChild(
+      p
+    );
+  }
+
+
+  setTimeout(
+    () => {
+
+      particles.innerHTML =
+        "";
+
+    },
+    4000
+  );
+}
+
+
+
+function pararAudios() {
+
+  if (audioMemeAtual) {
+
+    audioMemeAtual.pause();
+
+    audioMemeAtual =
+      null;
+  }
+
+
+  if (audioVozAtual) {
+
+    audioVozAtual.pause();
+
+    audioVozAtual =
+      null;
+  }
+
+
+  if (timeoutSeguranca) {
+
+    clearTimeout(
+      timeoutSeguranca
+    );
+  }
+
+
+  if (timeoutFechamento) {
+
+    clearTimeout(
+      timeoutFechamento
+    );
+  }
+}
+
+
+
+function agendarFechamento() {
+
+  const passou =
+    Date.now() -
+    alertaMostradoEm;
+
+
+  const restante =
+    Math.max(
+      0,
+      TEMPO_MINIMO_ALERTA -
+      passou
+    );
+
+
+  timeoutFechamento =
+    setTimeout(
+      esconderAlerta,
+      restante
+    );
+}
+
+
+
+async function tocarVoz(
+  audioUrl
+) {
+
+  if (!audioUrl) {
+
+    agendarFechamento();
+
+    return;
+  }
+
+
+  try {
+
+    audioVozAtual =
+      new Audio(
+        audioUrl
+      );
+
+
+    audioVozAtual.volume =
+      1;
+
+
+    audioVozAtual.onended =
+      () => {
+
+        audioVozAtual =
+          null;
+
+        agendarFechamento();
       };
 
 
-      return (
-        config[tier] ||
-        config.basic
+    audioVozAtual.onerror =
+      () => {
+
+        audioVozAtual =
+          null;
+
+        agendarFechamento();
+      };
+
+
+    await audioVozAtual.play();
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro voz:",
+      error
+    );
+
+
+    agendarFechamento();
+  }
+}
+
+
+
+async function tocarMemeDepoisVoz(
+  memeUrl,
+  voiceUrl
+) {
+
+  try {
+
+    audioMemeAtual =
+      new Audio(
+        memeUrl
       );
-    }
 
 
-    function pararAudios() {
-
-      if (audioMemeAtual) {
-
-        audioMemeAtual.pause();
-
-        audioMemeAtual.currentTime =
-          0;
-
-        audioMemeAtual =
-          null;
-      }
+    audioMemeAtual.volume =
+      1;
 
 
-      if (audioVozAtual) {
+    audioMemeAtual.onended =
+      () => {
 
-        audioVozAtual.pause();
-
-        audioVozAtual.currentTime =
-          0;
-
-        audioVozAtual =
-          null;
-      }
-
-
-      if (timeoutSeguranca) {
-
-        clearTimeout(
+        if (
           timeoutSeguranca
-        );
+        ) {
 
-        timeoutSeguranca =
-          null;
-      }
-
-
-      if (timeoutFechamento) {
-
-        clearTimeout(
-          timeoutFechamento
-        );
-
-        timeoutFechamento =
-          null;
-      }
-    }
-
-
-    function agendarFechamento() {
-
-      if (timeoutFechamento) {
-
-        clearTimeout(
-          timeoutFechamento
-        );
-      }
-
-
-      const tempoPassado =
-        Date.now() -
-        alertaMostradoEm;
-
-
-      const restante =
-        Math.max(
-          0,
-          TEMPO_MINIMO_ALERTA -
-          tempoPassado
-        );
-
-
-      timeoutFechamento =
-        setTimeout(
-          esconderAlerta,
-          restante
-        );
-    }
-
-
-    async function tocarVoz(audioUrl) {
-
-      if (!audioUrl) {
-
-        agendarFechamento();
-
-        return;
-      }
-
-
-      try {
-
-        audioVozAtual =
-          new Audio(
-            audioUrl
+          clearTimeout(
+            timeoutSeguranca
           );
+        }
 
-
-        audioVozAtual.volume =
-          1;
-
-
-        audioVozAtual.onended =
-          () => {
-
-            audioVozAtual =
-              null;
-
-            agendarFechamento();
-          };
-
-
-        audioVozAtual.onerror =
-          () => {
-
-            audioVozAtual =
-              null;
-
-            agendarFechamento();
-          };
-
-
-        await audioVozAtual.play();
-
-
-      } catch (error) {
-
-        console.error(
-          "Erro ao reproduzir voz:",
-          error
-        );
-
-
-        agendarFechamento();
-      }
-    }
-
-
-    async function tocarMemeDepoisVoz(
-      memeUrl,
-      voiceUrl
-    ) {
-
-      try {
 
         audioMemeAtual =
-          new Audio(
-            memeUrl
-          );
+          null;
 
 
-        audioMemeAtual.volume =
-          1;
-
-
-        audioMemeAtual.onended =
+        setTimeout(
           () => {
 
-            if (timeoutSeguranca) {
-
-              clearTimeout(
-                timeoutSeguranca
-              );
-
-              timeoutSeguranca =
-                null;
-            }
-
-
-            audioMemeAtual =
-              null;
-
-
-            setTimeout(
-              () => {
-
-                tocarVoz(
-                  voiceUrl
-                );
-
-              },
-              350
+            tocarVoz(
+              voiceUrl
             );
-          };
+
+          },
+          350
+        );
+      };
 
 
-        audioMemeAtual.onerror =
-          () => {
+    audioMemeAtual.onerror =
+      () => {
+
+        audioMemeAtual =
+          null;
+
+
+        tocarVoz(
+          voiceUrl
+        );
+      };
+
+
+    await audioMemeAtual.play();
+
+
+    timeoutSeguranca =
+      setTimeout(
+        () => {
+
+          if (
+            audioMemeAtual &&
+            !audioMemeAtual.ended
+          ) {
+
+            audioMemeAtual.pause();
 
             audioMemeAtual =
               null;
@@ -888,220 +1487,223 @@
             tocarVoz(
               voiceUrl
             );
-          };
+          }
+
+        },
+        LIMITE_MEME
+      );
 
 
-        await audioMemeAtual.play();
+  } catch (error) {
+
+    tocarVoz(
+      voiceUrl
+    );
+  }
+}
 
 
-        timeoutSeguranca =
-          setTimeout(
-            () => {
 
-              if (
-                audioMemeAtual &&
-                !audioMemeAtual.ended
-              ) {
+function mostrarAlerta(
+  data
+) {
 
-                audioMemeAtual.pause();
+  if (alertaAtual) {
 
-                audioMemeAtual =
-                  null;
+    fila.push(
+      data
+    );
+
+    return;
+  }
 
 
-                tocarVoz(
-                  voiceUrl
-                );
-              }
+  alertaAtual =
+    data;
 
-            },
-            LIMITE_MEME
+
+  alertaMostradoEm =
+    Date.now();
+
+
+  const tier =
+    data.tier ||
+    "basic";
+
+
+  const config =
+    configuracaoTier(
+      tier
+    );
+
+
+  alerta.className =
+    tier;
+
+
+  iconeEl.textContent =
+    config.icone;
+
+
+  categoriaEl.textContent =
+    config.categoria;
+
+
+  nomeEl.textContent =
+    limparTexto(
+      data.name
+    ) ||
+    "Anônimo";
+
+
+  valorEl.textContent =
+    Number(
+      data.amount
+    )
+    .toLocaleString(
+      "pt-BR",
+      {
+        style:
+          "currency",
+
+        currency:
+          "BRL"
+      }
+    );
+
+
+  mensagemEl.textContent =
+    limparTexto(
+      data.message
+    ) ||
+    "Obrigado pelo apoio!";
+
+
+  efeitoFlash(
+    config.flash
+  );
+
+
+  criarParticulas(
+    config.particles,
+    config.quantidade
+  );
+
+
+  alerta.classList.add(
+    "mostrar"
+  );
+
+
+  setTimeout(
+    () => {
+
+      tocarMemeDepoisVoz(
+        config.som,
+        data.audioUrl
+      );
+
+    },
+    500
+  );
+}
+
+
+
+function esconderAlerta() {
+
+  pararAudios();
+
+
+  alerta.classList.remove(
+    "mostrar"
+  );
+
+
+  alerta.classList.add(
+    "saindo"
+  );
+
+
+  setTimeout(
+    () => {
+
+      alerta.classList.remove(
+        "saindo"
+      );
+
+
+      alerta.className =
+        "";
+
+
+      alertaAtual =
+        null;
+
+
+      if (
+        fila.length > 0
+      ) {
+
+        const proximo =
+          fila.shift();
+
+
+        mostrarAlerta(
+          proximo
+        );
+      }
+
+    },
+    600
+  );
+}
+
+
+
+function conectarOverlay() {
+
+  const source =
+    new EventSource(
+      "/api/overlay/stream"
+    );
+
+
+  source.onmessage =
+    event => {
+
+      try {
+
+        const data =
+          JSON.parse(
+            event.data
           );
 
+
+        if (
+          data.type ===
+          "donation"
+        ) {
+
+          mostrarAlerta(
+            data
+          );
+        }
 
       } catch (error) {
 
         console.error(
-          "Erro ao reproduzir meme:",
           error
         );
-
-
-        tocarVoz(
-          voiceUrl
-        );
       }
-    }
+    };
+}
 
 
-    function mostrarAlerta(data) {
 
-      if (alertaAtual) {
+conectarOverlay();
 
-        fila.push(
-          data
-        );
-
-        return;
-      }
-
-
-      alertaAtual =
-        data;
-
-
-      alertaMostradoEm =
-        Date.now();
-
-
-      const tier =
-        data.tier ||
-        "basic";
-
-
-      const config =
-        configuracaoTier(
-          tier
-        );
-
-
-      alerta.className =
-        tier;
-
-
-      iconeEl.textContent =
-        config.icone;
-
-
-      categoriaEl.textContent =
-        config.categoria;
-
-
-      nomeEl.textContent =
-        limparTexto(
-          data.name
-        ) ||
-        "Anônimo";
-
-
-      valorEl.textContent =
-        Number(
-          data.amount
-        )
-        .toLocaleString(
-          "pt-BR",
-          {
-            style: "currency",
-            currency: "BRL"
-          }
-        );
-
-
-      mensagemEl.textContent =
-        limparTexto(
-          data.message
-        ) ||
-        "Obrigado pelo apoio!";
-
-
-      alerta.classList.add(
-        "mostrar"
-      );
-
-
-      setTimeout(
-        () => {
-
-          tocarMemeDepoisVoz(
-            config.som,
-            data.audioUrl
-          );
-
-        },
-        500
-      );
-    }
-
-
-    function esconderAlerta() {
-
-      pararAudios();
-
-
-      alerta.classList.remove(
-        "mostrar"
-      );
-
-
-      setTimeout(
-        () => {
-
-          alertaAtual =
-            null;
-
-
-          if (
-            fila.length > 0
-          ) {
-
-            const proximo =
-              fila.shift();
-
-
-            mostrarAlerta(
-              proximo
-            );
-          }
-
-        },
-        600
-      );
-    }
-
-
-    function conectarOverlay() {
-
-      const source =
-        new EventSource(
-          "/api/overlay/stream"
-        );
-
-
-      source.onmessage =
-        event => {
-
-          try {
-
-            const data =
-              JSON.parse(
-                event.data
-              );
-
-
-            if (
-              data.type ===
-              "donation"
-            ) {
-
-              mostrarAlerta(
-                data
-              );
-            }
-
-
-          } catch (error) {
-
-            console.error(
-              error
-            );
-          }
-        };
-    }
-
-
-    conectarOverlay();
-
-  </script>
+</script>
 
 </body>
 </html>
