@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>KevenZL Overlay</title>
 
   <style>
@@ -24,26 +25,40 @@
     #overlay {
       position: fixed;
       inset: 0;
+
       display: flex;
       justify-content: center;
       align-items: flex-start;
+
       padding-top: 80px;
+
       pointer-events: none;
     }
 
     #alerta {
       min-width: 500px;
       max-width: 800px;
+
       padding: 24px 32px;
+
       border-radius: 20px;
+
       background: rgba(12, 8, 25, 0.94);
+
       border: 2px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+
+      box-shadow:
+        0 0 30px rgba(0, 0, 0, 0.5);
+
       text-align: center;
+
       color: white;
 
       opacity: 0;
-      transform: translateY(-70px) scale(0.85);
+
+      transform:
+        translateY(-70px)
+        scale(0.85);
 
       transition:
         opacity 0.4s ease,
@@ -52,7 +67,10 @@
 
     #alerta.mostrar {
       opacity: 1;
-      transform: translateY(0) scale(1);
+
+      transform:
+        translateY(0)
+        scale(1);
     }
 
     .emoji {
@@ -84,9 +102,16 @@
       word-break: break-word;
     }
 
+
+    /* =========================
+       BÁSICO
+    ========================= */
+
     .basic {
       border-color: #a970ff;
-      box-shadow: 0 0 30px rgba(169, 112, 255, 0.55);
+
+      box-shadow:
+        0 0 30px rgba(169, 112, 255, 0.55);
     }
 
     .basic .nome,
@@ -94,9 +119,16 @@
       color: #bb86fc;
     }
 
+
+    /* =========================
+       MÉDIO
+    ========================= */
+
     .medium {
       border-color: #00bfff;
-      box-shadow: 0 0 35px rgba(0, 191, 255, 0.65);
+
+      box-shadow:
+        0 0 35px rgba(0, 191, 255, 0.65);
     }
 
     .medium .nome,
@@ -104,9 +136,16 @@
       color: #4fd5ff;
     }
 
+
+    /* =========================
+       ÉPICO
+    ========================= */
+
     .epic {
       border-color: #ff00ff;
-      box-shadow: 0 0 45px rgba(255, 0, 255, 0.75);
+
+      box-shadow:
+        0 0 45px rgba(255, 0, 255, 0.75);
     }
 
     .epic .nome,
@@ -114,10 +153,19 @@
       color: #ff5cff;
     }
 
+
+    /* =========================
+       ESPECIAL
+    ========================= */
+
     .special {
       border-color: #ff9500;
-      box-shadow: 0 0 55px rgba(255, 149, 0, 0.85);
-      animation: specialGlow 1s infinite alternate;
+
+      box-shadow:
+        0 0 55px rgba(255, 149, 0, 0.85);
+
+      animation:
+        specialGlow 1s infinite alternate;
     }
 
     .special .nome,
@@ -125,10 +173,19 @@
       color: #ffb347;
     }
 
+
+    /* =========================
+       LENDÁRIO
+    ========================= */
+
     .legendary {
       border-color: #ffd700;
-      box-shadow: 0 0 70px rgba(255, 215, 0, 1);
-      animation: legendaryGlow 0.6s infinite alternate;
+
+      box-shadow:
+        0 0 70px rgba(255, 215, 0, 1);
+
+      animation:
+        legendaryGlow 0.6s infinite alternate;
     }
 
     .legendary .nome,
@@ -136,25 +193,37 @@
       color: #ffd700;
     }
 
+
     @keyframes specialGlow {
       from {
-        box-shadow: 0 0 25px rgba(255, 149, 0, 0.5);
+        box-shadow:
+          0 0 25px rgba(255, 149, 0, 0.5);
       }
 
       to {
-        box-shadow: 0 0 65px rgba(255, 149, 0, 1);
+        box-shadow:
+          0 0 65px rgba(255, 149, 0, 1);
       }
     }
 
+
     @keyframes legendaryGlow {
       from {
-        transform: translateY(0) scale(1);
-        box-shadow: 0 0 35px rgba(255, 215, 0, 0.7);
+        transform:
+          translateY(0)
+          scale(1);
+
+        box-shadow:
+          0 0 35px rgba(255, 215, 0, 0.7);
       }
 
       to {
-        transform: translateY(0) scale(1.04);
-        box-shadow: 0 0 90px rgba(255, 215, 0, 1);
+        transform:
+          translateY(0)
+          scale(1.04);
+
+        box-shadow:
+          0 0 90px rgba(255, 215, 0, 1);
       }
     }
   </style>
@@ -163,29 +232,46 @@
 <body>
 
   <div id="overlay">
+
     <div id="alerta">
 
-      <div id="emoji" class="emoji">
+      <div
+        id="emoji"
+        class="emoji"
+      >
         💜
       </div>
 
-      <div id="titulo" class="titulo">
+      <div
+        id="titulo"
+        class="titulo"
+      >
         NOVA DOAÇÃO
       </div>
 
-      <div id="nome" class="nome">
+      <div
+        id="nome"
+        class="nome"
+      >
         Keven
       </div>
 
-      <div id="valor" class="valor">
+      <div
+        id="valor"
+        class="valor"
+      >
         R$ 10,00
       </div>
 
-      <div id="mensagem" class="mensagem">
+      <div
+        id="mensagem"
+        class="mensagem"
+      >
         Teste
       </div>
 
     </div>
+
   </div>
 
 
@@ -211,28 +297,68 @@
 
 
     let alertaAtual = null;
+
     let fila = [];
 
     let audioMemeAtual = null;
+
     let audioVozAtual = null;
 
     let timeoutSeguranca = null;
 
+    let timeoutFechamento = null;
+
+    let alertaMostradoEm = 0;
+
+
+    // =========================
+    // CONFIGURAÇÕES
+    // =========================
+
+    const TEMPO_MINIMO_ALERTA =
+      12000;
+
+    const LIMITE_MEME =
+      30000;
+
+
+    // =========================
+    // LIMPAR TEXTO
+    // =========================
 
     function limparTexto(texto) {
+
       if (!texto) {
         return "";
       }
 
       return String(texto)
-        .replace(/(https?:\/\/[^\s]+)/gi, "")
-        .replace(/\s+/g, " ")
+
+        .replace(
+          /(https?:\/\/[^\s]+)/gi,
+          ""
+        )
+
+        .replace(
+          /\s+/g,
+          " "
+        )
+
         .trim()
-        .slice(0, 250);
+
+        .slice(
+          0,
+          250
+        );
     }
 
 
+    // =========================
+    // CONFIGURAÇÃO DOS NÍVEIS
+    // =========================
+
     function configuracaoTier(tier) {
+
       const config = {
 
         basic: {
@@ -266,69 +392,167 @@
         }
       };
 
-      return config[tier] || config.basic;
+
+      return (
+        config[tier] ||
+        config.basic
+      );
     }
 
+
+    // =========================
+    // PARAR ÁUDIOS
+    // =========================
 
     function pararAudios() {
 
       if (audioMemeAtual) {
+
         audioMemeAtual.pause();
-        audioMemeAtual.currentTime = 0;
-        audioMemeAtual = null;
+
+        audioMemeAtual.currentTime =
+          0;
+
+        audioMemeAtual =
+          null;
       }
+
 
       if (audioVozAtual) {
+
         audioVozAtual.pause();
-        audioVozAtual.currentTime = 0;
-        audioVozAtual = null;
+
+        audioVozAtual.currentTime =
+          0;
+
+        audioVozAtual =
+          null;
       }
 
+
       if (timeoutSeguranca) {
-        clearTimeout(timeoutSeguranca);
-        timeoutSeguranca = null;
+
+        clearTimeout(
+          timeoutSeguranca
+        );
+
+        timeoutSeguranca =
+          null;
+      }
+
+
+      if (timeoutFechamento) {
+
+        clearTimeout(
+          timeoutFechamento
+        );
+
+        timeoutFechamento =
+          null;
       }
     }
 
 
+    // =========================
+    // AGENDAR FECHAMENTO
+    // =========================
+
+    function agendarFechamento() {
+
+      if (timeoutFechamento) {
+
+        clearTimeout(
+          timeoutFechamento
+        );
+      }
+
+
+      const tempoPassado =
+        Date.now() -
+        alertaMostradoEm;
+
+
+      const tempoRestante =
+        Math.max(
+          0,
+          TEMPO_MINIMO_ALERTA -
+          tempoPassado
+        );
+
+
+      timeoutFechamento =
+        setTimeout(
+          () => {
+
+            esconderAlerta();
+
+          },
+          tempoRestante
+        );
+    }
+
+
+    // =========================
+    // TOCAR VOZ ELEVENLABS
+    // =========================
+
     async function tocarVoz(audioUrl) {
 
       if (!audioUrl) {
+
         console.log(
           "Alerta chegou sem áudio da ElevenLabs."
         );
 
-        esconderAlerta();
+        agendarFechamento();
+
         return;
       }
+
 
       try {
 
         audioVozAtual =
-          new Audio(audioUrl);
+          new Audio(
+            audioUrl
+          );
+
 
         audioVozAtual.volume =
           1;
 
+
         audioVozAtual.onended =
           () => {
-            esconderAlerta();
+
+            audioVozAtual =
+              null;
+
+            agendarFechamento();
           };
+
 
         audioVozAtual.onerror =
           () => {
+
             console.error(
               "Erro ao carregar voz da ElevenLabs."
             );
 
-            esconderAlerta();
+            audioVozAtual =
+              null;
+
+            agendarFechamento();
           };
 
+
         await audioVozAtual.play();
+
 
         console.log(
           "Voz ElevenLabs reproduzida."
         );
+
 
       } catch (error) {
 
@@ -337,10 +561,19 @@
           error
         );
 
-        esconderAlerta();
+
+        audioVozAtual =
+          null;
+
+
+        agendarFechamento();
       }
     }
 
+
+    // =========================
+    // TOCAR MEME E DEPOIS VOZ
+    // =========================
 
     async function tocarMemeDepoisVoz(
       memeUrl,
@@ -350,7 +583,10 @@
       try {
 
         audioMemeAtual =
-          new Audio(memeUrl);
+          new Audio(
+            memeUrl
+          );
+
 
         audioMemeAtual.volume =
           1;
@@ -359,11 +595,28 @@
         audioMemeAtual.onended =
           () => {
 
-            audioMemeAtual = null;
+            if (timeoutSeguranca) {
+
+              clearTimeout(
+                timeoutSeguranca
+              );
+
+              timeoutSeguranca =
+                null;
+            }
+
+
+            audioMemeAtual =
+              null;
+
 
             setTimeout(
               () => {
-                tocarVoz(voiceUrl);
+
+                tocarVoz(
+                  voiceUrl
+                );
+
               },
               350
             );
@@ -378,6 +631,22 @@
               memeUrl
             );
 
+
+            if (timeoutSeguranca) {
+
+              clearTimeout(
+                timeoutSeguranca
+              );
+
+              timeoutSeguranca =
+                null;
+            }
+
+
+            audioMemeAtual =
+              null;
+
+
             tocarVoz(
               voiceUrl
             );
@@ -386,15 +655,15 @@
 
         await audioMemeAtual.play();
 
+
         console.log(
           "Meme reproduzindo:",
           memeUrl
         );
 
 
-        // Segurança:
-        // se algum MP3 travar,
-        // continua para a voz depois de 20s
+        // Se um MP3 travar,
+        // não deixa o alerta preso para sempre
 
         timeoutSeguranca =
           setTimeout(
@@ -405,9 +674,16 @@
                 !audioMemeAtual.ended
               ) {
 
+                console.log(
+                  "Meme demorou demais. Indo para a voz."
+                );
+
+
                 audioMemeAtual.pause();
 
-                audioMemeAtual = null;
+                audioMemeAtual =
+                  null;
+
 
                 tocarVoz(
                   voiceUrl
@@ -415,7 +691,7 @@
               }
 
             },
-            20000
+            LIMITE_MEME
           );
 
 
@@ -426,6 +702,11 @@
           error
         );
 
+
+        audioMemeAtual =
+          null;
+
+
         tocarVoz(
           voiceUrl
         );
@@ -433,17 +714,28 @@
     }
 
 
+    // =========================
+    // MOSTRAR ALERTA
+    // =========================
+
     function mostrarAlerta(data) {
 
       if (alertaAtual) {
 
-        fila.push(data);
+        fila.push(
+          data
+        );
 
         return;
       }
 
 
-      alertaAtual = data;
+      alertaAtual =
+        data;
+
+
+      alertaMostradoEm =
+        Date.now();
 
 
       const tier =
@@ -477,14 +769,16 @@
 
 
       valorEl.textContent =
-        Number(data.amount)
-          .toLocaleString(
-            "pt-BR",
-            {
-              style: "currency",
-              currency: "BRL"
-            }
-          );
+        Number(
+          data.amount
+        )
+        .toLocaleString(
+          "pt-BR",
+          {
+            style: "currency",
+            currency: "BRL"
+          }
+        );
 
 
       mensagemEl.textContent =
@@ -496,6 +790,12 @@
 
       alerta.classList.add(
         "mostrar"
+      );
+
+
+      console.log(
+        "Mostrando alerta:",
+        data
       );
 
 
@@ -513,6 +813,10 @@
     }
 
 
+    // =========================
+    // ESCONDER ALERTA
+    // =========================
+
     function esconderAlerta() {
 
       pararAudios();
@@ -526,10 +830,13 @@
       setTimeout(
         () => {
 
-          alertaAtual = null;
+          alertaAtual =
+            null;
 
 
-          if (fila.length > 0) {
+          if (
+            fila.length > 0
+          ) {
 
             const proximo =
               fila.shift();
@@ -545,6 +852,10 @@
       );
     }
 
+
+    // =========================
+    // CONECTAR AO SERVIDOR
+    // =========================
 
     function conectarOverlay() {
 
@@ -618,7 +929,7 @@
         () => {
 
           console.log(
-            "Conexão perdida. Reconectando..."
+            "Conexão perdida. Tentando reconectar..."
           );
         };
     }
