@@ -93,7 +93,7 @@ app.post("/api/create-pix", async (req, res) => {
       payer: {
   email,
   first_name: "APRO"
-}
+},
 
       transactions: {
         payments: [
