@@ -1,531 +1,1029 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Painel KevenZL Pix</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-
-      background:
-        radial-gradient(
-          circle at top,
-          #25103b 0%,
-          #0b0812 55%,
-          #050507 100%
-        );
-
-      color: white;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-      padding: 30px;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 34px;
-      margin-bottom: 6px;
-    }
-
-    .subtitulo {
-      color: #bdb4c8;
-      margin-bottom: 28px;
-    }
-
-    .grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0, 1fr)
-        );
-
-      gap: 20px;
-    }
-
-    .card {
-      background:
-        rgba(
-          18,
-          14,
-          26,
-          0.92
-        );
 
-      border:
-        1px solid
-        rgba(
-          255,
-          255,
-          255,
-          0.08
-        );
-
-      border-radius: 18px;
+<meta charset="UTF-8">
 
-      padding: 22px;
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-      box-shadow:
-        0 10px 30px
-        rgba(
-          0,
-          0,
-          0,
-          0.35
-        );
-    }
+<title>Painel KevenZL Pix</title>
 
-    .card h2 {
-      font-size: 20px;
-      margin-bottom: 18px;
-    }
 
-    .grupo {
-      margin-bottom: 20px;
-    }
+<style>
 
-    .grupo label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    .linha {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
 
-    input[type="range"] {
-      width: 100%;
-    }
+body {
 
-    input[type="number"],
-    select {
-      width: 100%;
+  min-height: 100vh;
 
-      background:
-        #0f0c14;
+  background:
+    radial-gradient(
+      circle at top,
+      #25103b 0%,
+      #0b0812 55%,
+      #050507 100%
+    );
 
-      color: white;
+  color: white;
 
-      border:
-        1px solid
-        #40344c;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 
-      border-radius: 10px;
+  padding: 30px;
 
-      padding: 12px;
+}
 
-      outline: none;
-    }
 
-    .valor {
-      min-width: 60px;
+body.bloqueado {
 
-      text-align: right;
+  overflow: hidden;
 
-      color:
-        #d9c5ff;
+}
 
-      font-weight: 800;
-    }
 
-    .switch-row {
-      display: flex;
+.container {
 
-      align-items: center;
+  max-width: 1100px;
 
-      justify-content:
-        space-between;
+  margin: 0 auto;
 
-      gap: 20px;
+}
 
-      margin-bottom: 16px;
-    }
 
-    .switch-row span {
-      font-weight: 700;
-    }
+h1 {
 
-    .switch {
-      position: relative;
+  font-size: 34px;
 
-      width: 54px;
-      height: 30px;
-    }
+  margin-bottom: 6px;
 
-    .switch input {
-      display: none;
-    }
+}
 
-    .slider {
-      position: absolute;
 
-      inset: 0;
+.subtitulo {
 
-      background:
-        #40394a;
+  color: #bdb4c8;
 
-      border-radius:
-        999px;
+  margin-bottom: 28px;
 
-      cursor: pointer;
+}
 
-      transition:
-        0.2s;
-    }
 
-    .slider::before {
-      content: "";
+.grid {
 
-      position: absolute;
+  display: grid;
 
-      width: 22px;
-      height: 22px;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
 
-      top: 4px;
-      left: 4px;
+  gap: 20px;
 
-      border-radius: 50%;
+}
 
-      background:
-        white;
 
-      transition:
-        0.2s;
-    }
+.card {
 
-    .switch input:checked +
-    .slider {
-      background:
-        #a84dff;
-    }
+  background:
+    rgba(
+      18,
+      14,
+      26,
+      0.92
+    );
 
-    .switch input:checked +
-    .slider::before {
-      transform:
-        translateX(
-          24px
-        );
-    }
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
 
-    .tiers {
-      display: grid;
+  border-radius: 18px;
 
-      grid-template-columns:
-        repeat(
-          5,
-          1fr
-        );
+  padding: 22px;
 
-      gap: 12px;
+  box-shadow:
+    0 10px 30px
+    rgba(
+      0,
+      0,
+      0,
+      0.35
+    );
 
-      margin-top: 16px;
-    }
+}
 
-    .tier {
-      border:
-        1px solid
-        rgba(
-          255,
-          255,
-          255,
-          0.08
-        );
 
-      border-radius:
-        14px;
+.card h2 {
 
-      padding: 14px;
+  font-size: 20px;
 
-      background:
-        rgba(
-          255,
-          255,
-          255,
-          0.025
-        );
-    }
+  margin-bottom: 18px;
 
-    .tier strong {
-      display: block;
-      margin-bottom: 8px;
-    }
+}
 
-    .tier small {
-      display: block;
 
-      color:
-        #aaa1b5;
+.grupo {
 
-      margin-bottom:
-        10px;
-    }
+  margin-bottom: 20px;
 
-    button {
-      border: none;
+}
 
-      border-radius:
-        10px;
 
-      padding:
-        12px 16px;
+.grupo label {
 
-      font-weight:
-        800;
+  display: block;
 
-      cursor: pointer;
+  margin-bottom: 8px;
 
-      transition:
-        0.2s;
-    }
+  font-weight: 700;
 
-    button:hover {
-      transform:
-        translateY(
-          -1px
-        );
-    }
+}
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: wait;
-      transform: none;
-    }
 
-    .btn-primary {
-      background:
-        linear-gradient(
-          135deg,
-          #9d3cff,
-          #e24cff
-        );
+.linha {
 
-      color: white;
-    }
+  display: flex;
 
-    .btn-secundario {
-      background:
-        #211a29;
+  gap: 12px;
 
-      color: white;
+  align-items: center;
 
-      border:
-        1px solid
-        #493d59;
-    }
+}
 
-    .acoes {
-      display: flex;
 
-      gap: 12px;
+input[type="range"] {
 
-      margin-top:
-        24px;
+  width: 100%;
 
-      flex-wrap:
-        wrap;
-    }
+}
 
-    .status {
-      margin-top:
-        18px;
 
-      padding:
-        12px;
+input[type="number"],
+input[type="password"],
+select {
 
-      border-radius:
-        10px;
+  width: 100%;
 
-      display: none;
-    }
+  background:
+    #0f0c14;
 
-    .status.ok {
-      display: block;
+  color: white;
 
-      background:
-        rgba(
-          52,
-          211,
-          153,
-          0.14
-        );
+  border:
+    1px solid
+    #40344c;
 
-      border:
-        1px solid
-        rgba(
-          52,
-          211,
-          153,
-          0.35
-        );
-
-      color:
-        #8bf0c5;
-    }
-
-    .status.erro {
-      display: block;
-
-      background:
-        rgba(
-          239,
-          68,
-          68,
-          0.14
-        );
+  border-radius: 10px;
 
-      border:
-        1px solid
-        rgba(
-          239,
-          68,
-          68,
-          0.35
-        );
-
-      color:
-        #ff9d9d;
-    }
-
-    .status.carregando {
-      display: block;
-
-      background:
-        rgba(
-          168,
-          77,
-          255,
-          0.12
-        );
-
-      border:
-        1px solid
-        rgba(
-          168,
-          77,
-          255,
-          0.35
-        );
-
-      color:
-        #d7b7ff;
-    }
-
-    .teste-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(
-          5,
-          1fr
-        );
-
-      gap: 12px;
-    }
-
-    .teste-grid button {
-      min-height: 58px;
-    }
-
-    .basic {
-      border-color:
-        #555;
-    }
-
-    .medium {
-      border-color:
-        #ad39ff;
-    }
-
-    .epic {
-      border-color:
-        #586cff;
-    }
-
-    .special {
-      border-color:
-        #e69b00;
-    }
-
-    .legendary {
-      border-color:
-        #ff263d;
-    }
-
-    @media (
-      max-width: 900px
-    ) {
-
-      .grid {
-        grid-template-columns:
-          1fr;
-      }
-
-      .tiers,
-      .teste-grid {
-        grid-template-columns:
-          1fr 1fr;
-      }
-
-    }
-
-    @media (
-      max-width: 560px
-    ) {
-
-      body {
-        padding: 16px;
-      }
-
-      .tiers,
-      .teste-grid {
-        grid-template-columns:
-          1fr;
-      }
-
-    }
-  </style>
+  padding: 12px;
+
+  outline: none;
+
+}
+
+
+input:focus,
+select:focus {
+
+  border-color:
+    #a84dff;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      168,
+      77,
+      255,
+      0.15
+    );
+
+}
+
+
+.valor {
+
+  min-width: 60px;
+
+  text-align: right;
+
+  color:
+    #d9c5ff;
+
+  font-weight: 800;
+
+}
+
+
+.switch-row {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  gap: 20px;
+
+  margin-bottom: 16px;
+
+}
+
+
+.switch-row span {
+
+  font-weight: 700;
+
+}
+
+
+.switch {
+
+  position: relative;
+
+  width: 54px;
+
+  height: 30px;
+
+}
+
+
+.switch input {
+
+  display: none;
+
+}
+
+
+.slider {
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    #40394a;
+
+  border-radius:
+    999px;
+
+  cursor: pointer;
+
+  transition:
+    0.2s;
+
+}
+
+
+.slider::before {
+
+  content: "";
+
+  position: absolute;
+
+  width: 22px;
+
+  height: 22px;
+
+  top: 4px;
+
+  left: 4px;
+
+  border-radius: 50%;
+
+  background:
+    white;
+
+  transition:
+    0.2s;
+
+}
+
+
+.switch input:checked +
+.slider {
+
+  background:
+    #a84dff;
+
+}
+
+
+.switch input:checked +
+.slider::before {
+
+  transform:
+    translateX(
+      24px
+    );
+
+}
+
+
+.tiers {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      5,
+      1fr
+    );
+
+  gap: 12px;
+
+  margin-top: 16px;
+
+}
+
+
+.tier {
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
+
+  border-radius: 14px;
+
+  padding: 14px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.025
+    );
+
+}
+
+
+.tier strong {
+
+  display: block;
+
+  margin-bottom: 8px;
+
+}
+
+
+.tier small {
+
+  display: block;
+
+  color:
+    #aaa1b5;
+
+  margin-bottom: 10px;
+
+}
+
+
+button {
+
+  border: none;
+
+  border-radius: 10px;
+
+  padding:
+    12px 16px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+
+}
+
+
+button:hover {
+
+  transform:
+    translateY(
+      -1px
+    );
+
+}
+
+
+button:disabled {
+
+  opacity: 0.5;
+
+  cursor: wait;
+
+  transform: none;
+
+}
+
+
+.btn-primary {
+
+  background:
+    linear-gradient(
+      135deg,
+      #9d3cff,
+      #e24cff
+    );
+
+  color: white;
+
+}
+
+
+.btn-secundario {
+
+  background:
+    #211a29;
+
+  color: white;
+
+  border:
+    1px solid
+    #493d59;
+
+}
+
+
+.btn-sair {
+
+  background:
+    rgba(
+      255,
+      50,
+      70,
+      0.12
+    );
+
+  color:
+    #ff8b98;
+
+  border:
+    1px solid
+    rgba(
+      255,
+      50,
+      70,
+      0.35
+    );
+
+}
+
+
+.topo {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content:
+    space-between;
+
+  gap: 20px;
+
+  margin-bottom: 10px;
+
+}
+
+
+.acoes {
+
+  display: flex;
+
+  gap: 12px;
+
+  margin-top: 24px;
+
+  flex-wrap: wrap;
+
+}
+
+
+.status {
+
+  margin-top: 18px;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  display: none;
+
+}
+
+
+.status.ok {
+
+  display: block;
+
+  background:
+    rgba(
+      52,
+      211,
+      153,
+      0.14
+    );
+
+  border:
+    1px solid
+    rgba(
+      52,
+      211,
+      153,
+      0.35
+    );
+
+  color:
+    #8bf0c5;
+
+}
+
+
+.status.erro {
+
+  display: block;
+
+  background:
+    rgba(
+      239,
+      68,
+      68,
+      0.14
+    );
+
+  border:
+    1px solid
+    rgba(
+      239,
+      68,
+      68,
+      0.35
+    );
+
+  color:
+    #ff9d9d;
+
+}
+
+
+.status.carregando {
+
+  display: block;
+
+  background:
+    rgba(
+      168,
+      77,
+      255,
+      0.12
+    );
+
+  border:
+    1px solid
+    rgba(
+      168,
+      77,
+      255,
+      0.35
+    );
+
+  color:
+    #d7b7ff;
+
+}
+
+
+.teste-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      5,
+      1fr
+    );
+
+  gap: 12px;
+
+}
+
+
+.teste-grid button {
+
+  min-height: 58px;
+
+}
+
+
+.basic {
+
+  border-color:
+    #555;
+
+}
+
+
+.medium {
+
+  border-color:
+    #ad39ff;
+
+}
+
+
+.epic {
+
+  border-color:
+    #586cff;
+
+}
+
+
+.special {
+
+  border-color:
+    #e69b00;
+
+}
+
+
+.legendary {
+
+  border-color:
+    #ff263d;
+
+}
+
+
+/* ==========================================
+   TELA DE LOGIN
+========================================== */
+
+#loginOverlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(
+      3,
+      2,
+      6,
+      0.96
+    );
+
+  backdrop-filter:
+    blur(12px);
+
+}
+
+
+#loginOverlay.escondido {
+
+  display: none;
+
+}
+
+
+.login-card {
+
+  width: 100%;
+
+  max-width: 430px;
+
+  padding: 32px;
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(28,20,40,.98),
+      rgba(10,8,15,.98)
+    );
+
+  border:
+    1px solid
+    rgba(
+      180,
+      80,
+      255,
+      0.3
+    );
+
+  box-shadow:
+    0 25px 70px
+    rgba(
+      0,
+      0,
+      0,
+      0.65
+    );
+
+}
+
+
+.login-logo {
+
+  font-size: 48px;
+
+  text-align: center;
+
+  margin-bottom: 15px;
+
+}
+
+
+.login-card h2 {
+
+  text-align: center;
+
+  font-size: 27px;
+
+  margin-bottom: 8px;
+
+}
+
+
+.login-card p {
+
+  color:
+    #bdb4c8;
+
+  text-align: center;
+
+  line-height: 1.5;
+
+  margin-bottom: 25px;
+
+}
+
+
+.login-card input {
+
+  font-size: 16px;
+
+  margin-bottom: 14px;
+
+}
+
+
+.login-card button {
+
+  width: 100%;
+
+  min-height: 48px;
+
+}
+
+
+.login-erro {
+
+  display: none;
+
+  margin-top: 15px;
+
+  padding: 11px;
+
+  border-radius: 9px;
+
+  text-align: center;
+
+  color:
+    #ff9d9d;
+
+  background:
+    rgba(
+      239,
+      68,
+      68,
+      0.12
+    );
+
+  border:
+    1px solid
+    rgba(
+      239,
+      68,
+      68,
+      0.3
+    );
+
+}
+
+
+.login-erro.ativo {
+
+  display: block;
+
+}
+
+
+.seguranca {
+
+  margin-top: 16px;
+
+  text-align: center;
+
+  font-size: 12px;
+
+  color:
+    #82798d;
+
+}
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+@media (
+  max-width: 900px
+) {
+
+  .grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .tiers,
+  .teste-grid {
+
+    grid-template-columns:
+      1fr 1fr;
+
+  }
+
+}
+
+
+@media (
+  max-width: 560px
+) {
+
+  body {
+
+    padding: 16px;
+
+  }
+
+
+  .tiers,
+  .teste-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .topo {
+
+    flex-direction:
+      column;
+
+  }
+
+}
+
+</style>
+
 </head>
 
 
-<body>
+<body class="bloqueado">
+
+
+<!-- ========================================
+     LOGIN
+========================================= -->
+
+<div id="loginOverlay">
+
+  <div class="login-card">
+
+    <div class="login-logo">
+      🔐
+    </div>
+
+    <h2>
+      Painel KevenZL
+    </h2>
+
+    <p>
+      Digite a senha administrativa
+      para acessar os controles dos
+      alertas Pix.
+    </p>
+
+
+    <input
+      id="senhaPainel"
+      type="password"
+      placeholder="Senha do painel"
+      autocomplete="current-password"
+    >
+
+
+    <button
+      id="btnEntrar"
+      class="btn-primary"
+      onclick="entrar()"
+    >
+      Entrar no painel
+    </button>
+
+
+    <div
+      id="loginErro"
+      class="login-erro"
+    >
+      Senha incorreta.
+    </div>
+
+
+    <div class="seguranca">
+      🔒 A senha não fica salva permanentemente.
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ========================================
+     PAINEL
+========================================= -->
 
 <div class="container">
 
-  <h1>
-    🎛️ Painel de Alertas KevenZL
-  </h1>
 
-  <div class="subtitulo">
-    Controle dos alertas Pix da live
+  <div class="topo">
+
+    <div>
+
+      <h1>
+        🎛️ Painel de Alertas KevenZL
+      </h1>
+
+      <div class="subtitulo">
+        Controle dos alertas Pix da live
+      </div>
+
+    </div>
+
+
+    <button
+      class="btn-sair"
+      onclick="sair()"
+    >
+      🔒 Sair
+    </button>
+
   </div>
 
 
   <div class="grid">
 
-    <!-- ================================
-         ÁUDIO
-    ================================= -->
+
+    <!-- ÁUDIO -->
 
     <div class="card">
 
@@ -549,7 +1047,7 @@
             min="0"
             max="100"
             value="100"
-          />
+          >
 
 
           <div
@@ -579,7 +1077,7 @@
             min="0"
             max="100"
             value="100"
-          />
+          >
 
 
           <div
@@ -607,12 +1105,9 @@
             id="memesAtivos"
             type="checkbox"
             checked
-          />
+          >
 
-
-          <span
-            class="slider"
-          ></span>
+          <span class="slider"></span>
 
         </label>
 
@@ -632,12 +1127,9 @@
             id="vozAtiva"
             type="checkbox"
             checked
-          />
+          >
 
-
-          <span
-            class="slider"
-          ></span>
+          <span class="slider"></span>
 
         </label>
 
@@ -646,9 +1138,7 @@
     </div>
 
 
-    <!-- ================================
-         EFEITOS
-    ================================= -->
+    <!-- EFEITOS -->
 
     <div class="card">
 
@@ -672,7 +1162,7 @@
             min="3"
             max="60"
             value="12"
-          />
+          >
 
           <span>
             segundos
@@ -696,11 +1186,9 @@
             id="flashAtivo"
             type="checkbox"
             checked
-          />
+          >
 
-          <span
-            class="slider"
-          ></span>
+          <span class="slider"></span>
 
         </label>
 
@@ -720,11 +1208,9 @@
             id="particulasAtivas"
             type="checkbox"
             checked
-          />
+          >
 
-          <span
-            class="slider"
-          ></span>
+          <span class="slider"></span>
 
         </label>
 
@@ -735,9 +1221,7 @@
   </div>
 
 
-  <!-- ================================
-       SONS
-  ================================= -->
+  <!-- SONS -->
 
   <div
     class="card"
@@ -750,6 +1234,7 @@
 
 
     <div class="tiers">
+
 
       <div class="tier basic">
 
@@ -764,33 +1249,23 @@
 
         <select id="somBasic">
 
-          <option
-            value="/sounds/basico.mp3"
-          >
+          <option value="/sounds/basico.mp3">
             basico.mp3
           </option>
 
-          <option
-            value="/sounds/medio.mp3"
-          >
+          <option value="/sounds/medio.mp3">
             medio.mp3
           </option>
 
-          <option
-            value="/sounds/epico.mp3"
-          >
+          <option value="/sounds/epico.mp3">
             epico.mp3
           </option>
 
-          <option
-            value="/sounds/especial.mp3"
-          >
+          <option value="/sounds/especial.mp3">
             especial.mp3
           </option>
 
-          <option
-            value="/sounds/lendario.mp3"
-          >
+          <option value="/sounds/lendario.mp3">
             lendario.mp3
           </option>
 
@@ -812,33 +1287,23 @@
 
         <select id="somMedium">
 
-          <option
-            value="/sounds/basico.mp3"
-          >
+          <option value="/sounds/basico.mp3">
             basico.mp3
           </option>
 
-          <option
-            value="/sounds/medio.mp3"
-          >
+          <option value="/sounds/medio.mp3">
             medio.mp3
           </option>
 
-          <option
-            value="/sounds/epico.mp3"
-          >
+          <option value="/sounds/epico.mp3">
             epico.mp3
           </option>
 
-          <option
-            value="/sounds/especial.mp3"
-          >
+          <option value="/sounds/especial.mp3">
             especial.mp3
           </option>
 
-          <option
-            value="/sounds/lendario.mp3"
-          >
+          <option value="/sounds/lendario.mp3">
             lendario.mp3
           </option>
 
@@ -860,33 +1325,23 @@
 
         <select id="somEpic">
 
-          <option
-            value="/sounds/basico.mp3"
-          >
+          <option value="/sounds/basico.mp3">
             basico.mp3
           </option>
 
-          <option
-            value="/sounds/medio.mp3"
-          >
+          <option value="/sounds/medio.mp3">
             medio.mp3
           </option>
 
-          <option
-            value="/sounds/epico.mp3"
-          >
+          <option value="/sounds/epico.mp3">
             epico.mp3
           </option>
 
-          <option
-            value="/sounds/especial.mp3"
-          >
+          <option value="/sounds/especial.mp3">
             especial.mp3
           </option>
 
-          <option
-            value="/sounds/lendario.mp3"
-          >
+          <option value="/sounds/lendario.mp3">
             lendario.mp3
           </option>
 
@@ -908,33 +1363,23 @@
 
         <select id="somSpecial">
 
-          <option
-            value="/sounds/basico.mp3"
-          >
+          <option value="/sounds/basico.mp3">
             basico.mp3
           </option>
 
-          <option
-            value="/sounds/medio.mp3"
-          >
+          <option value="/sounds/medio.mp3">
             medio.mp3
           </option>
 
-          <option
-            value="/sounds/epico.mp3"
-          >
+          <option value="/sounds/epico.mp3">
             epico.mp3
           </option>
 
-          <option
-            value="/sounds/especial.mp3"
-          >
+          <option value="/sounds/especial.mp3">
             especial.mp3
           </option>
 
-          <option
-            value="/sounds/lendario.mp3"
-          >
+          <option value="/sounds/lendario.mp3">
             lendario.mp3
           </option>
 
@@ -956,33 +1401,23 @@
 
         <select id="somLegendary">
 
-          <option
-            value="/sounds/basico.mp3"
-          >
+          <option value="/sounds/basico.mp3">
             basico.mp3
           </option>
 
-          <option
-            value="/sounds/medio.mp3"
-          >
+          <option value="/sounds/medio.mp3">
             medio.mp3
           </option>
 
-          <option
-            value="/sounds/epico.mp3"
-          >
+          <option value="/sounds/epico.mp3">
             epico.mp3
           </option>
 
-          <option
-            value="/sounds/especial.mp3"
-          >
+          <option value="/sounds/especial.mp3">
             especial.mp3
           </option>
 
-          <option
-            value="/sounds/lendario.mp3"
-          >
+          <option value="/sounds/lendario.mp3">
             lendario.mp3
           </option>
 
@@ -995,9 +1430,7 @@
   </div>
 
 
-  <!-- ================================
-       TESTES
-  ================================= -->
+  <!-- TESTES -->
 
   <div
     class="card"
@@ -1056,7 +1489,6 @@
     <div class="acoes">
 
       <button
-        id="btnSalvar"
         class="btn-primary"
         onclick="salvarConfiguracoes()"
       >
@@ -1066,7 +1498,7 @@
 
       <button
         class="btn-secundario"
-        onclick="recarregarConfiguracoes()"
+        onclick="carregarConfiguracoes()"
       >
         🔄 Recarregar
       </button>
@@ -1093,6 +1525,48 @@
 
 
 <script>
+
+// ==========================================
+// SEGURANÇA
+// ==========================================
+
+const STORAGE_KEY =
+  "kevenzl_panel_session_secret";
+
+
+let panelSecret =
+  sessionStorage.getItem(
+    STORAGE_KEY
+  ) || "";
+
+
+const loginOverlay =
+  document.getElementById(
+    "loginOverlay"
+  );
+
+
+const senhaPainel =
+  document.getElementById(
+    "senhaPainel"
+  );
+
+
+const btnEntrar =
+  document.getElementById(
+    "btnEntrar"
+  );
+
+
+const loginErro =
+  document.getElementById(
+    "loginErro"
+  );
+
+
+// ==========================================
+// CAMPOS
+// ==========================================
 
 const campos = {
 
@@ -1177,39 +1651,345 @@ const statusEl =
   );
 
 
-// =====================================
+// ==========================================
+// HEADERS PROTEGIDOS
+// ==========================================
+
+function headersProtegidos() {
+
+  return {
+
+    "Content-Type":
+      "application/json",
+
+    "x-panel-secret":
+      panelSecret
+
+  };
+
+}
+
+
+// ==========================================
+// BLOQUEAR / DESBLOQUEAR
+// ==========================================
+
+function mostrarLogin() {
+
+  loginOverlay.classList.remove(
+    "escondido"
+  );
+
+
+  document.body.classList.add(
+    "bloqueado"
+  );
+
+
+  setTimeout(
+    () => {
+
+      senhaPainel.focus();
+
+    },
+    100
+  );
+
+}
+
+
+function esconderLogin() {
+
+  loginOverlay.classList.add(
+    "escondido"
+  );
+
+
+  document.body.classList.remove(
+    "bloqueado"
+  );
+
+}
+
+
+// ==========================================
+// LOGIN
+// ==========================================
+
+async function entrar() {
+
+  const senha =
+    senhaPainel.value.trim();
+
+
+  if (!senha) {
+
+    loginErro.textContent =
+      "Digite a senha do painel.";
+
+
+    loginErro.classList.add(
+      "ativo"
+    );
+
+
+    return;
+
+  }
+
+
+  btnEntrar.disabled =
+    true;
+
+
+  btnEntrar.textContent =
+    "Verificando...";
+
+
+  loginErro.classList.remove(
+    "ativo"
+  );
+
+
+  try {
+
+    const response =
+      await fetch(
+
+        "/api/config",
+
+        {
+
+          method:
+            "GET",
+
+          headers: {
+
+            "x-panel-secret":
+              senha
+
+          },
+
+          cache:
+            "no-store"
+
+        }
+
+      );
+
+
+    if (
+      response.status ===
+      401
+    ) {
+
+      throw new Error(
+        "SENHA_INCORRETA"
+      );
+
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        "ERRO_SERVIDOR"
+      );
+
+    }
+
+
+    const config =
+      await response.json();
+
+
+    panelSecret =
+      senha;
+
+
+    sessionStorage.setItem(
+
+      STORAGE_KEY,
+
+      panelSecret
+
+    );
+
+
+    aplicarConfiguracoes(
+      config
+    );
+
+
+    senhaPainel.value =
+      "";
+
+
+    esconderLogin();
+
+
+    mostrarStatus(
+      "✅ Painel conectado com segurança.",
+      "ok"
+    );
+
+
+  } catch (error) {
+
+    if (
+      error.message ===
+      "SENHA_INCORRETA"
+    ) {
+
+      loginErro.textContent =
+        "Senha incorreta.";
+
+    } else {
+
+      loginErro.textContent =
+        "Não foi possível conectar ao servidor.";
+
+    }
+
+
+    loginErro.classList.add(
+      "ativo"
+    );
+
+
+  } finally {
+
+    btnEntrar.disabled =
+      false;
+
+
+    btnEntrar.textContent =
+      "Entrar no painel";
+
+  }
+
+}
+
+
+// ==========================================
+// SAIR
+// ==========================================
+
+function sair() {
+
+  sessionStorage.removeItem(
+    STORAGE_KEY
+  );
+
+
+  panelSecret =
+    "";
+
+
+  senhaPainel.value =
+    "";
+
+
+  mostrarLogin();
+
+}
+
+
+// ==========================================
+// TRATAR NÃO AUTORIZADO
+// ==========================================
+
+function verificarAutorizacao(
+  response
+) {
+
+  if (
+    response.status ===
+    401
+  ) {
+
+    sessionStorage.removeItem(
+      STORAGE_KEY
+    );
+
+
+    panelSecret =
+      "";
+
+
+    mostrarLogin();
+
+
+    throw new Error(
+      "Acesso não autorizado."
+    );
+
+  }
+
+}
+
+
+// ==========================================
+// ENTER NA SENHA
+// ==========================================
+
+senhaPainel.addEventListener(
+
+  "keydown",
+
+  event => {
+
+    if (
+      event.key ===
+      "Enter"
+    ) {
+
+      entrar();
+
+    }
+
+  }
+
+);
+
+
+// ==========================================
 // SLIDERS
-// =====================================
+// ==========================================
 
-campos.volumeMeme
-  .addEventListener(
-    "input",
-    () => {
+campos.volumeMeme.addEventListener(
 
-      volumeMemeValor.textContent =
-        campos.volumeMeme.value +
-        "%";
+  "input",
 
-    }
-  );
+  () => {
 
+    volumeMemeValor.textContent =
+      campos.volumeMeme.value +
+      "%";
 
-campos.volumeVoz
-  .addEventListener(
-    "input",
-    () => {
+  }
 
-      volumeVozValor.textContent =
-        campos.volumeVoz.value +
-        "%";
-
-    }
-  );
+);
 
 
-// =====================================
-// OBTER CONFIGURAÇÃO DA TELA
-// =====================================
+campos.volumeVoz.addEventListener(
+
+  "input",
+
+  () => {
+
+    volumeVozValor.textContent =
+      campos.volumeVoz.value +
+      "%";
+
+  }
+
+);
+
+
+// ==========================================
+// OBTER CONFIGURAÇÕES
+// ==========================================
 
 function obterConfiguracoes() {
 
@@ -1267,29 +2047,19 @@ function obterConfiguracoes() {
     sons: {
 
       basic:
-        campos
-          .somBasic
-          .value,
+        campos.somBasic.value,
 
       medium:
-        campos
-          .somMedium
-          .value,
+        campos.somMedium.value,
 
       epic:
-        campos
-          .somEpic
-          .value,
+        campos.somEpic.value,
 
       special:
-        campos
-          .somSpecial
-          .value,
+        campos.somSpecial.value,
 
       legendary:
-        campos
-          .somLegendary
-          .value
+        campos.somLegendary.value
 
     }
 
@@ -1298,9 +2068,9 @@ function obterConfiguracoes() {
 }
 
 
-// =====================================
-// COLOCAR CONFIG NA TELA
-// =====================================
+// ==========================================
+// APLICAR CONFIGURAÇÕES
+// ==========================================
 
 function aplicarConfiguracoes(
   config
@@ -1394,9 +2164,9 @@ function aplicarConfiguracoes(
 }
 
 
-// =====================================
+// ==========================================
 // STATUS
-// =====================================
+// ==========================================
 
 function mostrarStatus(
   texto,
@@ -1414,15 +2184,27 @@ function mostrarStatus(
 }
 
 
-// =====================================
-// CARREGAR CONFIG DO SERVIDOR
-// =====================================
+// ==========================================
+// CARREGAR CONFIGURAÇÕES
+// ==========================================
 
 async function carregarConfiguracoes() {
 
+  if (!panelSecret) {
+
+    mostrarLogin();
+
+    return;
+
+  }
+
+
   mostrarStatus(
+
     "Carregando configurações...",
+
     "carregando"
+
   );
 
 
@@ -1430,21 +2212,38 @@ async function carregarConfiguracoes() {
 
     const response =
       await fetch(
+
         "/api/config",
+
         {
+
+          method:
+            "GET",
+
+          headers: {
+
+            "x-panel-secret":
+              panelSecret
+
+          },
+
           cache:
             "no-store"
+
         }
+
       );
 
 
-    if (
-      !response.ok
-    ) {
+    verificarAutorizacao(
+      response
+    );
+
+
+    if (!response.ok) {
 
       throw new Error(
-        "Servidor respondeu " +
-        response.status
+        "Erro ao carregar."
       );
 
     }
@@ -1459,9 +2258,15 @@ async function carregarConfiguracoes() {
     );
 
 
+    esconderLogin();
+
+
     mostrarStatus(
+
       "✅ Configurações carregadas do servidor.",
+
       "ok"
+
     );
 
 
@@ -1472,23 +2277,39 @@ async function carregarConfiguracoes() {
     );
 
 
-    mostrarStatus(
-      "❌ Não foi possível carregar as configurações.",
-      "erro"
-    );
+    if (panelSecret) {
+
+      mostrarStatus(
+
+        "❌ Não foi possível carregar as configurações.",
+
+        "erro"
+
+      );
+
+    }
 
   }
 
 }
 
 
-// =====================================
-// SALVAR NO SERVIDOR
-// =====================================
+// ==========================================
+// SALVAR
+// ==========================================
 
 async function salvarConfiguracoes(
   mostrarMensagem = true
 ) {
+
+  if (!panelSecret) {
+
+    mostrarLogin();
+
+    return false;
+
+  }
+
 
   const config =
     obterConfiguracoes();
@@ -1501,8 +2322,11 @@ async function salvarConfiguracoes(
     ) {
 
       mostrarStatus(
+
         "Salvando configurações...",
+
         "carregando"
+
       );
 
     }
@@ -1518,12 +2342,8 @@ async function salvarConfiguracoes(
           method:
             "POST",
 
-          headers: {
-
-            "Content-Type":
-              "application/json"
-
-          },
+          headers:
+            headersProtegidos(),
 
           body:
             JSON.stringify(
@@ -1535,18 +2355,21 @@ async function salvarConfiguracoes(
       );
 
 
+    verificarAutorizacao(
+      response
+    );
+
+
     const data =
       await response.json();
 
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
 
         data.error ||
-        "Erro ao salvar"
+        "Erro ao salvar."
 
       );
 
@@ -1558,8 +2381,11 @@ async function salvarConfiguracoes(
     ) {
 
       mostrarStatus(
+
         "✅ Configurações salvas no servidor!",
+
         "ok"
+
       );
 
     }
@@ -1575,10 +2401,17 @@ async function salvarConfiguracoes(
     );
 
 
-    mostrarStatus(
-      "❌ Erro ao salvar configurações.",
-      "erro"
-    );
+    if (panelSecret) {
+
+      mostrarStatus(
+
+        "❌ Erro ao salvar configurações.",
+
+        "erro"
+
+      );
+
+    }
 
 
     return false;
@@ -1588,14 +2421,23 @@ async function salvarConfiguracoes(
 }
 
 
-// =====================================
+// ==========================================
 // TESTAR ALERTA
-// =====================================
+// ==========================================
 
 async function testar(
   tier,
   botao
 ) {
+
+  if (!panelSecret) {
+
+    mostrarLogin();
+
+    return;
+
+  }
+
 
   const textoOriginal =
     botao.textContent;
@@ -1610,15 +2452,15 @@ async function testar(
 
 
   mostrarStatus(
+
     "Preparando alerta de teste...",
+
     "carregando"
+
   );
 
 
   try {
-
-    // Primeiro salva as configurações
-    // atuais do painel.
 
     const salvo =
       await salvarConfiguracoes(
@@ -1626,12 +2468,10 @@ async function testar(
       );
 
 
-    if (
-      !salvo
-    ) {
+    if (!salvo) {
 
       throw new Error(
-        "Não foi possível salvar a configuração."
+        "Não foi possível salvar."
       );
 
     }
@@ -1647,12 +2487,8 @@ async function testar(
           method:
             "POST",
 
-          headers: {
-
-            "Content-Type":
-              "application/json"
-
-          },
+          headers:
+            headersProtegidos(),
 
           body:
             JSON.stringify({
@@ -1666,18 +2502,21 @@ async function testar(
       );
 
 
+    verificarAutorizacao(
+      response
+    );
+
+
     const data =
       await response.json();
 
 
-    if (
-      !response.ok
-    ) {
+    if (!response.ok) {
 
       throw new Error(
 
         data.error ||
-        "Erro no teste"
+        "Erro no teste."
 
       );
 
@@ -1685,8 +2524,11 @@ async function testar(
 
 
     mostrarStatus(
+
       "✅ Alerta enviado! Veja o Streamlabs.",
+
       "ok"
+
     );
 
 
@@ -1697,10 +2539,18 @@ async function testar(
     );
 
 
-    mostrarStatus(
-      "❌ Não foi possível enviar o alerta de teste.",
-      "erro"
-    );
+    if (panelSecret) {
+
+      mostrarStatus(
+
+        "❌ Não foi possível enviar o alerta de teste.",
+
+        "erro"
+
+      );
+
+    }
+
 
   } finally {
 
@@ -1716,55 +2566,55 @@ async function testar(
 }
 
 
-// =====================================
-// RECARREGAR CONFIGURAÇÕES
-// =====================================
-
-function recarregarConfiguracoes() {
-
-  carregarConfiguracoes();
-
-}
-
-
-// =====================================
+// ==========================================
 // RESTAURAR PADRÃO
-// =====================================
+// ==========================================
 
 async function restaurarPadrao() {
 
   campos.volumeMeme.value =
     100;
 
+
   campos.volumeVoz.value =
     100;
+
 
   campos.memesAtivos.checked =
     true;
 
+
   campos.vozAtiva.checked =
     true;
+
 
   campos.duracao.value =
     12;
 
+
   campos.flashAtivo.checked =
     true;
+
 
   campos.particulasAtivas.checked =
     true;
 
+
   campos.somBasic.value =
     "/sounds/basico.mp3";
+
 
   campos.somMedium.value =
     "/sounds/medio.mp3";
 
+
   campos.somEpic.value =
     "/sounds/epico.mp3";
 
+
   campos.somSpecial.value =
     "/sounds/especial.mp3";
+
 
   campos.somLegendary.value =
     "/sounds/lendario.mp3";
@@ -1778,24 +2628,49 @@ async function restaurarPadrao() {
     "100%";
 
 
-  await salvarConfiguracoes();
+  const salvo =
+    await salvarConfiguracoes();
 
 
-  mostrarStatus(
-    "✅ Configurações padrão restauradas.",
-    "ok"
-  );
+  if (salvo) {
+
+    mostrarStatus(
+
+      "✅ Configurações padrão restauradas.",
+
+      "ok"
+
+    );
+
+  }
 
 }
 
 
-// =====================================
-// INICIAR
-// =====================================
+// ==========================================
+// INICIALIZAR PAINEL
+// ==========================================
 
-carregarConfiguracoes();
+async function iniciarPainel() {
+
+  if (!panelSecret) {
+
+    mostrarLogin();
+
+    return;
+
+  }
+
+
+  await carregarConfiguracoes();
+
+}
+
+
+iniciarPainel();
 
 </script>
 
 </body>
+
 </html>
