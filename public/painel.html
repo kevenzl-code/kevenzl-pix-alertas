@@ -3,844 +3,916 @@
 
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Painel KevenZL Pix</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color: white;
+
+  background:
+    radial-gradient(
+      circle at top,
+      #271542 0%,
+      #110b1b 35%,
+      #08070c 75%
+    );
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+.page {
+  width:
+    min(
+      1200px,
+      calc(100% - 32px)
+    );
+
+  margin: auto;
+
+  padding:
+    32px 0 60px;
+}
+
+.header {
+  display: flex;
 
-  <title>Painel KevenZL Pix</title>
+  justify-content:
+    space-between;
 
-  <style>
+  align-items:
+    center;
 
-    * {
-      box-sizing: border-box;
-    }
+  gap: 20px;
 
-    body {
-      margin: 0;
-      min-height: 100vh;
+  margin-bottom:
+    28px;
+}
 
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+.brand h1 {
+  margin: 0;
+}
 
-      color: #ffffff;
+.brand p {
+  color: #aaa2b4;
+}
 
-      background:
-        radial-gradient(
-          circle at top,
-          #271542 0%,
-          #110b1b 35%,
-          #08070c 75%
-        );
-    }
+.grid {
+  display: grid;
 
-    button,
-    input,
-    select {
-      font-family: inherit;
-    }
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
 
-    .page {
-      width:
-        min(
-          1200px,
-          calc(100% - 32px)
-        );
+  gap: 20px;
+}
 
-      margin: 0 auto;
+.card {
+  background:
+    rgba(
+      18,
+      14,
+      25,
+      .94
+    );
 
-      padding:
-        32px 0 60px;
-    }
+  border:
+    1px solid #30263c;
 
-    .header {
-      display: flex;
+  border-radius:
+    16px;
 
-      align-items: center;
+  padding:
+    22px;
+}
 
-      justify-content:
-        space-between;
+.card.full {
+  grid-column:
+    1 / -1;
+}
 
-      gap: 20px;
+.card h2 {
+  margin:
+    0 0 20px;
+}
 
-      margin-bottom: 28px;
-    }
+.field {
+  margin-bottom:
+    20px;
+}
 
-    .brand h1 {
-      margin: 0;
-      font-size: 32px;
-    }
+.label-row {
+  display: flex;
 
-    .brand p {
-      margin: 8px 0 0;
-      color: #aaa2b4;
-    }
+  justify-content:
+    space-between;
 
-    .logout {
-      border: 1px solid #3b3148;
+  margin-bottom:
+    8px;
+}
 
-      background: #16111f;
-      color: white;
+.value {
+  color:
+    #c084fc;
 
-      border-radius: 10px;
+  font-weight:
+    bold;
+}
 
-      padding: 11px 18px;
+input[type="range"] {
+  width: 100%;
 
-      cursor: pointer;
-    }
+  accent-color:
+    #a855f7;
+}
 
-    .grid {
-      display: grid;
+select,
+.search-input {
+  width: 100%;
 
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0, 1fr)
-        );
+  padding:
+    12px;
 
-      gap: 20px;
-    }
+  border-radius:
+    10px;
 
-    .card {
-      background:
-        rgba(
-          18,
-          14,
-          25,
-          .93
-        );
+  border:
+    1px solid #3b3148;
 
-      border:
-        1px solid #30263c;
+  color: white;
 
-      border-radius: 16px;
+  background:
+    #0e0b13;
+}
 
-      padding: 22px;
+.toggle-row {
+  display: flex;
 
-      box-shadow:
-        0 15px 40px
-        rgba(
-          0,
-          0,
-          0,
-          .25
-        );
-    }
+  justify-content:
+    space-between;
 
-    .card.full {
-      grid-column:
-        1 / -1;
-    }
+  align-items:
+    center;
 
-    .card h2 {
-      margin: 0 0 20px;
-      font-size: 21px;
-    }
+  padding:
+    13px 0;
 
-    .field {
-      margin-bottom: 20px;
-    }
+  border-bottom:
+    1px solid #251e2e;
+}
 
-    .field:last-child {
-      margin-bottom: 0;
-    }
+.switch {
+  position:
+    relative;
 
-    .label-row {
-      display: flex;
+  width:
+    48px;
 
-      align-items: center;
+  height:
+    26px;
+}
 
-      justify-content:
-        space-between;
+.switch input {
+  display: none;
+}
 
-      gap: 15px;
+.slider {
+  position:
+    absolute;
 
-      margin-bottom: 9px;
-    }
+  inset: 0;
 
-    label {
-      color: #ded8e6;
-      font-weight: 600;
-    }
+  background:
+    #3b3441;
 
-    .value {
-      color: #cb8cff;
-      font-weight: 700;
-    }
+  border-radius:
+    30px;
 
-    input[type="range"] {
-      width: 100%;
-      accent-color: #a855f7;
-    }
+  cursor:
+    pointer;
+}
 
-    select,
-    .search-input {
-      width: 100%;
+.slider:before {
+  content: "";
 
-      border:
-        1px solid #3b3148;
+  position:
+    absolute;
 
-      background: #0e0b13;
-      color: white;
+  width:
+    20px;
 
-      border-radius: 10px;
+  height:
+    20px;
 
-      padding: 12px;
+  left: 3px;
+  top: 3px;
 
-      outline: none;
-    }
+  background:
+    white;
 
-    select:focus,
-    .search-input:focus {
-      border-color: #9333ea;
-    }
+  border-radius:
+    50%;
 
-    .toggle-row {
-      display: flex;
+  transition:
+    .2s;
+}
 
-      align-items: center;
+.switch input:checked +
+.slider {
+  background:
+    #9333ea;
+}
 
-      justify-content:
-        space-between;
+.switch input:checked +
+.slider:before {
+  transform:
+    translateX(22px);
+}
 
-      gap: 20px;
+.buttons {
+  display: flex;
 
-      padding: 13px 0;
+  flex-wrap:
+    wrap;
 
-      border-bottom:
-        1px solid #251e2e;
-    }
+  gap: 10px;
+}
 
-    .toggle-row:last-child {
-      border-bottom: 0;
-    }
+button {
+  border: none;
 
-    .switch {
-      position: relative;
+  border-radius:
+    10px;
 
-      width: 48px;
-      height: 26px;
+  padding:
+    11px 15px;
 
-      flex: 0 0 auto;
-    }
+  cursor:
+    pointer;
 
-    .switch input {
-      display: none;
-    }
+  font-weight:
+    bold;
 
-    .slider {
-      position: absolute;
-      inset: 0;
+  color: white;
 
-      cursor: pointer;
+  background:
+    #28212f;
+}
 
-      background: #3b3441;
+button:disabled {
+  opacity: .5;
 
-      border-radius: 30px;
+  cursor:
+    not-allowed;
+}
 
-      transition: .2s;
-    }
+.primary {
+  background:
+    linear-gradient(
+      135deg,
+      #9333ea,
+      #d946ef
+    );
+}
 
-    .slider::before {
-      content: "";
+.danger {
+  background:
+    #711827;
+}
 
-      position: absolute;
+.test-basic {
+  background:
+    #eee;
 
-      width: 20px;
-      height: 20px;
+  color:
+    #111;
+}
 
-      top: 3px;
-      left: 3px;
+.test-medium {
+  background:
+    #9333ea;
+}
 
-      border-radius: 50%;
+.test-epic {
+  background:
+    #4338ca;
+}
 
-      background: white;
+.test-special {
+  background:
+    #b96e0a;
+}
 
-      transition: .2s;
-    }
+.test-legendary {
+  background:
+    #8c1324;
+}
 
-    .switch input:checked +
-    .slider {
-      background: #9333ea;
-    }
+.status {
+  min-height:
+    24px;
 
-    .switch input:checked +
-    .slider::before {
-      transform:
-        translateX(22px);
-    }
+  margin-top:
+    14px;
 
-    .buttons {
-      display: flex;
+  color:
+    #aaa2b4;
+}
 
-      flex-wrap: wrap;
+.status.success {
+  color:
+    #68e6a1;
+}
 
-      gap: 10px;
-    }
+.status.error {
+  color:
+    #ff8c9d;
+}
 
-    button {
-      border: 0;
 
-      border-radius: 10px;
+/* HISTÓRICO */
 
-      padding: 12px 16px;
+.history-header {
+  display: flex;
 
-      font-weight: 700;
+  justify-content:
+    space-between;
 
-      cursor: pointer;
+  align-items:
+    center;
 
-      transition:
-        transform .15s,
-        opacity .15s;
-    }
+  gap: 12px;
 
-    button:hover {
-      transform:
-        translateY(-1px);
-    }
+  flex-wrap:
+    wrap;
 
-    button:disabled {
-      cursor: not-allowed;
+  margin-bottom:
+    20px;
+}
 
-      opacity: .55;
+.history-header h2 {
+  margin: 0;
+}
 
-      transform: none;
-    }
+.history-header-actions {
+  display: flex;
 
-    .primary {
-      background:
-        linear-gradient(
-          135deg,
-          #9333ea,
-          #d946ef
-        );
+  gap: 8px;
 
-      color: white;
-    }
+  flex-wrap:
+    wrap;
+}
 
-    .secondary {
-      background: #26202e;
-      color: white;
-    }
+.clear-tests {
+  background:
+    #5d1620;
 
-    .danger {
-      background: #3b1620;
-      color: #ff9ba9;
-    }
+  border:
+    1px solid #a53042;
 
-    .test-basic {
-      background: #eeeeee;
-      color: #111111;
-    }
+  color:
+    #ffb0bb;
+}
 
-    .test-medium {
-      background: #a855f7;
-      color: white;
-    }
+.stats {
+  display: grid;
 
-    .test-epic {
-      background: #5b5cf0;
-      color: white;
-    }
+  grid-template-columns:
+    repeat(
+      4,
+      1fr
+    );
 
-    .test-special {
-      background: #d98c18;
-      color: white;
-    }
+  gap:
+    12px;
 
-    .test-legendary {
-      background: #a4162b;
-      color: white;
-    }
+  margin-bottom:
+    20px;
+}
 
-    .status {
-      min-height: 24px;
+.stat {
+  padding:
+    16px;
 
-      margin-top: 15px;
+  border-radius:
+    13px;
 
-      color: #b8afc2;
-    }
+  border:
+    1px solid #30283a;
 
-    .status.success {
-      color: #6ee7a8;
-    }
+  background:
+    #0d0a12;
+}
 
-    .status.error {
-      color: #ff8c9d;
-    }
+.stat span {
+  display: block;
 
+  color:
+    #9c94a5;
 
-    /* HISTÓRICO */
+  font-size:
+    12px;
 
-    .history-header {
-      display: flex;
+  margin-bottom:
+    7px;
+}
 
-      align-items: center;
+.stat strong {
+  font-size:
+    22px;
+}
 
-      justify-content:
-        space-between;
+.total-money {
+  color:
+    #7ce8a9;
+}
 
-      gap: 15px;
+.total-tests {
+  color:
+    #f0b35f;
+}
 
-      margin-bottom: 20px;
-    }
 
-    .history-header h2 {
-      margin: 0;
-    }
+/* FILTROS */
 
-    .stats {
-      display: grid;
+.filters {
+  display: grid;
 
-      grid-template-columns:
-        repeat(
-          4,
-          minmax(0, 1fr)
-        );
+  grid-template-columns:
+    2fr 1fr 1fr 1fr;
 
-      gap: 14px;
+  gap:
+    10px;
 
-      margin-bottom: 20px;
-    }
+  margin-bottom:
+    15px;
+}
 
-    .stat {
-      background: #0d0a12;
+.filter label {
+  display: block;
 
-      border:
-        1px solid #2f2738;
+  margin-bottom:
+    6px;
 
-      border-radius: 14px;
+  color:
+    #9b92a3;
 
-      padding: 17px;
-    }
+  font-size:
+    12px;
+}
 
-    .stat span {
-      display: block;
+.result-info {
+  color:
+    #8d8595;
 
-      color: #a69ead;
+  font-size:
+    13px;
 
-      font-size: 13px;
+  margin-bottom:
+    15px;
+}
 
-      margin-bottom: 8px;
-    }
 
-    .stat strong {
-      display: block;
+/* DOAÇÕES */
 
-      font-size: 24px;
-    }
+.history-list {
+  display: flex;
 
-    #totalRecebido {
-      color: #83efb2;
-    }
+  flex-direction:
+    column;
 
+  gap:
+    12px;
+}
 
-    /* FILTROS */
+.donation {
+  display: grid;
 
-    .history-filters {
-      display: grid;
+  grid-template-columns:
+    1fr auto;
 
-      grid-template-columns:
-        2fr 1fr 1fr 1fr;
+  gap:
+    16px;
 
-      gap: 12px;
+  padding:
+    17px;
 
-      margin-bottom: 14px;
-    }
+  border:
+    1px solid #30283a;
 
-    .filter-field label {
-      display: block;
+  border-radius:
+    14px;
 
-      font-size: 12px;
+  background:
+    #0d0a12;
+}
 
-      color: #93899d;
+.donation.test-donation {
+  border-color:
+    #7e541d;
 
-      margin-bottom: 7px;
-    }
+  background:
+    linear-gradient(
+      90deg,
+      rgba(
+        110,
+        69,
+        14,
+        .16
+      ),
+      #0d0a12
+    );
+}
 
-    .history-result-info {
-      color: #918898;
+.donation-top {
+  display: flex;
 
-      font-size: 13px;
+  flex-wrap:
+    wrap;
 
-      margin-bottom: 16px;
-    }
+  gap:
+    8px;
 
+  align-items:
+    center;
 
-    /* DOAÇÃO */
+  margin-bottom:
+    8px;
+}
 
-    .history-list {
-      display: flex;
+.donation-name {
+  font-size:
+    17px;
 
-      flex-direction: column;
+  font-weight:
+    bold;
+}
 
-      gap: 12px;
-    }
+.badge {
+  display:
+    inline-flex;
 
-    .donation {
-      display: grid;
+  padding:
+    5px 9px;
 
-      grid-template-columns:
-        1fr auto;
+  border-radius:
+    999px;
 
-      gap: 18px;
+  font-size:
+    10px;
 
-      padding: 17px;
+  font-weight:
+    bold;
 
-      border-radius: 14px;
+  text-transform:
+    uppercase;
+}
 
-      border:
-        1px solid #2d2635;
+.tier-basic {
+  color: #111;
 
-      background: #0d0a12;
-    }
+  background:
+    #eee;
+}
 
-    .donation-top {
-      display: flex;
+.tier-medium {
+  background:
+    #7e22ce;
+}
 
-      align-items: center;
+.tier-epic {
+  background:
+    #4338ca;
+}
 
-      flex-wrap: wrap;
+.tier-special {
+  background:
+    #b96e0a;
+}
 
-      gap: 10px;
+.tier-legendary {
+  background:
+    #8c1324;
+}
 
-      margin-bottom: 8px;
-    }
+.test-badge {
+  color:
+    #231600;
 
-    .donation-name {
-      font-size: 17px;
+  background:
+    #f1b54d;
+}
 
-      font-weight: 700;
-    }
+.donation-message {
+  color:
+    #c4bdcc;
 
-    .donation-message {
-      color: #c6becd;
+  line-height:
+    1.45;
+}
 
-      line-height: 1.45;
+.donation-info {
+  display: flex;
 
-      overflow-wrap: anywhere;
-    }
+  flex-wrap:
+    wrap;
 
-    .donation-info {
-      margin-top: 10px;
+  gap:
+    12px;
 
-      display: flex;
+  margin-top:
+    10px;
 
-      flex-wrap: wrap;
+  color:
+    #8f8798;
 
-      gap: 12px;
+  font-size:
+    13px;
+}
 
-      color: #8f8798;
+.paid {
+  color:
+    #69e9a0;
+}
 
-      font-size: 13px;
-    }
+.pending {
+  color:
+    #efca6b;
+}
 
-    .order-id {
-      margin-top: 12px;
+.order-id {
+  margin-top:
+    11px;
 
-      color: #6f6876;
+  color:
+    #696270;
 
-      font-size: 11px;
+  font-size:
+    11px;
 
-      overflow-wrap: anywhere;
-    }
+  overflow-wrap:
+    anywhere;
+}
 
-    .donation-right {
-      display: flex;
+.donation-right {
+  min-width:
+    160px;
 
-      flex-direction: column;
+  display: flex;
 
-      align-items: flex-end;
+  flex-direction:
+    column;
 
-      gap: 10px;
+  gap:
+    9px;
 
-      min-width: 155px;
-    }
+  align-items:
+    flex-end;
+}
 
-    .donation-value {
-      font-size: 20px;
+.donation-value {
+  font-size:
+    20px;
 
-      font-weight: 800;
+  font-weight:
+    bold;
+}
 
-      white-space: nowrap;
+.donation-actions {
+  width:
+    100%;
 
-      text-align: right;
-    }
+  display: flex;
 
-    .donation-actions {
-      display: flex;
+  flex-direction:
+    column;
 
-      flex-direction: column;
+  gap:
+    7px;
+}
 
-      width: 100%;
+.repeat-btn {
+  background:
+    #6d28d9;
+}
 
-      gap: 8px;
-    }
+.copy-btn {
+  background:
+    #28212f;
+}
 
-    .repeat-button,
-    .copy-button {
-      width: 100%;
+.delete-test-btn {
+  background:
+    #651a25;
 
-      padding: 9px 12px;
+  color:
+    #ffabb7;
 
-      font-size: 12px;
-    }
+  border:
+    1px solid #8c2939;
+}
 
-    .repeat-button {
-      background:
-        linear-gradient(
-          135deg,
-          #6d28d9,
-          #9333ea
-        );
+.empty {
+  padding:
+    28px;
 
-      color: white;
-    }
+  text-align:
+    center;
 
-    .copy-button {
-      background: #24202b;
-      color: #d5cddd;
+  color:
+    #8f8798;
 
-      border:
-        1px solid #3b3444;
-    }
+  border:
+    1px dashed #3b3344;
 
-    .badge {
-      display: inline-flex;
+  border-radius:
+    13px;
+}
 
-      align-items: center;
 
-      justify-content: center;
+/* LOGIN */
 
-      border-radius: 999px;
+.login {
+  position:
+    fixed;
 
-      padding: 5px 10px;
+  inset: 0;
 
-      font-size: 11px;
+  z-index:
+    999;
 
-      font-weight: 800;
+  display: flex;
 
-      text-transform: uppercase;
-    }
+  justify-content:
+    center;
 
-    .tier-basic {
-      background: #e6e6e6;
-      color: #111;
-    }
+  align-items:
+    center;
 
-    .tier-medium {
-      background: #7e22ce;
-      color: white;
-    }
+  padding:
+    20px;
 
-    .tier-epic {
-      background: #4338ca;
-      color: white;
-    }
+  background:
+    #08070c;
+}
 
-    .tier-special {
-      background: #b96e0a;
-      color: white;
-    }
+.login.hidden {
+  display: none;
+}
 
-    .tier-legendary {
-      background: #8c1324;
-      color: white;
-    }
+.login-box {
+  width:
+    min(
+      420px,
+      100%
+    );
 
-    .paid {
-      color: #67e8a0;
-    }
+  padding:
+    27px;
 
-    .pending {
-      color: #f8d069;
-    }
+  border:
+    1px solid #352941;
 
-    .empty {
-      padding: 30px;
+  border-radius:
+    17px;
 
-      text-align: center;
+  background:
+    #120e19;
+}
 
-      color: #8f8798;
+.login-box input {
+  width:
+    100%;
 
-      border:
-        1px dashed #3a3044;
+  padding:
+    13px;
 
-      border-radius: 14px;
-    }
+  margin-bottom:
+    12px;
 
+  color:
+    white;
 
-    /* LOGIN */
+  border:
+    1px solid #3b3148;
 
-    .login {
-      position: fixed;
+  border-radius:
+    10px;
 
-      inset: 0;
+  background:
+    #09070d;
+}
 
-      z-index: 9999;
+.login-box button {
+  width:
+    100%;
+}
 
-      display: flex;
+.login-error {
+  min-height:
+    20px;
 
-      align-items: center;
+  margin-top:
+    12px;
 
-      justify-content: center;
+  color:
+    #ff8697;
+}
 
-      padding: 20px;
 
-      background: #08070c;
-    }
+/* RESPONSIVO */
 
-    .login.hidden {
-      display: none;
-    }
+@media (
+  max-width: 850px
+) {
 
-    .login-box {
-      width:
-        min(
-          420px,
-          100%
-        );
+  .stats {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+  }
 
-      border:
-        1px solid #352941;
+  .filters {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+  }
 
-      border-radius: 18px;
+}
 
-      padding: 28px;
+@media (
+  max-width: 650px
+) {
 
-      background: #120e19;
+  .grid {
+    grid-template-columns:
+      1fr;
+  }
 
-      box-shadow:
-        0 25px 80px
-        rgba(
-          0,
-          0,
-          0,
-          .5
-        );
-    }
+  .card.full {
+    grid-column:
+      auto;
+  }
 
-    .login-box h1 {
-      margin: 0 0 8px;
-    }
+  .stats,
+  .filters {
+    grid-template-columns:
+      1fr;
+  }
 
-    .login-box p {
-      margin: 0 0 22px;
+  .donation {
+    grid-template-columns:
+      1fr;
+  }
 
-      color: #9f96a8;
-    }
+  .donation-right {
+    align-items:
+      stretch;
 
-    .login-box input {
-      width: 100%;
+    width:
+      100%;
+  }
 
-      padding: 13px;
+  .header {
+    align-items:
+      flex-start;
 
-      border-radius: 10px;
+    flex-direction:
+      column;
+  }
 
-      border:
-        1px solid #3b3148;
+}
 
-      background: #09070d;
-
-      color: white;
-
-      outline: none;
-
-      margin-bottom: 12px;
-    }
-
-    .login-box button {
-      width: 100%;
-    }
-
-    .login-error {
-      color: #ff8697;
-
-      margin-top: 13px;
-
-      min-height: 20px;
-
-      font-size: 14px;
-    }
-
-
-    @media (
-      max-width: 900px
-    ) {
-
-      .stats {
-        grid-template-columns:
-          repeat(
-            2,
-            1fr
-          );
-      }
-
-      .history-filters {
-        grid-template-columns:
-          repeat(
-            2,
-            1fr
-          );
-      }
-
-    }
-
-
-    @media (
-      max-width: 650px
-    ) {
-
-      .grid {
-        grid-template-columns:
-          1fr;
-      }
-
-      .card.full {
-        grid-column: auto;
-      }
-
-      .stats {
-        grid-template-columns:
-          1fr;
-      }
-
-      .history-filters {
-        grid-template-columns:
-          1fr;
-      }
-
-      .donation {
-        grid-template-columns:
-          1fr;
-      }
-
-      .donation-right {
-        align-items:
-          flex-start;
-
-        width: 100%;
-      }
-
-      .donation-value {
-        text-align: left;
-      }
-
-      .header {
-        align-items:
-          flex-start;
-
-        flex-direction:
-          column;
-      }
-
-    }
-
-  </style>
+</style>
 
 </head>
 
@@ -848,2530 +920,2515 @@
 <body>
 
 
-  <!-- LOGIN -->
+<div
+  class="login"
+  id="loginScreen"
+>
 
-  <div
-    class="login"
-    id="loginScreen"
-  >
+  <div class="login-box">
 
-    <div class="login-box">
+    <h1>
+      🔐 KevenZL Pix
+    </h1>
 
-      <h1>
-        🔐 KevenZL Pix
-      </h1>
+    <p>
+      Entre com a senha do painel.
+    </p>
 
-      <p>
-        Entre com a senha do painel.
-      </p>
+    <input
+      id="passwordInput"
+      type="password"
+      placeholder="Senha do painel"
+    >
 
-      <input
-        type="password"
-        id="passwordInput"
-        placeholder="Senha do painel"
-        autocomplete="current-password"
-      >
+    <button
+      class="primary"
+      id="loginButton"
+    >
+      Entrar
+    </button>
 
-      <button
-        class="primary"
-        id="loginButton"
-      >
-        Entrar
-      </button>
-
-      <div
-        class="login-error"
-        id="loginError"
-      ></div>
-
-    </div>
+    <div
+      class="login-error"
+      id="loginError"
+    ></div>
 
   </div>
 
+</div>
 
-  <!-- PAINEL -->
 
-  <main class="page">
+<main class="page">
 
-    <header class="header">
+<header class="header">
 
-      <div class="brand">
+  <div class="brand">
 
-        <h1>
-          KevenZL Pix Alertas
-        </h1>
+    <h1>
+      KevenZL Pix Alertas
+    </h1>
 
-        <p>
-          Painel de controle da live
-        </p>
+    <p>
+      Painel de controle da live
+    </p>
 
-      </div>
+  </div>
 
-      <button
-        class="logout"
-        id="logoutButton"
-      >
-        Sair
-      </button>
+  <button id="logoutButton">
+    Sair
+  </button>
 
-    </header>
+</header>
 
 
-    <section class="grid">
+<section class="grid">
 
 
-      <!-- ÁUDIO -->
+<!-- ÁUDIO -->
 
-      <div class="card">
+<div class="card">
 
-        <h2>
-          🔊 Áudio
-        </h2>
+<h2>🔊 Áudio</h2>
 
-        <div class="field">
+<div class="field">
 
-          <div class="label-row">
+  <div class="label-row">
 
-            <label for="volumeMeme">
-              Volume do meme
-            </label>
+    <label>
+      Volume do meme
+    </label>
 
-            <span
-              class="value"
-              id="volumeMemeValue"
-            >
-              100%
-            </span>
+    <span
+      class="value"
+      id="volumeMemeValue"
+    >
+      100%
+    </span>
 
-          </div>
+  </div>
 
-          <input
-            id="volumeMeme"
-            type="range"
-            min="0"
-            max="100"
-            value="100"
-          >
+  <input
+    id="volumeMeme"
+    type="range"
+    min="0"
+    max="100"
+  >
 
-        </div>
+</div>
 
 
-        <div class="field">
+<div class="field">
 
-          <div class="label-row">
+  <div class="label-row">
 
-            <label for="volumeVoz">
-              Volume da voz IA
-            </label>
+    <label>
+      Volume da voz IA
+    </label>
 
-            <span
-              class="value"
-              id="volumeVozValue"
-            >
-              100%
-            </span>
+    <span
+      class="value"
+      id="volumeVozValue"
+    >
+      100%
+    </span>
 
-          </div>
+  </div>
 
-          <input
-            id="volumeVoz"
-            type="range"
-            min="0"
-            max="100"
-            value="100"
-          >
+  <input
+    id="volumeVoz"
+    type="range"
+    min="0"
+    max="100"
+  >
 
-        </div>
+</div>
 
-      </div>
+</div>
 
 
-      <!-- EFEITOS -->
+<!-- EFEITOS -->
 
-      <div class="card">
+<div class="card">
 
-        <h2>
-          ⚡ Efeitos
-        </h2>
+<h2>⚡ Efeitos</h2>
 
+<div class="toggle-row">
 
-        <div class="toggle-row">
+  <span>Memes</span>
 
-          <span>
-            Memes
-          </span>
+  <label class="switch">
 
-          <label class="switch">
+    <input
+      id="memesAtivos"
+      type="checkbox"
+    >
 
-            <input
-              id="memesAtivos"
-              type="checkbox"
-              checked
-            >
+    <span class="slider"></span>
 
-            <span class="slider"></span>
+  </label>
 
-          </label>
+</div>
 
-        </div>
 
+<div class="toggle-row">
 
-        <div class="toggle-row">
+  <span>Voz IA</span>
 
-          <span>
-            Voz IA
-          </span>
+  <label class="switch">
 
-          <label class="switch">
+    <input
+      id="vozAtiva"
+      type="checkbox"
+    >
 
-            <input
-              id="vozAtiva"
-              type="checkbox"
-              checked
-            >
+    <span class="slider"></span>
 
-            <span class="slider"></span>
+  </label>
 
-          </label>
+</div>
 
-        </div>
 
+<div class="toggle-row">
 
-        <div class="toggle-row">
+  <span>Flash</span>
 
-          <span>
-            Flash
-          </span>
+  <label class="switch">
 
-          <label class="switch">
+    <input
+      id="flashAtivo"
+      type="checkbox"
+    >
 
-            <input
-              id="flashAtivo"
-              type="checkbox"
-              checked
-            >
+    <span class="slider"></span>
 
-            <span class="slider"></span>
+  </label>
 
-          </label>
+</div>
 
-        </div>
 
+<div class="toggle-row">
 
-        <div class="toggle-row">
+  <span>Partículas</span>
 
-          <span>
-            Partículas
-          </span>
+  <label class="switch">
 
-          <label class="switch">
+    <input
+      id="particulasAtivas"
+      type="checkbox"
+    >
 
-            <input
-              id="particulasAtivas"
-              type="checkbox"
-              checked
-            >
+    <span class="slider"></span>
 
-            <span class="slider"></span>
+  </label>
 
-          </label>
+</div>
 
-        </div>
+</div>
 
-      </div>
 
+<!-- DURAÇÃO -->
 
-      <!-- DURAÇÃO -->
+<div class="card">
 
-      <div class="card">
+<h2>⏱️ Duração</h2>
 
-        <h2>
-          ⏱️ Duração
-        </h2>
+<div class="label-row">
 
-        <div class="field">
+  <label>
+    Tempo do alerta
+  </label>
 
-          <div class="label-row">
+  <span
+    class="value"
+    id="duracaoValue"
+  >
+    12s
+  </span>
 
-            <label for="duracao">
-              Tempo do alerta
-            </label>
+</div>
 
-            <span
-              class="value"
-              id="duracaoValue"
-            >
-              12s
-            </span>
+<input
+  id="duracao"
+  type="range"
+  min="3"
+  max="60"
+>
 
-          </div>
+</div>
 
-          <input
-            id="duracao"
-            type="range"
-            min="3"
-            max="60"
-            value="12"
-          >
 
-        </div>
+<!-- SONS -->
 
-      </div>
+<div class="card">
 
+<h2>🎵 Sons por valor</h2>
 
-      <!-- SONS -->
+<div class="field">
 
-      <div class="card">
+<label>
+  R$ 1 a R$ 9,99
+</label>
 
-        <h2>
-          🎵 Sons por valor
-        </h2>
+<select id="somBasic">
 
+<option value="/sounds/basico.mp3">
+Básico
+</option>
 
-        <div class="field">
+<option value="/sounds/medio.mp3">
+Médio
+</option>
 
-          <label>
-            R$ 1 a R$ 9,99
-          </label>
+<option value="/sounds/epico.mp3">
+Épico
+</option>
 
-          <select id="somBasic">
+<option value="/sounds/especial.mp3">
+Especial
+</option>
 
-            <option value="/sounds/basico.mp3">
-              Básico
-            </option>
+<option value="/sounds/lendario.mp3">
+Lendário
+</option>
 
-            <option value="/sounds/medio.mp3">
-              Médio
-            </option>
+</select>
 
-            <option value="/sounds/epico.mp3">
-              Épico
-            </option>
+</div>
 
-            <option value="/sounds/especial.mp3">
-              Especial
-            </option>
 
-            <option value="/sounds/lendario.mp3">
-              Lendário
-            </option>
+<div class="field">
 
-          </select>
+<label>
+R$ 10 a R$ 24,99
+</label>
 
-        </div>
+<select id="somMedium">
 
+<option value="/sounds/medio.mp3">
+Médio
+</option>
 
-        <div class="field">
+<option value="/sounds/basico.mp3">
+Básico
+</option>
 
-          <label>
-            R$ 10 a R$ 24,99
-          </label>
+<option value="/sounds/epico.mp3">
+Épico
+</option>
 
-          <select id="somMedium">
+<option value="/sounds/especial.mp3">
+Especial
+</option>
 
-            <option value="/sounds/medio.mp3">
-              Médio
-            </option>
+<option value="/sounds/lendario.mp3">
+Lendário
+</option>
 
-            <option value="/sounds/basico.mp3">
-              Básico
-            </option>
+</select>
 
-            <option value="/sounds/epico.mp3">
-              Épico
-            </option>
+</div>
 
-            <option value="/sounds/especial.mp3">
-              Especial
-            </option>
 
-            <option value="/sounds/lendario.mp3">
-              Lendário
-            </option>
+<div class="field">
 
-          </select>
+<label>
+R$ 25 a R$ 49,99
+</label>
 
-        </div>
+<select id="somEpic">
 
+<option value="/sounds/epico.mp3">
+Épico
+</option>
 
-        <div class="field">
+<option value="/sounds/basico.mp3">
+Básico
+</option>
 
-          <label>
-            R$ 25 a R$ 49,99
-          </label>
+<option value="/sounds/medio.mp3">
+Médio
+</option>
 
-          <select id="somEpic">
+<option value="/sounds/especial.mp3">
+Especial
+</option>
 
-            <option value="/sounds/epico.mp3">
-              Épico
-            </option>
+<option value="/sounds/lendario.mp3">
+Lendário
+</option>
 
-            <option value="/sounds/basico.mp3">
-              Básico
-            </option>
+</select>
 
-            <option value="/sounds/medio.mp3">
-              Médio
-            </option>
+</div>
 
-            <option value="/sounds/especial.mp3">
-              Especial
-            </option>
 
-            <option value="/sounds/lendario.mp3">
-              Lendário
-            </option>
+<div class="field">
 
-          </select>
+<label>
+R$ 50 a R$ 99,99
+</label>
 
-        </div>
+<select id="somSpecial">
 
+<option value="/sounds/especial.mp3">
+Especial
+</option>
 
-        <div class="field">
+<option value="/sounds/basico.mp3">
+Básico
+</option>
 
-          <label>
-            R$ 50 a R$ 99,99
-          </label>
+<option value="/sounds/medio.mp3">
+Médio
+</option>
 
-          <select id="somSpecial">
+<option value="/sounds/epico.mp3">
+Épico
+</option>
 
-            <option value="/sounds/especial.mp3">
-              Especial
-            </option>
+<option value="/sounds/lendario.mp3">
+Lendário
+</option>
 
-            <option value="/sounds/basico.mp3">
-              Básico
-            </option>
+</select>
 
-            <option value="/sounds/medio.mp3">
-              Médio
-            </option>
+</div>
 
-            <option value="/sounds/epico.mp3">
-              Épico
-            </option>
 
-            <option value="/sounds/lendario.mp3">
-              Lendário
-            </option>
+<div class="field">
 
-          </select>
+<label>
+R$ 100+
+</label>
 
-        </div>
+<select id="somLegendary">
 
+<option value="/sounds/lendario.mp3">
+Lendário
+</option>
 
-        <div class="field">
+<option value="/sounds/basico.mp3">
+Básico
+</option>
 
-          <label>
-            R$ 100 ou mais
-          </label>
+<option value="/sounds/medio.mp3">
+Médio
+</option>
 
-          <select id="somLegendary">
+<option value="/sounds/epico.mp3">
+Épico
+</option>
 
-            <option value="/sounds/lendario.mp3">
-              Lendário
-            </option>
+<option value="/sounds/especial.mp3">
+Especial
+</option>
 
-            <option value="/sounds/basico.mp3">
-              Básico
-            </option>
+</select>
 
-            <option value="/sounds/medio.mp3">
-              Médio
-            </option>
+</div>
 
-            <option value="/sounds/epico.mp3">
-              Épico
-            </option>
+</div>
 
-            <option value="/sounds/especial.mp3">
-              Especial
-            </option>
 
-          </select>
+<!-- TESTES -->
 
-        </div>
+<div class="card full">
 
-      </div>
+<h2>
+🧪 Testar alertas
+</h2>
 
+<div class="buttons">
 
-      <!-- TESTES -->
+<button
+class="test-basic test-button"
+data-tier="basic"
+>
+Testar R$ 5
+</button>
 
-      <div class="card full">
+<button
+class="test-medium test-button"
+data-tier="medium"
+>
+Testar R$ 15
+</button>
 
-        <h2>
-          🧪 Testar alertas
-        </h2>
+<button
+class="test-epic test-button"
+data-tier="epic"
+>
+Testar R$ 30
+</button>
 
-        <div class="buttons">
+<button
+class="test-special test-button"
+data-tier="special"
+>
+Testar R$ 50
+</button>
 
-          <button
-            class="test-basic test-button"
-            data-tier="basic"
-          >
-            Testar R$ 5
-          </button>
+<button
+class="test-legendary test-button"
+data-tier="legendary"
+>
+Testar R$ 100
+</button>
 
-          <button
-            class="test-medium test-button"
-            data-tier="medium"
-          >
-            Testar R$ 15
-          </button>
+</div>
 
-          <button
-            class="test-epic test-button"
-            data-tier="epic"
-          >
-            Testar R$ 30
-          </button>
+</div>
 
-          <button
-            class="test-special test-button"
-            data-tier="special"
-          >
-            Testar R$ 50
-          </button>
 
-          <button
-            class="test-legendary test-button"
-            data-tier="legendary"
-          >
-            Testar R$ 100
-          </button>
+<!-- SALVAR -->
 
-        </div>
+<div class="card full">
 
-      </div>
+<div class="buttons">
 
+<button
+class="primary"
+id="saveButton"
+>
+Salvar configurações
+</button>
 
-      <!-- SALVAR -->
+<button id="reloadButton">
+Recarregar
+</button>
 
-      <div class="card full">
+<button
+class="danger"
+id="defaultButton"
+>
+Restaurar padrão
+</button>
 
-        <div class="buttons">
+</div>
 
-          <button
-            class="primary"
-            id="saveButton"
-          >
-            Salvar configurações
-          </button>
+<div
+class="status"
+id="status"
+></div>
 
-          <button
-            class="secondary"
-            id="reloadButton"
-          >
-            Recarregar
-          </button>
+</div>
 
-          <button
-            class="danger"
-            id="defaultButton"
-          >
-            Restaurar padrão
-          </button>
 
-        </div>
+<!-- HISTÓRICO -->
 
-        <div
-          class="status"
-          id="status"
-        ></div>
+<div class="card full">
 
-      </div>
+<div class="history-header">
 
+<h2>
+💰 Histórico de Doações
+</h2>
 
-      <!-- HISTÓRICO -->
+<div class="history-header-actions">
 
-      <div class="card full">
+<button
+id="refreshHistoryButton"
+>
+↻ Atualizar
+</button>
 
-        <div class="history-header">
+<button
+class="clear-tests"
+id="clearTestsButton"
+>
+🧹 Limpar testes
+</button>
 
-          <h2>
-            💰 Histórico de Doações
-          </h2>
+</div>
 
-          <button
-            class="secondary"
-            id="refreshHistoryButton"
-          >
-            ↻ Atualizar
-          </button>
+</div>
 
-        </div>
 
+<div class="stats">
 
-        <div class="stats">
+<div class="stat">
 
-          <div class="stat">
+<span>
+Total real recebido
+</span>
 
-            <span>
-              Total recebido
-            </span>
+<strong
+class="total-money"
+id="totalRecebido"
+>
+R$ 0,00
+</strong>
 
-            <strong id="totalRecebido">
-              R$ 0,00
-            </strong>
+</div>
 
-          </div>
 
+<div class="stat">
 
-          <div class="stat">
+<span>
+Doações reais pagas
+</span>
 
-            <span>
-              Doações pagas
-            </span>
+<strong id="totalPagas">
+0
+</strong>
 
-            <strong id="totalPagas">
-              0
-            </strong>
+</div>
 
-          </div>
 
+<div class="stat">
 
-          <div class="stat">
+<span>
+Registros carregados
+</span>
 
-            <span>
-              Registros carregados
-            </span>
+<strong id="totalRegistros">
+0
+</strong>
 
-            <strong id="totalRegistros">
-              0
-            </strong>
+</div>
 
-          </div>
 
+<div class="stat">
 
-          <div class="stat">
+<span>
+Registros de teste
+</span>
 
-            <span>
-              Resultados exibidos
-            </span>
+<strong
+class="total-tests"
+id="totalTestes"
+>
+0
+</strong>
 
-            <strong id="resultadosExibidos">
-              0
-            </strong>
+</div>
 
-          </div>
+</div>
 
-        </div>
 
+<!-- FILTROS -->
 
-        <!-- FILTROS -->
+<div class="filters">
 
-        <div class="history-filters">
+<div class="filter">
 
-          <div class="filter-field">
+<label>
+Buscar
+</label>
 
-            <label for="historySearch">
-              Buscar
-            </label>
+<input
+class="search-input"
+id="historySearch"
+placeholder="Nome, mensagem ou Order ID"
+>
 
-            <input
-              class="search-input"
-              id="historySearch"
-              type="text"
-              placeholder="Nome, mensagem ou Order ID"
-            >
+</div>
 
-          </div>
 
+<div class="filter">
 
-          <div class="filter-field">
+<label>
+Status
+</label>
 
-            <label for="historyStatus">
-              Status
-            </label>
+<select id="historyStatus">
 
-            <select id="historyStatus">
+<option value="all">
+Todos
+</option>
 
-              <option value="all">
-                Todos
-              </option>
+<option value="paid">
+Pagos
+</option>
 
-              <option value="paid">
-                Pagos
-              </option>
+<option value="pending">
+Pendentes
+</option>
 
-              <option value="pending">
-                Pendentes
-              </option>
+</select>
 
-            </select>
+</div>
 
-          </div>
 
+<div class="filter">
 
-          <div class="filter-field">
+<label>
+Categoria
+</label>
 
-            <label for="historyTier">
-              Categoria
-            </label>
+<select id="historyTier">
 
-            <select id="historyTier">
+<option value="all">
+Todas
+</option>
 
-              <option value="all">
-                Todas
-              </option>
+<option value="basic">
+Básico
+</option>
 
-              <option value="basic">
-                Básico
-              </option>
+<option value="medium">
+Médio
+</option>
 
-              <option value="medium">
-                Médio
-              </option>
+<option value="epic">
+Épico
+</option>
 
-              <option value="epic">
-                Épico
-              </option>
+<option value="special">
+Especial
+</option>
 
-              <option value="special">
-                Especial
-              </option>
+<option value="legendary">
+Lendário
+</option>
 
-              <option value="legendary">
-                Lendário
-              </option>
+</select>
 
-            </select>
+</div>
 
-          </div>
 
+<div class="filter">
 
-          <div class="filter-field">
+<label>
+Tipo
+</label>
 
-            <label for="historyPeriod">
-              Período
-            </label>
+<select id="historyType">
 
-            <select id="historyPeriod">
+<option value="all">
+Todos
+</option>
 
-              <option value="all">
-                Todos
-              </option>
+<option value="real">
+Somente reais
+</option>
 
-              <option value="today">
-                Hoje
-              </option>
+<option value="test">
+Somente testes
+</option>
 
-              <option value="7">
-                Últimos 7 dias
-              </option>
+</select>
 
-              <option value="30">
-                Últimos 30 dias
-              </option>
+</div>
 
-            </select>
+</div>
 
-          </div>
 
-        </div>
+<div
+class="result-info"
+id="historyResultInfo"
+></div>
 
 
-        <div
-          class="history-result-info"
-          id="historyResultInfo"
-        >
-          Carregando...
-        </div>
+<div
+class="history-list"
+id="historyList"
+>
 
+<div class="empty">
+Carregando...
+</div>
 
-        <div
-          class="history-list"
-          id="historyList"
-        >
+</div>
 
-          <div class="empty">
-            Carregando histórico...
-          </div>
+</div>
 
-        </div>
 
-      </div>
+</section>
 
+</main>
 
-    </section>
 
-  </main>
+<script>
 
+const SESSION_KEY =
+"kevenzl_panel_session_secret";
 
-  <script>
 
-    const SESSION_KEY =
-      "kevenzl_panel_session_secret";
+let panelSecret =
+sessionStorage.getItem(
+SESSION_KEY
+) || "";
 
 
-    let panelSecret =
-      sessionStorage.getItem(
-        SESSION_KEY
-      ) || "";
+let historicoCompleto =
+[];
 
 
-    let historicoCompleto = [];
+/* ELEMENTOS */
 
+const byId =
+id =>
+document.getElementById(id);
 
-    const loginScreen =
-      document.getElementById(
-        "loginScreen"
-      );
 
-    const passwordInput =
-      document.getElementById(
-        "passwordInput"
-      );
+const loginScreen =
+byId("loginScreen");
 
-    const loginButton =
-      document.getElementById(
-        "loginButton"
-      );
+const passwordInput =
+byId("passwordInput");
 
-    const loginError =
-      document.getElementById(
-        "loginError"
-      );
+const loginButton =
+byId("loginButton");
 
+const loginError =
+byId("loginError");
 
-    const volumeMeme =
-      document.getElementById(
-        "volumeMeme"
-      );
 
-    const volumeVoz =
-      document.getElementById(
-        "volumeVoz"
-      );
+const volumeMeme =
+byId("volumeMeme");
 
-    const volumeMemeValue =
-      document.getElementById(
-        "volumeMemeValue"
-      );
+const volumeVoz =
+byId("volumeVoz");
 
-    const volumeVozValue =
-      document.getElementById(
-        "volumeVozValue"
-      );
+const volumeMemeValue =
+byId("volumeMemeValue");
 
-    const duracao =
-      document.getElementById(
-        "duracao"
-      );
+const volumeVozValue =
+byId("volumeVozValue");
 
-    const duracaoValue =
-      document.getElementById(
-        "duracaoValue"
-      );
+const duracao =
+byId("duracao");
 
+const duracaoValue =
+byId("duracaoValue");
 
-    const memesAtivos =
-      document.getElementById(
-        "memesAtivos"
-      );
 
-    const vozAtiva =
-      document.getElementById(
-        "vozAtiva"
-      );
+const memesAtivos =
+byId("memesAtivos");
 
-    const flashAtivo =
-      document.getElementById(
-        "flashAtivo"
-      );
+const vozAtiva =
+byId("vozAtiva");
 
-    const particulasAtivas =
-      document.getElementById(
-        "particulasAtivas"
-      );
+const flashAtivo =
+byId("flashAtivo");
 
+const particulasAtivas =
+byId("particulasAtivas");
 
-    const somBasic =
-      document.getElementById(
-        "somBasic"
-      );
 
-    const somMedium =
-      document.getElementById(
-        "somMedium"
-      );
+const somBasic =
+byId("somBasic");
 
-    const somEpic =
-      document.getElementById(
-        "somEpic"
-      );
+const somMedium =
+byId("somMedium");
 
-    const somSpecial =
-      document.getElementById(
-        "somSpecial"
-      );
+const somEpic =
+byId("somEpic");
 
-    const somLegendary =
-      document.getElementById(
-        "somLegendary"
-      );
+const somSpecial =
+byId("somSpecial");
 
+const somLegendary =
+byId("somLegendary");
 
-    const statusEl =
-      document.getElementById(
-        "status"
-      );
 
+const statusEl =
+byId("status");
 
-    const historyList =
-      document.getElementById(
-        "historyList"
-      );
 
-    const totalRecebido =
-      document.getElementById(
-        "totalRecebido"
-      );
+const historyList =
+byId("historyList");
 
-    const totalPagas =
-      document.getElementById(
-        "totalPagas"
-      );
+const totalRecebido =
+byId("totalRecebido");
 
-    const totalRegistros =
-      document.getElementById(
-        "totalRegistros"
-      );
+const totalPagas =
+byId("totalPagas");
 
-    const resultadosExibidos =
-      document.getElementById(
-        "resultadosExibidos"
-      );
+const totalRegistros =
+byId("totalRegistros");
 
-    const historyResultInfo =
-      document.getElementById(
-        "historyResultInfo"
-      );
+const totalTestes =
+byId("totalTestes");
 
+const historyResultInfo =
+byId("historyResultInfo");
 
-    const historySearch =
-      document.getElementById(
-        "historySearch"
-      );
 
-    const historyStatus =
-      document.getElementById(
-        "historyStatus"
-      );
+const historySearch =
+byId("historySearch");
 
-    const historyTier =
-      document.getElementById(
-        "historyTier"
-      );
+const historyStatus =
+byId("historyStatus");
 
-    const historyPeriod =
-      document.getElementById(
-        "historyPeriod"
-      );
+const historyTier =
+byId("historyTier");
 
+const historyType =
+byId("historyType");
 
-    function authHeaders(
-      extra = {}
-    ) {
 
-      return {
+/* AUTENTICAÇÃO */
 
-        "x-panel-secret":
-          panelSecret,
+function authHeaders(
+extra = {}
+) {
 
-        ...extra
+return {
+"x-panel-secret":
+panelSecret,
 
-      };
+...extra
+};
 
-    }
+}
 
 
-    function setStatus(
-      text,
-      type = ""
-    ) {
+/* STATUS */
 
-      statusEl.textContent =
-        text;
+function setStatus(
+text,
+type = ""
+) {
 
-      statusEl.className =
-        "status";
+statusEl.textContent =
+text;
 
+statusEl.className =
+"status";
 
-      if (type) {
+if (type) {
+statusEl.classList.add(
+type
+);
+}
 
-        statusEl.classList.add(
-          type
-        );
+}
 
-      }
 
-    }
+/* LABELS */
 
+function atualizarLabels() {
 
-    function atualizarLabels() {
+volumeMemeValue.textContent =
+`${volumeMeme.value}%`;
 
-      volumeMemeValue.textContent =
-        `${volumeMeme.value}%`;
+volumeVozValue.textContent =
+`${volumeVoz.value}%`;
 
-      volumeVozValue.textContent =
-        `${volumeVoz.value}%`;
+duracaoValue.textContent =
+`${duracao.value}s`;
 
-      duracaoValue.textContent =
-        `${duracao.value}s`;
+}
 
-    }
 
+volumeMeme.addEventListener(
+"input",
+atualizarLabels
+);
 
-    volumeMeme.addEventListener(
-      "input",
-      atualizarLabels
-    );
+volumeVoz.addEventListener(
+"input",
+atualizarLabels
+);
 
-    volumeVoz.addEventListener(
-      "input",
-      atualizarLabels
-    );
+duracao.addEventListener(
+"input",
+atualizarLabels
+);
 
-    duracao.addEventListener(
-      "input",
-      atualizarLabels
-    );
 
+/* CONFIG */
 
-    function pegarConfigTela() {
+function pegarConfigTela() {
 
-      return {
+return {
 
-        volumeMeme:
-          Number(
-            volumeMeme.value
-          ) / 100,
+volumeMeme:
+Number(
+volumeMeme.value
+) / 100,
 
-        volumeVoz:
-          Number(
-            volumeVoz.value
-          ) / 100,
+volumeVoz:
+Number(
+volumeVoz.value
+) / 100,
 
-        memesAtivos:
-          memesAtivos.checked,
+memesAtivos:
+memesAtivos.checked,
 
-        vozAtiva:
-          vozAtiva.checked,
+vozAtiva:
+vozAtiva.checked,
 
-        duracao:
-          Number(
-            duracao.value
-          ),
+duracao:
+Number(
+duracao.value
+),
 
-        flashAtivo:
-          flashAtivo.checked,
+flashAtivo:
+flashAtivo.checked,
 
-        particulasAtivas:
-          particulasAtivas.checked,
+particulasAtivas:
+particulasAtivas.checked,
 
-        sons: {
+sons: {
 
-          basic:
-            somBasic.value,
+basic:
+somBasic.value,
 
-          medium:
-            somMedium.value,
+medium:
+somMedium.value,
 
-          epic:
-            somEpic.value,
+epic:
+somEpic.value,
 
-          special:
-            somSpecial.value,
+special:
+somSpecial.value,
 
-          legendary:
-            somLegendary.value
+legendary:
+somLegendary.value
 
-        }
+}
 
-      };
+};
 
-    }
+}
 
 
-    function aplicarConfig(
-      config
-    ) {
+function aplicarConfig(
+config
+) {
 
-      volumeMeme.value =
-        Math.round(
-          Number(
-            config.volumeMeme ?? 1
-          ) * 100
-        );
+volumeMeme.value =
+Math.round(
+Number(
+config.volumeMeme ?? 1
+) * 100
+);
 
-      volumeVoz.value =
-        Math.round(
-          Number(
-            config.volumeVoz ?? 1
-          ) * 100
-        );
+volumeVoz.value =
+Math.round(
+Number(
+config.volumeVoz ?? 1
+) * 100
+);
 
-      duracao.value =
-        Number(
-          config.duracao ?? 12
-        );
+duracao.value =
+Number(
+config.duracao ?? 12
+);
 
-      memesAtivos.checked =
-        config.memesAtivos !== false;
 
-      vozAtiva.checked =
-        config.vozAtiva !== false;
+memesAtivos.checked =
+config.memesAtivos !== false;
 
-      flashAtivo.checked =
-        config.flashAtivo !== false;
+vozAtiva.checked =
+config.vozAtiva !== false;
 
-      particulasAtivas.checked =
-        config.particulasAtivas !== false;
+flashAtivo.checked =
+config.flashAtivo !== false;
 
+particulasAtivas.checked =
+config.particulasAtivas !== false;
 
-      if (config.sons) {
 
-        somBasic.value =
-          config.sons.basic ||
-          "/sounds/basico.mp3";
+if (config.sons) {
 
-        somMedium.value =
-          config.sons.medium ||
-          "/sounds/medio.mp3";
+somBasic.value =
+config.sons.basic;
 
-        somEpic.value =
-          config.sons.epic ||
-          "/sounds/epico.mp3";
+somMedium.value =
+config.sons.medium;
 
-        somSpecial.value =
-          config.sons.special ||
-          "/sounds/especial.mp3";
+somEpic.value =
+config.sons.epic;
 
-        somLegendary.value =
-          config.sons.legendary ||
-          "/sounds/lendario.mp3";
+somSpecial.value =
+config.sons.special;
 
-      }
+somLegendary.value =
+config.sons.legendary;
 
+}
 
-      atualizarLabels();
 
-    }
+atualizarLabels();
 
+}
 
-    async function carregarConfig() {
 
-      const response =
-        await fetch(
-          "/api/config",
-          {
-            headers:
-              authHeaders()
-          }
-        );
+async function carregarConfig() {
 
+const response =
+await fetch(
+"/api/config",
+{
+headers:
+authHeaders()
+}
+);
 
-      if (
-        response.status === 401
-      ) {
 
-        throw new Error(
-          "unauthorized"
-        );
+if (
+response.status === 401
+) {
+throw new Error(
+"unauthorized"
+);
+}
 
-      }
 
+if (!response.ok) {
+throw new Error(
+"Erro ao carregar configurações."
+);
+}
 
-      if (!response.ok) {
 
-        throw new Error(
-          "Erro ao carregar configurações."
-        );
+const config =
+await response.json();
 
-      }
 
+aplicarConfig(
+config
+);
 
-      const config =
-        await response.json();
+}
 
 
-      aplicarConfig(
-        config
-      );
+async function salvarConfig(
+mostrarMensagem = true
+) {
 
+const response =
+await fetch(
+"/api/config",
+{
+method:
+"POST",
 
-      return config;
+headers:
+authHeaders({
+"Content-Type":
+"application/json"
+}),
 
-    }
+body:
+JSON.stringify(
+pegarConfigTela()
+)
+}
+);
 
 
-    async function salvarConfig(
-      mostrarMensagem = true
-    ) {
+if (
+response.status === 401
+) {
 
-      const response =
-        await fetch(
-          "/api/config",
-          {
-            method: "POST",
+logout();
 
-            headers:
-              authHeaders({
-                "Content-Type":
-                  "application/json"
-              }),
+throw new Error(
+"Senha inválida."
+);
 
-            body:
-              JSON.stringify(
-                pegarConfigTela()
-              )
-          }
-        );
+}
 
 
-      if (
-        response.status === 401
-      ) {
+const data =
+await response.json();
 
-        logout();
 
-        throw new Error(
-          "Senha inválida."
-        );
+if (!response.ok) {
+throw new Error(
+data.error ||
+"Erro ao salvar."
+);
+}
 
-      }
 
+if (mostrarMensagem) {
 
-      const data =
-        await response.json();
+setStatus(
+"Configurações salvas. ✅",
+"success"
+);
 
+}
 
-      if (!response.ok) {
+}
 
-        throw new Error(
-          data.error ||
-          "Erro ao salvar."
-        );
 
-      }
+/* TESTAR */
 
+async function testarAlerta(
+tier
+) {
 
-      if (
-        mostrarMensagem
-      ) {
+try {
 
-        setStatus(
-          "Configurações salvas no Supabase. ✅",
-          "success"
-        );
+setStatus(
+"Preparando teste..."
+);
 
-      }
 
+await salvarConfig(
+false
+);
 
-      return data;
 
-    }
+const response =
+await fetch(
+"/api/test-alert",
+{
+method:
+"POST",
 
+headers:
+authHeaders({
+"Content-Type":
+"application/json"
+}),
 
-    async function testarAlerta(
-      tier
-    ) {
+body:
+JSON.stringify({
+tier
+})
+}
+);
 
-      try {
 
-        setStatus(
-          "Preparando teste..."
-        );
+const data =
+await response.json();
 
 
-        await salvarConfig(
-          false
-        );
+if (!response.ok) {
+throw new Error(
+data.error ||
+"Erro no teste."
+);
+}
 
 
-        const response =
-          await fetch(
-            "/api/test-alert",
-            {
-              method:
-                "POST",
+setStatus(
+"Alerta de teste enviado. ✅",
+"success"
+);
 
-              headers:
-                authHeaders({
-                  "Content-Type":
-                    "application/json"
-                }),
 
-              body:
-                JSON.stringify({
-                  tier
-                })
-            }
-          );
+} catch (error) {
 
+setStatus(
+error.message,
+"error"
+);
 
-        if (
-          response.status === 401
-        ) {
+}
 
-          logout();
+}
 
-          return;
 
-        }
+/* FORMATADORES */
 
+function escaparHtml(
+value
+) {
 
-        const data =
-          await response.json();
+return String(
+value ?? ""
+)
 
+.replaceAll(
+"&",
+"&amp;"
+)
 
-        if (!response.ok) {
+.replaceAll(
+"<",
+"&lt;"
+)
 
-          throw new Error(
-            data.error ||
-            "Erro no teste."
-          );
+.replaceAll(
+">",
+"&gt;"
+)
 
-        }
+.replaceAll(
+'"',
+"&quot;"
+)
 
+.replaceAll(
+"'",
+"&#039;"
+);
 
-        setStatus(
-          "Alerta de teste enviado. ✅",
-          "success"
-        );
+}
 
 
-      } catch (error) {
+function dinheiro(
+valor
+) {
 
-        setStatus(
-          error.message,
-          "error"
-        );
+return Number(
+valor || 0
+)
+.toLocaleString(
+"pt-BR",
+{
+style:
+"currency",
 
-      }
+currency:
+"BRL"
+}
+);
 
-    }
+}
 
 
-    async function repetirAlerta(
-      orderId,
-      button
-    ) {
+function dataHora(
+valor
+) {
 
-      if (!orderId) {
-        return;
-      }
+if (!valor) {
+return "-";
+}
 
 
-      const textoOriginal =
-        button.textContent;
+const data =
+new Date(
+valor
+);
 
 
-      button.disabled =
-        true;
+if (
+Number.isNaN(
+data.getTime()
+)
+) {
+return "-";
+}
 
-      button.textContent =
-        "Repetindo...";
 
+return data
+.toLocaleString(
+"pt-BR"
+);
 
-      setStatus(
-        "Preparando o alerta..."
-      );
+}
 
 
-      try {
+function nomeTier(
+tier
+) {
 
-        const response =
-          await fetch(
-            `/api/donations/${encodeURIComponent(
-              orderId
-            )}/repeat`,
-            {
-              method: "POST",
+const nomes = {
 
-              headers:
-                authHeaders({
-                  "Content-Type":
-                    "application/json"
-                })
-            }
-          );
+basic:
+"Básico",
 
+medium:
+"Médio",
 
-        if (
-          response.status === 401
-        ) {
+epic:
+"Épico",
 
-          logout();
+special:
+"Especial",
 
-          return;
+legendary:
+"Lendário"
 
-        }
+};
 
 
-        const data =
-          await response.json();
+return nomes[tier] ||
+tier ||
+"-";
 
+}
 
-        if (!response.ok) {
 
-          throw new Error(
-            data.error ||
-            "Não foi possível repetir o alerta."
-          );
+function estaPago(
+donation
+) {
 
-        }
+return (
 
+donation.status ===
+"processed" ||
 
-        setStatus(
-          "Alerta repetido com sucesso. 🔊✅",
-          "success"
-        );
+donation.status ===
+"approved" ||
 
+Boolean(
+donation.paid_at
+)
 
-        button.textContent =
-          "✅ Enviado";
+);
 
+}
 
-        setTimeout(
-          () => {
 
-            button.textContent =
-              textoOriginal;
+/* REPETIR */
 
-          },
-          1800
-        );
+async function repetirAlerta(
+orderId,
+button
+) {
 
+const original =
+button.textContent;
 
-      } catch (error) {
 
-        setStatus(
-          error.message,
-          "error"
-        );
+button.disabled =
+true;
 
+button.textContent =
+"Repetindo...";
 
-        button.textContent =
-          textoOriginal;
 
+try {
 
-      } finally {
+const response =
+await fetch(
+`/api/donations/${encodeURIComponent(
+orderId
+)}/repeat`,
+{
+method:
+"POST",
 
-        button.disabled =
-          false;
+headers:
+authHeaders({
+"Content-Type":
+"application/json"
+})
+}
+);
 
-      }
 
-    }
+const data =
+await response.json();
 
 
-    async function copiarOrderId(
-      orderId,
-      button
-    ) {
+if (!response.ok) {
+throw new Error(
+data.error
+);
+}
 
-      if (!orderId) {
-        return;
-      }
 
+button.textContent =
+"✅ Enviado";
 
-      const textoOriginal =
-        button.textContent;
 
+setStatus(
+"Alerta repetido. 🔊✅",
+"success"
+);
 
-      try {
 
-        await navigator.clipboard.writeText(
-          orderId
-        );
+setTimeout(
+() => {
+button.textContent =
+original;
+},
+1500
+);
 
 
-        button.textContent =
-          "✅ Copiado";
+} catch (error) {
 
+button.textContent =
+original;
 
-        setStatus(
-          "Order ID copiado. ✅",
-          "success"
-        );
 
+setStatus(
+error.message,
+"error"
+);
 
-        setTimeout(
-          () => {
 
-            button.textContent =
-              textoOriginal;
+} finally {
 
-          },
-          1500
-        );
+button.disabled =
+false;
 
+}
 
-      } catch (error) {
+}
 
-        setStatus(
-          "Não foi possível copiar o Order ID.",
-          "error"
-        );
 
-      }
+/* COPIAR */
 
-    }
+async function copiarOrderId(
+orderId,
+button
+) {
 
+const original =
+button.textContent;
 
-    function escaparHtml(
-      value
-    ) {
 
-      return String(
-        value ?? ""
-      )
+try {
 
-        .replaceAll(
-          "&",
-          "&amp;"
-        )
+await navigator
+.clipboard
+.writeText(
+orderId
+);
 
-        .replaceAll(
-          "<",
-          "&lt;"
-        )
 
-        .replaceAll(
-          ">",
-          "&gt;"
-        )
+button.textContent =
+"✅ Copiado";
 
-        .replaceAll(
-          '"',
-          "&quot;"
-        )
 
-        .replaceAll(
-          "'",
-          "&#039;"
-        );
+setTimeout(
+() => {
+button.textContent =
+original;
+},
+1200
+);
 
-    }
 
+} catch {
 
-    function dinheiro(
-      valor
-    ) {
+setStatus(
+"Não foi possível copiar.",
+"error"
+);
 
-      return Number(
-        valor || 0
-      )
-        .toLocaleString(
-          "pt-BR",
-          {
-            style:
-              "currency",
+}
 
-            currency:
-              "BRL"
-          }
-        );
+}
 
-    }
 
+/* EXCLUIR 1 TESTE */
 
-    function dataHora(
-      valor
-    ) {
+async function excluirTeste(
+orderId
+) {
 
-      if (!valor) {
-        return "-";
-      }
+const confirmar =
+confirm(
+"Excluir esta doação de TESTE?\n\nDoações reais são protegidas pelo servidor."
+);
 
 
-      const data =
-        new Date(valor);
+if (!confirmar) {
+return;
+}
 
 
-      if (
-        Number.isNaN(
-          data.getTime()
-        )
-      ) {
+try {
 
-        return "-";
+const response =
+await fetch(
+`/api/donations/${encodeURIComponent(
+orderId
+)}`,
+{
+method:
+"DELETE",
 
-      }
+headers:
+authHeaders({
+"Content-Type":
+"application/json"
+}),
 
+body:
+JSON.stringify({
+confirmation:
+"EXCLUIR TESTE"
+})
+}
+);
 
-      return data
-        .toLocaleString(
-          "pt-BR"
-        );
 
-    }
+const data =
+await response.json();
 
 
-    function nomeTier(
-      tier
-    ) {
+if (!response.ok) {
+throw new Error(
+data.error ||
+"Erro ao excluir."
+);
+}
 
-      const nomes = {
 
-        basic:
-          "Básico",
+setStatus(
+"Doação de teste excluída. 🗑️✅",
+"success"
+);
 
-        medium:
-          "Médio",
 
-        epic:
-          "Épico",
+await carregarHistorico();
 
-        special:
-          "Especial",
 
-        legendary:
-          "Lendário"
+} catch (error) {
 
-      };
+setStatus(
+error.message,
+"error"
+);
 
+}
 
-      return nomes[tier] ||
-        tier ||
-        "-";
+}
 
-    }
 
+/* LIMPAR TODOS OS TESTES */
 
-    function estaPago(
-      donation
-    ) {
+async function limparTodosTestes() {
 
-      return (
+const quantidade =
+historicoCompleto
+.filter(
+item =>
+Boolean(
+item.is_test
+)
+)
+.length;
 
-        donation.status ===
-          "processed" ||
 
-        donation.status ===
-          "approved" ||
+if (
+quantidade === 0
+) {
 
-        Boolean(
-          donation.paid_at
-        )
+setStatus(
+"Não há testes para excluir."
+);
 
-      );
+return;
 
-    }
+}
 
 
-    function dentroPeriodo(
-      donation,
-      periodo
-    ) {
+const confirmar =
+confirm(
+`Você está prestes a excluir ${quantidade} registro(s) de TESTE.\n\nDoações reais NÃO serão apagadas.\n\nDeseja continuar?`
+);
 
-      if (
-        periodo === "all"
-      ) {
 
-        return true;
+if (!confirmar) {
+return;
+}
 
-      }
 
+const confirmar2 =
+confirm(
+"Confirma novamente a limpeza dos testes?"
+);
 
-      if (
-        !donation.created_at
-      ) {
 
-        return false;
+if (!confirmar2) {
+return;
+}
 
-      }
 
+const button =
+byId(
+"clearTestsButton"
+);
 
-      const dataDonation =
-        new Date(
-          donation.created_at
-        );
 
+button.disabled =
+true;
 
-      if (
-        Number.isNaN(
-          dataDonation.getTime()
-        )
-      ) {
+button.textContent =
+"Limpando...";
 
-        return false;
 
-      }
+try {
 
+const response =
+await fetch(
+"/api/donations/clear-tests",
+{
+method:
+"POST",
 
-      const agora =
-        new Date();
+headers:
+authHeaders({
+"Content-Type":
+"application/json"
+}),
 
+body:
+JSON.stringify({
+confirmation:
+"EXCLUIR TODOS OS TESTES"
+})
+}
+);
 
-      if (
-        periodo === "today"
-      ) {
 
-        return (
-          dataDonation.getFullYear() ===
-            agora.getFullYear() &&
+const data =
+await response.json();
 
-          dataDonation.getMonth() ===
-            agora.getMonth() &&
 
-          dataDonation.getDate() ===
-            agora.getDate()
-        );
+if (!response.ok) {
+throw new Error(
+data.error ||
+"Erro ao limpar testes."
+);
+}
 
-      }
 
+setStatus(
+`${data.removidas} teste(s) removido(s). 🧹✅`,
+"success"
+);
 
-      const dias =
-        Number(periodo);
 
+await carregarHistorico();
 
-      if (
-        !Number.isFinite(dias)
-      ) {
 
-        return true;
+} catch (error) {
 
-      }
+setStatus(
+error.message,
+"error"
+);
 
 
-      const limite =
-        new Date(
-          agora.getTime() -
-          dias *
-          24 *
-          60 *
-          60 *
-          1000
-        );
+} finally {
 
+button.disabled =
+false;
 
-      return (
-        dataDonation >= limite
-      );
+button.textContent =
+"🧹 Limpar testes";
 
-    }
+}
 
+}
 
-    function filtrarHistorico() {
 
-      const busca =
-        historySearch.value
-          .trim()
-          .toLowerCase();
+/* FILTROS */
 
+function filtrarHistorico() {
 
-      const status =
-        historyStatus.value;
+const busca =
+historySearch
+.value
+.trim()
+.toLowerCase();
 
 
-      const tier =
-        historyTier.value;
+const status =
+historyStatus.value;
 
 
-      const periodo =
-        historyPeriod.value;
+const tier =
+historyTier.value;
 
 
-      return historicoCompleto
-        .filter(
-          donation => {
+const tipo =
+historyType.value;
 
-            const paga =
-              estaPago(
-                donation
-              );
 
+return historicoCompleto
+.filter(
+donation => {
 
-            if (
-              status === "paid" &&
-              !paga
-            ) {
+const paga =
+estaPago(
+donation
+);
 
-              return false;
 
-            }
+if (
+status === "paid" &&
+!paga
+) {
+return false;
+}
 
 
-            if (
-              status === "pending" &&
-              paga
-            ) {
+if (
+status === "pending" &&
+paga
+) {
+return false;
+}
 
-              return false;
 
-            }
+if (
+tier !== "all" &&
+donation.tier !== tier
+) {
+return false;
+}
 
 
-            if (
-              tier !== "all" &&
-              donation.tier !== tier
-            ) {
+if (
+tipo === "real" &&
+donation.is_test
+) {
+return false;
+}
 
-              return false;
 
-            }
+if (
+tipo === "test" &&
+!donation.is_test
+) {
+return false;
+}
 
 
-            if (
-              !dentroPeriodo(
-                donation,
-                periodo
-              )
-            ) {
+if (busca) {
 
-              return false;
+const texto =
+[
+donation.name,
+donation.message,
+donation.order_id,
+donation.amount
+]
+.join(" ")
+.toLowerCase();
 
-            }
 
+if (
+!texto.includes(
+busca
+)
+) {
+return false;
+}
 
-            if (busca) {
+}
 
-              const texto =
-                [
-                  donation.name,
-                  donation.message,
-                  donation.order_id,
-                  donation.amount
-                ]
-                  .join(" ")
-                  .toLowerCase();
 
+return true;
 
-              if (
-                !texto.includes(
-                  busca
-                )
-              ) {
+}
+);
 
-                return false;
+}
 
-              }
 
-            }
+/* RENDER HISTÓRICO */
 
+function renderizarHistorico() {
 
-            return true;
+const lista =
+filtrarHistorico();
 
-          }
-        );
 
-    }
+historyResultInfo.textContent =
+`Exibindo ${lista.length} de ${historicoCompleto.length} registros.`;
 
 
-    function renderizarHistorico() {
+if (
+lista.length === 0
+) {
 
-      const donations =
-        filtrarHistorico();
+historyList.innerHTML =
+`
+<div class="empty">
+Nenhuma doação encontrada.
+</div>
+`;
 
+return;
 
-      resultadosExibidos.textContent =
-        String(
-          donations.length
-        );
+}
 
 
-      historyResultInfo.textContent =
-        `Exibindo ${donations.length} de ${historicoCompleto.length} registros carregados.`;
+historyList.innerHTML =
+lista
+.map(
+donation => {
 
+const paga =
+estaPago(
+donation
+);
 
-      if (
-        donations.length === 0
-      ) {
 
-        historyList.innerHTML =
-          `
-            <div class="empty">
-              Nenhuma doação encontrada com esses filtros.
-            </div>
-          `;
+const isTest =
+Boolean(
+donation.is_test
+);
 
-        return;
 
-      }
+const mensagem =
+donation.message
+? escaparHtml(
+donation.message
+)
+: "Sem mensagem";
 
 
-      historyList.innerHTML =
-        donations
-          .map(
-            donation => {
+return `
+<article
+class="
+donation
+${isTest ? "test-donation" : ""}
+"
+>
 
-              const paga =
-                estaPago(
-                  donation
-                );
+<div>
 
+<div class="donation-top">
 
-              const statusTexto =
-                paga
-                  ? "✅ Pago"
-                  : "⏳ Pendente";
+<span class="donation-name">
+${escaparHtml(
+donation.name
+)}
+</span>
 
+<span
+class="
+badge
+tier-${escaparHtml(
+donation.tier
+)}
+"
+>
+${escaparHtml(
+nomeTier(
+donation.tier
+)
+)}
+</span>
 
-              const alertTexto =
-                donation.alert_sent
-                  ? "🔊 Alerta enviado"
-                  : "🔇 Alerta não enviado";
+${
+isTest
+? `
+<span class="badge test-badge">
+🧪 TESTE
+</span>
+`
+: ""
+}
 
+</div>
 
-              const mensagem =
-                donation.message
-                  ? escaparHtml(
-                      donation.message
-                    )
-                  : "Sem mensagem";
 
+<div class="donation-message">
+${mensagem}
+</div>
 
-              const repeatButton =
-                paga
-                  ? `
-                    <button
-                      class="repeat-button"
-                      data-repeat-order="${escaparHtml(
-                        donation.order_id
-                      )}"
-                    >
-                      🔁 Repetir alerta
-                    </button>
-                  `
-                  : "";
 
+<div class="donation-info">
 
-              return `
-                <article class="donation">
+<span
+class="${
+paga
+? "paid"
+: "pending"
+}"
+>
+${
+paga
+? "✅ Pago"
+: "⏳ Pendente"
+}
+</span>
 
-                  <div>
+<span>
+${
+donation.alert_sent
+? "🔊 Alerta enviado"
+: "🔇 Alerta não enviado"
+}
+</span>
 
-                    <div class="donation-top">
+<span>
+${dataHora(
+donation.created_at
+)}
+</span>
 
-                      <span class="donation-name">
-                        ${escaparHtml(
-                          donation.name
-                        )}
-                      </span>
+</div>
 
-                      <span
-                        class="
-                          badge
-                          tier-${escaparHtml(
-                            donation.tier
-                          )}
-                        "
-                      >
-                        ${escaparHtml(
-                          nomeTier(
-                            donation.tier
-                          )
-                        )}
-                      </span>
 
-                    </div>
+<div class="order-id">
 
+Order ID:
+${escaparHtml(
+donation.order_id
+)}
 
-                    <div class="donation-message">
-                      ${mensagem}
-                    </div>
+</div>
 
+</div>
 
-                    <div class="donation-info">
 
-                      <span
-                        class="${
-                          paga
-                            ? "paid"
-                            : "pending"
-                        }"
-                      >
-                        ${statusTexto}
-                      </span>
+<div class="donation-right">
 
-                      <span>
-                        ${alertTexto}
-                      </span>
+<div class="donation-value">
 
-                      <span>
-                        ${dataHora(
-                          donation.created_at
-                        )}
-                      </span>
+${dinheiro(
+donation.amount
+)}
 
-                    </div>
+</div>
 
 
-                    <div class="order-id">
+<div class="donation-actions">
 
-                      Order ID:
-                      ${escaparHtml(
-                        donation.order_id
-                      )}
+${
+paga
+? `
+<button
+class="repeat-btn"
+data-repeat="${escaparHtml(
+donation.order_id
+)}"
+>
+🔁 Repetir alerta
+</button>
+`
+: ""
+}
 
-                    </div>
 
-                  </div>
+<button
+class="copy-btn"
+data-copy="${escaparHtml(
+donation.order_id
+)}"
+>
+📋 Copiar Order ID
+</button>
 
 
-                  <div class="donation-right">
+${
+isTest
+? `
+<button
+class="delete-test-btn"
+data-delete-test="${escaparHtml(
+donation.order_id
+)}"
+>
+🗑️ Excluir teste
+</button>
+`
+: ""
+}
 
-                    <div class="donation-value">
-                      ${dinheiro(
-                        donation.amount
-                      )}
-                    </div>
+</div>
 
+</div>
 
-                    <div class="donation-actions">
+</article>
+`;
 
-                      ${repeatButton}
+}
+)
+.join("");
 
-                      <button
-                        class="copy-button"
-                        data-copy-order="${escaparHtml(
-                          donation.order_id
-                        )}"
-                      >
-                        📋 Copiar Order ID
-                      </button>
 
-                    </div>
+document
+.querySelectorAll(
+"[data-repeat]"
+)
+.forEach(
+button => {
 
-                  </div>
+button.addEventListener(
+"click",
+() => {
 
-                </article>
-              `;
+repetirAlerta(
+button.dataset.repeat,
+button
+);
 
-            }
-          )
-          .join("");
+}
+);
 
+}
+);
 
-      document
-        .querySelectorAll(
-          "[data-repeat-order]"
-        )
-        .forEach(
-          button => {
 
-            button.addEventListener(
-              "click",
-              () => {
+document
+.querySelectorAll(
+"[data-copy]"
+)
+.forEach(
+button => {
 
-                repetirAlerta(
-                  button.dataset
-                    .repeatOrder,
+button.addEventListener(
+"click",
+() => {
 
-                  button
-                );
+copiarOrderId(
+button.dataset.copy,
+button
+);
 
-              }
-            );
+}
+);
 
-          }
-        );
+}
+);
 
 
-      document
-        .querySelectorAll(
-          "[data-copy-order]"
-        )
-        .forEach(
-          button => {
+document
+.querySelectorAll(
+"[data-delete-test]"
+)
+.forEach(
+button => {
 
-            button.addEventListener(
-              "click",
-              () => {
+button.addEventListener(
+"click",
+() => {
 
-                copiarOrderId(
-                  button.dataset
-                    .copyOrder,
+excluirTeste(
+button.dataset.deleteTest
+);
 
-                  button
-                );
+}
+);
 
-              }
-            );
+}
+);
 
-          }
-        );
+}
 
-    }
 
+/* CARREGAR HISTÓRICO */
 
-    async function carregarHistorico() {
+async function carregarHistorico() {
 
-      historyList.innerHTML =
-        `
-          <div class="empty">
-            Carregando histórico...
-          </div>
-        `;
+historyList.innerHTML =
+`
+<div class="empty">
+Carregando...
+</div>
+`;
 
 
-      try {
+try {
 
-        const response =
-          await fetch(
-            "/api/donations?limit=100",
-            {
-              headers:
-                authHeaders()
-            }
-          );
+const response =
+await fetch(
+"/api/donations?limit=100",
+{
+headers:
+authHeaders()
+}
+);
 
 
-        if (
-          response.status === 401
-        ) {
+if (
+response.status === 401
+) {
 
-          logout();
+logout();
 
-          return;
+return;
 
-        }
+}
 
 
-        const data =
-          await response.json();
+const data =
+await response.json();
 
 
-        if (!response.ok) {
+if (!response.ok) {
+throw new Error(
+data.error
+);
+}
 
-          throw new Error(
-            data.error ||
-            "Erro ao carregar histórico."
-          );
 
-        }
+historicoCompleto =
+Array.isArray(
+data.donations
+)
+? data.donations
+: [];
 
 
-        totalRecebido.textContent =
-          dinheiro(
-            data.resumo
-              ?.totalRecebido
-          );
+totalRecebido.textContent =
+dinheiro(
+data.resumo
+?.totalRecebido
+);
 
 
-        totalPagas.textContent =
-          String(
-            data.resumo
-              ?.totalPagas ?? 0
-          );
+totalPagas.textContent =
+String(
+data.resumo
+?.totalPagas ?? 0
+);
 
 
-        historicoCompleto =
-          Array.isArray(
-            data.donations
-          )
-            ? data.donations
-            : [];
+totalRegistros.textContent =
+String(
+historicoCompleto.length
+);
 
 
-        totalRegistros.textContent =
-          String(
-            historicoCompleto.length
-          );
+totalTestes.textContent =
+String(
+data.resumo
+?.totalTestes ?? 0
+);
 
 
-        renderizarHistorico();
+renderizarHistorico();
 
 
-      } catch (error) {
+} catch (error) {
 
-        console.error(
-          error
-        );
+historyList.innerHTML =
+`
+<div class="empty">
+Erro ao carregar histórico.
+</div>
+`;
 
 
-        historyList.innerHTML =
-          `
-            <div class="empty">
-              Não foi possível carregar o histórico.
-            </div>
-          `;
+setStatus(
+error.message,
+"error"
+);
 
+}
 
-        historyResultInfo.textContent =
-          "Erro ao carregar dados.";
+}
 
-      }
 
-    }
+/* LOGIN */
 
+async function tentarLogin() {
 
-    historySearch.addEventListener(
-      "input",
-      renderizarHistorico
-    );
+const senha =
+passwordInput.value;
 
 
-    historyStatus.addEventListener(
-      "change",
-      renderizarHistorico
-    );
+if (!senha) {
 
+loginError.textContent =
+"Digite a senha.";
 
-    historyTier.addEventListener(
-      "change",
-      renderizarHistorico
-    );
+return;
 
+}
 
-    historyPeriod.addEventListener(
-      "change",
-      renderizarHistorico
-    );
 
+panelSecret =
+senha;
 
-    async function tentarLogin() {
 
-      const senha =
-        passwordInput.value;
+try {
 
+await carregarConfig();
 
-      if (!senha) {
 
-        loginError.textContent =
-          "Digite a senha.";
+sessionStorage.setItem(
+SESSION_KEY,
+panelSecret
+);
 
-        return;
 
-      }
+loginScreen.classList.add(
+"hidden"
+);
 
 
-      loginButton.disabled =
-        true;
+loginError.textContent =
+"";
 
 
-      loginError.textContent =
-        "Entrando...";
+await carregarHistorico();
 
 
-      panelSecret =
-        senha;
+} catch (error) {
 
+panelSecret =
+"";
 
-      try {
 
-        await carregarConfig();
+loginError.textContent =
+"Senha incorreta.";
 
+}
 
-        sessionStorage.setItem(
-          SESSION_KEY,
-          panelSecret
-        );
+}
 
 
-        loginScreen.classList.add(
-          "hidden"
-        );
+function logout() {
 
+panelSecret =
+"";
 
-        loginError.textContent =
-          "";
 
+sessionStorage.removeItem(
+SESSION_KEY
+);
 
-        passwordInput.value =
-          "";
 
+loginScreen.classList.remove(
+"hidden"
+);
 
-        await carregarHistorico();
+}
 
 
-      } catch (error) {
+/* EVENTOS */
 
-        panelSecret =
-          "";
+loginButton.addEventListener(
+"click",
+tentarLogin
+);
 
 
-        sessionStorage.removeItem(
-          SESSION_KEY
-        );
+passwordInput.addEventListener(
+"keydown",
+event => {
 
+if (
+event.key === "Enter"
+) {
+tentarLogin();
+}
 
-        loginError.textContent =
-          error.message ===
-          "unauthorized"
-            ? "Senha incorreta."
-            : "Não foi possível entrar.";
+}
+);
 
 
-      } finally {
+byId(
+"logoutButton"
+)
+.addEventListener(
+"click",
+logout
+);
 
-        loginButton.disabled =
-          false;
 
-      }
+byId(
+"saveButton"
+)
+.addEventListener(
+"click",
+async () => {
 
-    }
+try {
 
+setStatus(
+"Salvando..."
+);
 
-    function logout() {
+await salvarConfig(
+true
+);
 
-      panelSecret =
-        "";
+} catch (error) {
 
+setStatus(
+error.message,
+"error"
+);
 
-      historicoCompleto =
-        [];
+}
 
+}
+);
 
-      sessionStorage.removeItem(
-        SESSION_KEY
-      );
 
+byId(
+"reloadButton"
+)
+.addEventListener(
+"click",
+async () => {
 
-      loginScreen.classList.remove(
-        "hidden"
-      );
+try {
 
+await carregarConfig();
 
-      passwordInput.value =
-        "";
+await carregarHistorico();
 
 
-      loginError.textContent =
-        "";
+setStatus(
+"Dados recarregados. ✅",
+"success"
+);
 
-    }
+} catch (error) {
 
+setStatus(
+error.message,
+"error"
+);
 
-    loginButton.addEventListener(
-      "click",
-      tentarLogin
-    );
+}
 
+}
+);
 
-    passwordInput.addEventListener(
-      "keydown",
-      event => {
 
-        if (
-          event.key === "Enter"
-        ) {
+byId(
+"refreshHistoryButton"
+)
+.addEventListener(
+"click",
+carregarHistorico
+);
 
-          tentarLogin();
 
-        }
+byId(
+"clearTestsButton"
+)
+.addEventListener(
+"click",
+limparTodosTestes
+);
 
-      }
-    );
 
+byId(
+"defaultButton"
+)
+.addEventListener(
+"click",
+() => {
 
-    document
-      .getElementById(
-        "logoutButton"
-      )
-      .addEventListener(
-        "click",
-        logout
-      );
+aplicarConfig({
 
+volumeMeme: 1,
+volumeVoz: 1,
 
-    document
-      .getElementById(
-        "saveButton"
-      )
-      .addEventListener(
-        "click",
-        async () => {
+memesAtivos:
+true,
 
-          try {
+vozAtiva:
+true,
 
-            setStatus(
-              "Salvando..."
-            );
+duracao:
+12,
 
+flashAtivo:
+true,
 
-            await salvarConfig(
-              true
-            );
+particulasAtivas:
+true,
 
+sons: {
 
-          } catch (error) {
+basic:
+"/sounds/basico.mp3",
 
-            setStatus(
-              error.message,
-              "error"
-            );
+medium:
+"/sounds/medio.mp3",
 
-          }
+epic:
+"/sounds/epico.mp3",
 
-        }
-      );
+special:
+"/sounds/especial.mp3",
 
+legendary:
+"/sounds/lendario.mp3"
 
-    document
-      .getElementById(
-        "reloadButton"
-      )
-      .addEventListener(
-        "click",
-        async () => {
+}
 
-          try {
+});
 
-            setStatus(
-              "Recarregando..."
-            );
 
+setStatus(
+"Valores padrão carregados. Clique em Salvar."
+);
 
-            await carregarConfig();
+}
+);
 
 
-            await carregarHistorico();
+document
+.querySelectorAll(
+".test-button"
+)
+.forEach(
+button => {
 
+button.addEventListener(
+"click",
+() => {
 
-            setStatus(
-              "Dados recarregados. ✅",
-              "success"
-            );
+testarAlerta(
+button.dataset.tier
+);
 
+}
+);
 
-          } catch (error) {
+}
+);
 
-            setStatus(
-              error.message,
-              "error"
-            );
 
-          }
+historySearch.addEventListener(
+"input",
+renderizarHistorico
+);
 
-        }
-      );
 
+historyStatus.addEventListener(
+"change",
+renderizarHistorico
+);
 
-    document
-      .getElementById(
-        "refreshHistoryButton"
-      )
-      .addEventListener(
-        "click",
-        carregarHistorico
-      );
 
+historyTier.addEventListener(
+"change",
+renderizarHistorico
+);
 
-    document
-      .getElementById(
-        "defaultButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
 
-          aplicarConfig({
+historyType.addEventListener(
+"change",
+renderizarHistorico
+);
 
-            volumeMeme: 1,
 
-            volumeVoz: 1,
+/* INICIAR */
 
-            memesAtivos:
-              true,
+async function iniciar() {
 
-            vozAtiva:
-              true,
+atualizarLabels();
 
-            duracao: 12,
 
-            flashAtivo:
-              true,
+if (!panelSecret) {
 
-            particulasAtivas:
-              true,
+loginScreen.classList.remove(
+"hidden"
+);
 
-            sons: {
+return;
 
-              basic:
-                "/sounds/basico.mp3",
+}
 
-              medium:
-                "/sounds/medio.mp3",
 
-              epic:
-                "/sounds/epico.mp3",
+try {
 
-              special:
-                "/sounds/especial.mp3",
+await carregarConfig();
 
-              legendary:
-                "/sounds/lendario.mp3"
 
-            }
+loginScreen.classList.add(
+"hidden"
+);
 
-          });
 
+await carregarHistorico();
 
-          setStatus(
-            "Valores padrão carregados. Clique em Salvar para confirmar."
-          );
 
-        }
-      );
+} catch {
 
+logout();
 
-    document
-      .querySelectorAll(
-        ".test-button"
-      )
-      .forEach(
-        button => {
+}
 
-          button.addEventListener(
-            "click",
-            () => {
+}
 
-              testarAlerta(
-                button.dataset.tier
-              );
 
-            }
-          );
+iniciar();
 
-        }
-      );
-
-
-    async function iniciarPainel() {
-
-      atualizarLabels();
-
-
-      if (!panelSecret) {
-
-        loginScreen.classList.remove(
-          "hidden"
-        );
-
-        return;
-
-      }
-
-
-      try {
-
-        await carregarConfig();
-
-
-        loginScreen.classList.add(
-          "hidden"
-        );
-
-
-        await carregarHistorico();
-
-
-      } catch (error) {
-
-        logout();
-
-      }
-
-    }
-
-
-    iniciarPainel();
-
-  </script>
+</script>
 
 </body>
 
