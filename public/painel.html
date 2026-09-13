@@ -3,1043 +3,1260 @@
 
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-<title>Painel KevenZL Pix</title>
+  <title>
+    Painel KevenZL Pix
+  </title>
 
+  <style>
 
-<style>
+    * {
+      box-sizing: border-box;
+    }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    body {
 
+      margin: 0;
 
-body {
+      min-height: 100vh;
 
-  min-height: 100vh;
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-  background:
-    radial-gradient(
-      circle at top,
-      #25103b 0%,
-      #0b0812 55%,
-      #050507 100%
-    );
+      color: #ffffff;
 
-  color: white;
+      background:
+        radial-gradient(
+          circle at top,
+          #271542 0%,
+          #110b1b 35%,
+          #08070c 75%
+        );
 
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+    }
 
-  padding: 30px;
 
-}
+    button,
+    input,
+    select {
 
+      font-family: inherit;
 
-body.bloqueado {
+    }
 
-  overflow: hidden;
 
-}
+    .page {
 
+      width: min(
+        1200px,
+        calc(100% - 32px)
+      );
 
-.container {
+      margin: 0 auto;
 
-  max-width: 1100px;
+      padding:
+        32px 0 60px;
 
-  margin: 0 auto;
+    }
 
-}
 
+    .header {
 
-h1 {
+      display: flex;
 
-  font-size: 34px;
+      align-items: center;
 
-  margin-bottom: 6px;
+      justify-content: space-between;
 
-}
+      gap: 20px;
 
+      margin-bottom: 28px;
 
-.subtitulo {
+    }
 
-  color: #bdb4c8;
 
-  margin-bottom: 28px;
+    .brand h1 {
 
-}
+      margin: 0;
 
+      font-size: 32px;
 
-.grid {
+    }
 
-  display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+    .brand p {
 
-  gap: 20px;
+      margin:
+        8px 0 0;
 
-}
+      color: #aaa2b4;
 
+    }
 
-.card {
 
-  background:
-    rgba(
-      18,
-      14,
-      26,
-      0.92
-    );
+    .logout {
 
-  border:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.08
-    );
+      border: 1px solid #3b3148;
 
-  border-radius: 18px;
+      background: #16111f;
 
-  padding: 22px;
+      color: white;
 
-  box-shadow:
-    0 10px 30px
-    rgba(
-      0,
-      0,
-      0,
-      0.35
-    );
+      border-radius: 10px;
 
-}
+      padding:
+        11px 18px;
 
+      cursor: pointer;
 
-.card h2 {
+    }
 
-  font-size: 20px;
 
-  margin-bottom: 18px;
+    .logout:hover {
 
-}
+      background: #21172e;
 
+    }
 
-.grupo {
 
-  margin-bottom: 20px;
+    .grid {
 
-}
+      display: grid;
 
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(
+            0,
+            1fr
+          )
+        );
 
-.grupo label {
+      gap: 20px;
 
-  display: block;
+    }
 
-  margin-bottom: 8px;
 
-  font-weight: 700;
+    .card {
 
-}
+      background:
+        rgba(
+          18,
+          14,
+          25,
+          .93
+        );
 
+      border:
+        1px solid
+        #30263c;
 
-.linha {
+      border-radius:
+        16px;
 
-  display: flex;
+      padding:
+        22px;
 
-  gap: 12px;
+      box-shadow:
+        0 15px 40px
+        rgba(
+          0,
+          0,
+          0,
+          .25
+        );
 
-  align-items: center;
+    }
 
-}
 
+    .card.full {
 
-input[type="range"] {
+      grid-column:
+        1 / -1;
 
-  width: 100%;
+    }
 
-}
 
+    .card h2 {
 
-input[type="number"],
-input[type="password"],
-select {
+      margin:
+        0 0 20px;
 
-  width: 100%;
+      font-size:
+        21px;
 
-  background:
-    #0f0c14;
+    }
 
-  color: white;
 
-  border:
-    1px solid
-    #40344c;
+    .field {
 
-  border-radius: 10px;
+      margin-bottom:
+        20px;
 
-  padding: 12px;
+    }
 
-  outline: none;
 
-}
+    .field:last-child {
 
+      margin-bottom:
+        0;
 
-input:focus,
-select:focus {
+    }
 
-  border-color:
-    #a84dff;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(
-      168,
-      77,
-      255,
-      0.15
-    );
+    .label-row {
 
-}
+      display: flex;
 
+      align-items: center;
 
-.valor {
+      justify-content: space-between;
 
-  min-width: 60px;
+      gap: 15px;
 
-  text-align: right;
+      margin-bottom:
+        9px;
 
-  color:
-    #d9c5ff;
+    }
 
-  font-weight: 800;
 
-}
+    label {
 
+      color:
+        #ded8e6;
 
-.switch-row {
+      font-weight:
+        600;
 
-  display: flex;
+    }
 
-  align-items: center;
 
-  justify-content:
-    space-between;
+    .value {
 
-  gap: 20px;
+      color:
+        #cb8cff;
 
-  margin-bottom: 16px;
+      font-weight:
+        700;
 
-}
+    }
 
 
-.switch-row span {
+    input[type="range"] {
 
-  font-weight: 700;
+      width:
+        100%;
 
-}
+      accent-color:
+        #a855f7;
 
+    }
 
-.switch {
 
-  position: relative;
+    select {
 
-  width: 54px;
+      width:
+        100%;
 
-  height: 30px;
+      border:
+        1px solid
+        #3b3148;
 
-}
+      background:
+        #0e0b13;
 
+      color:
+        white;
 
-.switch input {
+      border-radius:
+        10px;
 
-  display: none;
+      padding:
+        12px;
 
-}
+      outline:
+        none;
 
+    }
 
-.slider {
 
-  position: absolute;
+    .toggle-row {
 
-  inset: 0;
+      display: flex;
 
-  background:
-    #40394a;
+      align-items: center;
 
-  border-radius:
-    999px;
+      justify-content: space-between;
 
-  cursor: pointer;
+      gap: 20px;
 
-  transition:
-    0.2s;
+      padding:
+        13px 0;
 
-}
+      border-bottom:
+        1px solid
+        #251e2e;
 
+    }
 
-.slider::before {
 
-  content: "";
+    .toggle-row:last-child {
 
-  position: absolute;
+      border-bottom:
+        0;
 
-  width: 22px;
+    }
 
-  height: 22px;
 
-  top: 4px;
+    .switch {
 
-  left: 4px;
+      position:
+        relative;
 
-  border-radius: 50%;
+      width:
+        48px;
 
-  background:
-    white;
+      height:
+        26px;
 
-  transition:
-    0.2s;
+      flex:
+        0 0 auto;
 
-}
+    }
 
 
-.switch input:checked +
-.slider {
+    .switch input {
 
-  background:
-    #a84dff;
+      display:
+        none;
 
-}
+    }
 
 
-.switch input:checked +
-.slider::before {
+    .slider {
 
-  transform:
-    translateX(
-      24px
-    );
+      position:
+        absolute;
 
-}
+      inset:
+        0;
 
+      cursor:
+        pointer;
 
-.tiers {
+      background:
+        #3b3441;
 
-  display: grid;
+      border-radius:
+        30px;
 
-  grid-template-columns:
-    repeat(
-      5,
-      1fr
-    );
+      transition:
+        .2s;
 
-  gap: 12px;
+    }
 
-  margin-top: 16px;
 
-}
+    .slider::before {
 
+      content:
+        "";
 
-.tier {
+      position:
+        absolute;
 
-  border:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.08
-    );
+      width:
+        20px;
 
-  border-radius: 14px;
+      height:
+        20px;
 
-  padding: 14px;
+      top:
+        3px;
 
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.025
-    );
+      left:
+        3px;
 
-}
+      border-radius:
+        50%;
 
+      background:
+        white;
 
-.tier strong {
+      transition:
+        .2s;
 
-  display: block;
+    }
 
-  margin-bottom: 8px;
 
-}
+    .switch input:checked +
+    .slider {
 
+      background:
+        #9333ea;
 
-.tier small {
+    }
 
-  display: block;
 
-  color:
-    #aaa1b5;
+    .switch input:checked +
+    .slider::before {
 
-  margin-bottom: 10px;
+      transform:
+        translateX(
+          22px
+        );
 
-}
+    }
 
 
-button {
+    .buttons {
 
-  border: none;
+      display:
+        flex;
 
-  border-radius: 10px;
+      flex-wrap:
+        wrap;
 
-  padding:
-    12px 16px;
+      gap:
+        10px;
 
-  font-weight: 800;
+    }
 
-  cursor: pointer;
 
-  transition: 0.2s;
+    button {
 
-}
+      border:
+        0;
 
+      border-radius:
+        10px;
 
-button:hover {
+      padding:
+        12px 16px;
 
-  transform:
-    translateY(
-      -1px
-    );
+      font-weight:
+        700;
 
-}
+      cursor:
+        pointer;
 
+      transition:
+        transform .15s,
+        opacity .15s;
 
-button:disabled {
+    }
 
-  opacity: 0.5;
 
-  cursor: wait;
+    button:hover {
 
-  transform: none;
+      transform:
+        translateY(
+          -1px
+        );
 
-}
+    }
 
 
-.btn-primary {
+    button:disabled {
 
-  background:
-    linear-gradient(
-      135deg,
-      #9d3cff,
-      #e24cff
-    );
+      cursor:
+        not-allowed;
 
-  color: white;
+      opacity:
+        .55;
 
-}
+      transform:
+        none;
 
+    }
 
-.btn-secundario {
 
-  background:
-    #211a29;
+    .primary {
 
-  color: white;
+      background:
+        linear-gradient(
+          135deg,
+          #9333ea,
+          #d946ef
+        );
 
-  border:
-    1px solid
-    #493d59;
+      color:
+        white;
 
-}
+    }
 
 
-.btn-sair {
+    .secondary {
 
-  background:
-    rgba(
-      255,
-      50,
-      70,
-      0.12
-    );
+      background:
+        #26202e;
 
-  color:
-    #ff8b98;
+      color:
+        white;
 
-  border:
-    1px solid
-    rgba(
-      255,
-      50,
-      70,
-      0.35
-    );
+    }
 
-}
 
+    .danger {
 
-.topo {
+      background:
+        #3b1620;
 
-  display: flex;
+      color:
+        #ff9ba9;
 
-  align-items: flex-start;
+    }
 
-  justify-content:
-    space-between;
 
-  gap: 20px;
+    .test-basic {
 
-  margin-bottom: 10px;
+      background:
+        #eeeeee;
 
-}
+      color:
+        #111111;
 
+    }
 
-.acoes {
 
-  display: flex;
+    .test-medium {
 
-  gap: 12px;
+      background:
+        #a855f7;
 
-  margin-top: 24px;
+      color:
+        white;
 
-  flex-wrap: wrap;
+    }
 
-}
 
+    .test-epic {
 
-.status {
+      background:
+        #5b5cf0;
 
-  margin-top: 18px;
+      color:
+        white;
 
-  padding: 12px;
+    }
 
-  border-radius: 10px;
 
-  display: none;
+    .test-special {
 
-}
+      background:
+        #d98c18;
 
+      color:
+        white;
 
-.status.ok {
+    }
 
-  display: block;
 
-  background:
-    rgba(
-      52,
-      211,
-      153,
-      0.14
-    );
+    .test-legendary {
 
-  border:
-    1px solid
-    rgba(
-      52,
-      211,
-      153,
-      0.35
-    );
+      background:
+        #a4162b;
 
-  color:
-    #8bf0c5;
+      color:
+        white;
 
-}
+    }
 
 
-.status.erro {
+    .status {
 
-  display: block;
+      min-height:
+        24px;
 
-  background:
-    rgba(
-      239,
-      68,
-      68,
-      0.14
-    );
+      margin-top:
+        15px;
 
-  border:
-    1px solid
-    rgba(
-      239,
-      68,
-      68,
-      0.35
-    );
+      color:
+        #b8afc2;
 
-  color:
-    #ff9d9d;
+    }
 
-}
 
+    .status.success {
 
-.status.carregando {
+      color:
+        #6ee7a8;
 
-  display: block;
+    }
 
-  background:
-    rgba(
-      168,
-      77,
-      255,
-      0.12
-    );
 
-  border:
-    1px solid
-    rgba(
-      168,
-      77,
-      255,
-      0.35
-    );
+    .status.error {
 
-  color:
-    #d7b7ff;
+      color:
+        #ff8c9d;
 
-}
+    }
 
 
-.teste-grid {
+    .history-header {
 
-  display: grid;
+      display:
+        flex;
 
-  grid-template-columns:
-    repeat(
-      5,
-      1fr
-    );
+      align-items:
+        center;
 
-  gap: 12px;
+      justify-content:
+        space-between;
 
-}
+      gap:
+        15px;
 
+      margin-bottom:
+        20px;
 
-.teste-grid button {
+    }
 
-  min-height: 58px;
 
-}
+    .history-header h2 {
 
+      margin:
+        0;
 
-.basic {
+    }
 
-  border-color:
-    #555;
 
-}
+    .stats {
 
+      display:
+        grid;
 
-.medium {
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(
+            0,
+            1fr
+          )
+        );
 
-  border-color:
-    #ad39ff;
+      gap:
+        14px;
 
-}
+      margin-bottom:
+        22px;
 
+    }
 
-.epic {
 
-  border-color:
-    #586cff;
+    .stat {
 
-}
+      background:
+        #0d0a12;
 
+      border:
+        1px solid
+        #2f2738;
 
-.special {
+      border-radius:
+        14px;
 
-  border-color:
-    #e69b00;
+      padding:
+        17px;
 
-}
+    }
 
 
-.legendary {
+    .stat span {
 
-  border-color:
-    #ff263d;
+      display:
+        block;
 
-}
+      color:
+        #a69ead;
 
+      font-size:
+        13px;
 
-/* ==========================================
-   TELA DE LOGIN
-========================================== */
+      margin-bottom:
+        8px;
 
-#loginOverlay {
+    }
 
-  position: fixed;
 
-  inset: 0;
+    .stat strong {
 
-  z-index: 9999;
+      display:
+        block;
 
-  display: flex;
+      font-size:
+        24px;
 
-  align-items: center;
+    }
 
-  justify-content: center;
 
-  padding: 20px;
+    #totalRecebido {
 
-  background:
-    rgba(
-      3,
-      2,
-      6,
-      0.96
-    );
+      color:
+        #83efb2;
 
-  backdrop-filter:
-    blur(12px);
+    }
 
-}
 
+    .history-list {
 
-#loginOverlay.escondido {
+      display:
+        flex;
 
-  display: none;
+      flex-direction:
+        column;
 
-}
+      gap:
+        12px;
 
+    }
 
-.login-card {
 
-  width: 100%;
+    .donation {
 
-  max-width: 430px;
+      display:
+        grid;
 
-  padding: 32px;
+      grid-template-columns:
+        1fr auto;
 
-  border-radius: 22px;
+      gap:
+        18px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(28,20,40,.98),
-      rgba(10,8,15,.98)
-    );
+      padding:
+        17px;
 
-  border:
-    1px solid
-    rgba(
-      180,
-      80,
-      255,
-      0.3
-    );
+      border-radius:
+        14px;
 
-  box-shadow:
-    0 25px 70px
-    rgba(
-      0,
-      0,
-      0,
-      0.65
-    );
+      border:
+        1px solid
+        #2d2635;
 
-}
+      background:
+        #0d0a12;
 
+    }
 
-.login-logo {
 
-  font-size: 48px;
+    .donation-top {
 
-  text-align: center;
+      display:
+        flex;
 
-  margin-bottom: 15px;
+      align-items:
+        center;
 
-}
+      flex-wrap:
+        wrap;
 
+      gap:
+        10px;
 
-.login-card h2 {
+      margin-bottom:
+        8px;
 
-  text-align: center;
+    }
 
-  font-size: 27px;
 
-  margin-bottom: 8px;
+    .donation-name {
 
-}
+      font-size:
+        17px;
 
+      font-weight:
+        700;
 
-.login-card p {
+    }
 
-  color:
-    #bdb4c8;
 
-  text-align: center;
+    .donation-message {
 
-  line-height: 1.5;
+      color:
+        #c6becd;
 
-  margin-bottom: 25px;
+      line-height:
+        1.45;
 
-}
+      overflow-wrap:
+        anywhere;
 
+    }
 
-.login-card input {
 
-  font-size: 16px;
+    .donation-info {
 
-  margin-bottom: 14px;
+      margin-top:
+        10px;
 
-}
+      display:
+        flex;
 
+      flex-wrap:
+        wrap;
 
-.login-card button {
+      gap:
+        12px;
 
-  width: 100%;
+      color:
+        #8f8798;
 
-  min-height: 48px;
+      font-size:
+        13px;
 
-}
+    }
 
 
-.login-erro {
+    .donation-value {
 
-  display: none;
+      font-size:
+        20px;
 
-  margin-top: 15px;
+      font-weight:
+        800;
 
-  padding: 11px;
+      white-space:
+        nowrap;
 
-  border-radius: 9px;
+      text-align:
+        right;
 
-  text-align: center;
+    }
 
-  color:
-    #ff9d9d;
 
-  background:
-    rgba(
-      239,
-      68,
-      68,
-      0.12
-    );
+    .badge {
 
-  border:
-    1px solid
-    rgba(
-      239,
-      68,
-      68,
-      0.3
-    );
+      display:
+        inline-flex;
 
-}
+      align-items:
+        center;
 
+      justify-content:
+        center;
 
-.login-erro.ativo {
+      border-radius:
+        999px;
 
-  display: block;
+      padding:
+        5px 10px;
 
-}
+      font-size:
+        11px;
 
+      font-weight:
+        800;
 
-.seguranca {
+      text-transform:
+        uppercase;
 
-  margin-top: 16px;
+    }
 
-  text-align: center;
 
-  font-size: 12px;
+    .tier-basic {
 
-  color:
-    #82798d;
+      background:
+        #e6e6e6;
 
-}
+      color:
+        #111;
 
+    }
 
-/* ==========================================
-   RESPONSIVO
-========================================== */
 
-@media (
-  max-width: 900px
-) {
+    .tier-medium {
 
-  .grid {
+      background:
+        #7e22ce;
 
-    grid-template-columns:
-      1fr;
+      color:
+        white;
 
-  }
+    }
 
 
-  .tiers,
-  .teste-grid {
+    .tier-epic {
 
-    grid-template-columns:
-      1fr 1fr;
+      background:
+        #4338ca;
 
-  }
+      color:
+        white;
 
-}
+    }
 
 
-@media (
-  max-width: 560px
-) {
+    .tier-special {
 
-  body {
+      background:
+        #b96e0a;
 
-    padding: 16px;
+      color:
+        white;
 
-  }
+    }
 
 
-  .tiers,
-  .teste-grid {
+    .tier-legendary {
 
-    grid-template-columns:
-      1fr;
+      background:
+        #8c1324;
 
-  }
+      color:
+        white;
 
+    }
 
-  .topo {
 
-    flex-direction:
-      column;
+    .paid {
 
-  }
+      color:
+        #67e8a0;
 
-}
+    }
 
-</style>
+
+    .pending {
+
+      color:
+        #f8d069;
+
+    }
+
+
+    .empty {
+
+      padding:
+        30px;
+
+      text-align:
+        center;
+
+      color:
+        #8f8798;
+
+      border:
+        1px dashed
+        #3a3044;
+
+      border-radius:
+        14px;
+
+    }
+
+
+    .login {
+
+      position:
+        fixed;
+
+      inset:
+        0;
+
+      z-index:
+        9999;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      padding:
+        20px;
+
+      background:
+        #08070c;
+
+    }
+
+
+    .login.hidden {
+
+      display:
+        none;
+
+    }
+
+
+    .login-box {
+
+      width:
+        min(
+          420px,
+          100%
+        );
+
+      border:
+        1px solid
+        #352941;
+
+      border-radius:
+        18px;
+
+      padding:
+        28px;
+
+      background:
+        #120e19;
+
+      box-shadow:
+        0 25px 80px
+        rgba(
+          0,
+          0,
+          0,
+          .5
+        );
+
+    }
+
+
+    .login-box h1 {
+
+      margin:
+        0 0 8px;
+
+    }
+
+
+    .login-box p {
+
+      margin:
+        0 0 22px;
+
+      color:
+        #9f96a8;
+
+    }
+
+
+    .login-box input {
+
+      width:
+        100%;
+
+      padding:
+        13px;
+
+      border-radius:
+        10px;
+
+      border:
+        1px solid
+        #3b3148;
+
+      background:
+        #09070d;
+
+      color:
+        white;
+
+      outline:
+        none;
+
+      margin-bottom:
+        12px;
+
+    }
+
+
+    .login-box button {
+
+      width:
+        100%;
+
+    }
+
+
+    .login-error {
+
+      color:
+        #ff8697;
+
+      margin-top:
+        13px;
+
+      min-height:
+        20px;
+
+      font-size:
+        14px;
+
+    }
+
+
+    @media (
+      max-width: 800px
+    ) {
+
+      .grid {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .card.full {
+
+        grid-column:
+          auto;
+
+      }
+
+
+      .stats {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .donation {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .donation-value {
+
+        text-align:
+          left;
+
+      }
+
+
+      .header {
+
+        align-items:
+          flex-start;
+
+        flex-direction:
+          column;
+
+      }
+
+    }
+
+  </style>
 
 </head>
 
 
-<body class="bloqueado">
+<body>
 
 
-<!-- ========================================
-     LOGIN
-========================================= -->
+  <!-- LOGIN -->
 
-<div id="loginOverlay">
+  <div
+    class="login"
+    id="loginScreen"
+  >
 
-  <div class="login-card">
-
-    <div class="login-logo">
-      🔐
-    </div>
-
-    <h2>
-      Painel KevenZL
-    </h2>
-
-    <p>
-      Digite a senha administrativa
-      para acessar os controles dos
-      alertas Pix.
-    </p>
-
-
-    <input
-      id="senhaPainel"
-      type="password"
-      placeholder="Senha do painel"
-      autocomplete="current-password"
-    >
-
-
-    <button
-      id="btnEntrar"
-      class="btn-primary"
-      onclick="entrar()"
-    >
-      Entrar no painel
-    </button>
-
-
-    <div
-      id="loginErro"
-      class="login-erro"
-    >
-      Senha incorreta.
-    </div>
-
-
-    <div class="seguranca">
-      🔒 A senha não fica salva permanentemente.
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ========================================
-     PAINEL
-========================================= -->
-
-<div class="container">
-
-
-  <div class="topo">
-
-    <div>
+    <div class="login-box">
 
       <h1>
-        🎛️ Painel de Alertas KevenZL
+        🔐 KevenZL Pix
       </h1>
 
-      <div class="subtitulo">
-        Controle dos alertas Pix da live
-      </div>
+      <p>
+        Entre com a senha do painel.
+      </p>
+
+      <input
+        type="password"
+        id="passwordInput"
+        placeholder="Senha do painel"
+        autocomplete="current-password"
+      >
+
+      <button
+        class="primary"
+        id="loginButton"
+      >
+        Entrar
+      </button>
+
+      <div
+        class="login-error"
+        id="loginError"
+      ></div>
 
     </div>
-
-
-    <button
-      class="btn-sair"
-      onclick="sair()"
-    >
-      🔒 Sair
-    </button>
 
   </div>
 
 
-  <div class="grid">
+  <!-- PAINEL -->
+
+  <main class="page">
+
+    <header class="header">
+
+      <div class="brand">
+
+        <h1>
+          KevenZL Pix Alertas
+        </h1>
+
+        <p>
+          Painel de controle da live
+        </p>
+
+      </div>
+
+      <button
+        class="logout"
+        id="logoutButton"
+      >
+        Sair
+      </button>
+
+    </header>
 
 
-    <!-- ÁUDIO -->
-
-    <div class="card">
-
-      <h2>
-        🔊 Áudio
-      </h2>
+    <section class="grid">
 
 
-      <div class="grupo">
+      <!-- VOLUME -->
 
-        <label>
-          Volume do meme
-        </label>
+      <div class="card">
+
+        <h2>
+          🔊 Áudio
+        </h2>
 
 
-        <div class="linha">
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="volumeMeme">
+              Volume do meme
+            </label>
+
+            <span
+              class="value"
+              id="volumeMemeValue"
+            >
+              100%
+            </span>
+
+          </div>
 
           <input
             id="volumeMeme"
@@ -1049,27 +1266,25 @@ button:disabled {
             value="100"
           >
 
-
-          <div
-            id="volumeMemeValor"
-            class="valor"
-          >
-            100%
-          </div>
-
         </div>
 
-      </div>
 
+        <div class="field">
 
-      <div class="grupo">
+          <div class="label-row">
 
-        <label>
-          Volume da voz IA
-        </label>
+            <label for="volumeVoz">
+              Volume da voz IA
+            </label>
 
+            <span
+              class="value"
+              id="volumeVozValue"
+            >
+              100%
+            </span>
 
-        <div class="linha">
+          </div>
 
           <input
             id="volumeVoz"
@@ -1079,12 +1294,477 @@ button:disabled {
             value="100"
           >
 
+        </div>
 
-          <div
-            id="volumeVozValor"
-            class="valor"
+      </div>
+
+
+      <!-- EFEITOS -->
+
+      <div class="card">
+
+        <h2>
+          ⚡ Efeitos
+        </h2>
+
+
+        <div class="toggle-row">
+
+          <span>
+            Memes
+          </span>
+
+          <label class="switch">
+
+            <input
+              id="memesAtivos"
+              type="checkbox"
+              checked
+            >
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <div class="toggle-row">
+
+          <span>
+            Voz IA
+          </span>
+
+          <label class="switch">
+
+            <input
+              id="vozAtiva"
+              type="checkbox"
+              checked
+            >
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <div class="toggle-row">
+
+          <span>
+            Flash
+          </span>
+
+          <label class="switch">
+
+            <input
+              id="flashAtivo"
+              type="checkbox"
+              checked
+            >
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+
+        <div class="toggle-row">
+
+          <span>
+            Partículas
+          </span>
+
+          <label class="switch">
+
+            <input
+              id="particulasAtivas"
+              type="checkbox"
+              checked
+            >
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- DURAÇÃO -->
+
+      <div class="card">
+
+        <h2>
+          ⏱️ Duração
+        </h2>
+
+        <div class="field">
+
+          <div class="label-row">
+
+            <label for="duracao">
+              Tempo do alerta
+            </label>
+
+            <span
+              class="value"
+              id="duracaoValue"
+            >
+              12s
+            </span>
+
+          </div>
+
+          <input
+            id="duracao"
+            type="range"
+            min="3"
+            max="60"
+            value="12"
           >
-            100%
+
+        </div>
+
+      </div>
+
+
+      <!-- SONS -->
+
+      <div class="card">
+
+        <h2>
+          🎵 Sons por valor
+        </h2>
+
+
+        <div class="field">
+
+          <label>
+            R$ 1 a R$ 9,99
+          </label>
+
+          <select id="somBasic">
+
+            <option value="/sounds/basico.mp3">
+              Básico
+            </option>
+
+            <option value="/sounds/medio.mp3">
+              Médio
+            </option>
+
+            <option value="/sounds/epico.mp3">
+              Épico
+            </option>
+
+            <option value="/sounds/especial.mp3">
+              Especial
+            </option>
+
+            <option value="/sounds/lendario.mp3">
+              Lendário
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            R$ 10 a R$ 24,99
+          </label>
+
+          <select id="somMedium">
+
+            <option value="/sounds/medio.mp3">
+              Médio
+            </option>
+
+            <option value="/sounds/basico.mp3">
+              Básico
+            </option>
+
+            <option value="/sounds/epico.mp3">
+              Épico
+            </option>
+
+            <option value="/sounds/especial.mp3">
+              Especial
+            </option>
+
+            <option value="/sounds/lendario.mp3">
+              Lendário
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            R$ 25 a R$ 49,99
+          </label>
+
+          <select id="somEpic">
+
+            <option value="/sounds/epico.mp3">
+              Épico
+            </option>
+
+            <option value="/sounds/basico.mp3">
+              Básico
+            </option>
+
+            <option value="/sounds/medio.mp3">
+              Médio
+            </option>
+
+            <option value="/sounds/especial.mp3">
+              Especial
+            </option>
+
+            <option value="/sounds/lendario.mp3">
+              Lendário
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            R$ 50 a R$ 99,99
+          </label>
+
+          <select id="somSpecial">
+
+            <option value="/sounds/especial.mp3">
+              Especial
+            </option>
+
+            <option value="/sounds/basico.mp3">
+              Básico
+            </option>
+
+            <option value="/sounds/medio.mp3">
+              Médio
+            </option>
+
+            <option value="/sounds/epico.mp3">
+              Épico
+            </option>
+
+            <option value="/sounds/lendario.mp3">
+              Lendário
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            R$ 100 ou mais
+          </label>
+
+          <select id="somLegendary">
+
+            <option value="/sounds/lendario.mp3">
+              Lendário
+            </option>
+
+            <option value="/sounds/basico.mp3">
+              Básico
+            </option>
+
+            <option value="/sounds/medio.mp3">
+              Médio
+            </option>
+
+            <option value="/sounds/epico.mp3">
+              Épico
+            </option>
+
+            <option value="/sounds/especial.mp3">
+              Especial
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- TESTES -->
+
+      <div class="card full">
+
+        <h2>
+          🧪 Testar alertas
+        </h2>
+
+        <div class="buttons">
+
+          <button
+            class="test-basic test-button"
+            data-tier="basic"
+          >
+            Testar R$ 5
+          </button>
+
+          <button
+            class="test-medium test-button"
+            data-tier="medium"
+          >
+            Testar R$ 15
+          </button>
+
+          <button
+            class="test-epic test-button"
+            data-tier="epic"
+          >
+            Testar R$ 30
+          </button>
+
+          <button
+            class="test-special test-button"
+            data-tier="special"
+          >
+            Testar R$ 50
+          </button>
+
+          <button
+            class="test-legendary test-button"
+            data-tier="legendary"
+          >
+            Testar R$ 100
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- SALVAR -->
+
+      <div class="card full">
+
+        <div class="buttons">
+
+          <button
+            class="primary"
+            id="saveButton"
+          >
+            Salvar configurações
+          </button>
+
+          <button
+            class="secondary"
+            id="reloadButton"
+          >
+            Recarregar
+          </button>
+
+          <button
+            class="danger"
+            id="defaultButton"
+          >
+            Restaurar padrão
+          </button>
+
+        </div>
+
+        <div
+          class="status"
+          id="status"
+        ></div>
+
+      </div>
+
+
+      <!-- HISTÓRICO -->
+
+      <div class="card full">
+
+        <div class="history-header">
+
+          <h2>
+            💰 Histórico de Doações
+          </h2>
+
+          <button
+            class="secondary"
+            id="refreshHistoryButton"
+          >
+            ↻ Atualizar
+          </button>
+
+        </div>
+
+
+        <div class="stats">
+
+          <div class="stat">
+
+            <span>
+              Total recebido
+            </span>
+
+            <strong id="totalRecebido">
+              R$ 0,00
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            <span>
+              Doações pagas
+            </span>
+
+            <strong id="totalPagas">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            <span>
+              Registros exibidos
+            </span>
+
+            <strong id="totalRegistros">
+              0
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="history-list"
+          id="historyList"
+        >
+
+          <div class="empty">
+            Carregando histórico...
           </div>
 
         </div>
@@ -1092,1584 +1772,1286 @@ button:disabled {
       </div>
 
 
-      <div class="switch-row">
+    </section>
 
-        <span>
-          Tocar memes
-        </span>
+  </main>
 
 
-        <label class="switch">
+  <script>
 
-          <input
-            id="memesAtivos"
-            type="checkbox"
-            checked
-          >
+    const SESSION_KEY =
+      "kevenzl_panel_session_secret";
 
-          <span class="slider"></span>
 
-        </label>
+    let panelSecret =
+      sessionStorage.getItem(
+        SESSION_KEY
+      ) || "";
 
-      </div>
 
+    const loginScreen =
+      document.getElementById(
+        "loginScreen"
+      );
 
-      <div class="switch-row">
+    const passwordInput =
+      document.getElementById(
+        "passwordInput"
+      );
 
-        <span>
-          Voz da IA
-        </span>
+    const loginButton =
+      document.getElementById(
+        "loginButton"
+      );
 
+    const loginError =
+      document.getElementById(
+        "loginError"
+      );
 
-        <label class="switch">
 
-          <input
-            id="vozAtiva"
-            type="checkbox"
-            checked
-          >
+    const volumeMeme =
+      document.getElementById(
+        "volumeMeme"
+      );
 
-          <span class="slider"></span>
+    const volumeVoz =
+      document.getElementById(
+        "volumeVoz"
+      );
 
-        </label>
+    const volumeMemeValue =
+      document.getElementById(
+        "volumeMemeValue"
+      );
 
-      </div>
+    const volumeVozValue =
+      document.getElementById(
+        "volumeVozValue"
+      );
 
-    </div>
+    const duracao =
+      document.getElementById(
+        "duracao"
+      );
 
+    const duracaoValue =
+      document.getElementById(
+        "duracaoValue"
+      );
 
-    <!-- EFEITOS -->
 
-    <div class="card">
+    const memesAtivos =
+      document.getElementById(
+        "memesAtivos"
+      );
 
-      <h2>
-        ✨ Tempo e efeitos
-      </h2>
+    const vozAtiva =
+      document.getElementById(
+        "vozAtiva"
+      );
 
+    const flashAtivo =
+      document.getElementById(
+        "flashAtivo"
+      );
 
-      <div class="grupo">
+    const particulasAtivas =
+      document.getElementById(
+        "particulasAtivas"
+      );
 
-        <label>
-          Tempo mínimo do alerta
-        </label>
 
+    const somBasic =
+      document.getElementById(
+        "somBasic"
+      );
 
-        <div class="linha">
+    const somMedium =
+      document.getElementById(
+        "somMedium"
+      );
 
-          <input
-            id="duracao"
-            type="number"
-            min="3"
-            max="60"
-            value="12"
-          >
+    const somEpic =
+      document.getElementById(
+        "somEpic"
+      );
 
-          <span>
-            segundos
-          </span>
+    const somSpecial =
+      document.getElementById(
+        "somSpecial"
+      );
 
-        </div>
+    const somLegendary =
+      document.getElementById(
+        "somLegendary"
+      );
 
-      </div>
 
+    const statusEl =
+      document.getElementById(
+        "status"
+      );
 
-      <div class="switch-row">
 
-        <span>
-          Flash de entrada
-        </span>
+    const historyList =
+      document.getElementById(
+        "historyList"
+      );
 
+    const totalRecebido =
+      document.getElementById(
+        "totalRecebido"
+      );
 
-        <label class="switch">
+    const totalPagas =
+      document.getElementById(
+        "totalPagas"
+      );
 
-          <input
-            id="flashAtivo"
-            type="checkbox"
-            checked
-          >
+    const totalRegistros =
+      document.getElementById(
+        "totalRegistros"
+      );
 
-          <span class="slider"></span>
 
-        </label>
+    function authHeaders(
+      extra = {}
+    ) {
 
-      </div>
+      return {
 
+        "x-panel-secret":
+          panelSecret,
 
-      <div class="switch-row">
+        ...extra
 
-        <span>
-          Partículas
-        </span>
+      };
 
+    }
 
-        <label class="switch">
 
-          <input
-            id="particulasAtivas"
-            type="checkbox"
-            checked
-          >
+    function setStatus(
+      text,
+      type = ""
+    ) {
 
-          <span class="slider"></span>
+      statusEl.textContent =
+        text;
 
-        </label>
 
-      </div>
+      statusEl.className =
+        "status";
 
-    </div>
 
-  </div>
+      if (type) {
 
+        statusEl.classList.add(
+          type
+        );
 
-  <!-- SONS -->
+      }
 
-  <div
-    class="card"
-    style="margin-top:20px;"
-  >
+    }
 
-    <h2>
-      🎵 Sons por faixa
-    </h2>
 
+    function atualizarLabels() {
 
-    <div class="tiers">
+      volumeMemeValue.textContent =
+        `${volumeMeme.value}%`;
 
 
-      <div class="tier basic">
+      volumeVozValue.textContent =
+        `${volumeVoz.value}%`;
 
-        <strong>
-          💰 Básico
-        </strong>
 
-        <small>
-          R$1–9,99
-        </small>
+      duracaoValue.textContent =
+        `${duracao.value}s`;
 
+    }
 
-        <select id="somBasic">
 
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
+    volumeMeme.addEventListener(
+      "input",
+      atualizarLabels
+    );
 
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
+    volumeVoz.addEventListener(
+      "input",
+      atualizarLabels
+    );
 
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="tier medium">
-
-        <strong>
-          💎 Destacado
-        </strong>
-
-        <small>
-          R$10–24,99
-        </small>
-
-
-        <select id="somMedium">
-
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
-
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="tier epic">
-
-        <strong>
-          🔥 Épico
-        </strong>
-
-        <small>
-          R$25–49,99
-        </small>
-
-
-        <select id="somEpic">
-
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
-
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="tier special">
-
-        <strong>
-          🏆 Especial
-        </strong>
-
-        <small>
-          R$50–99,99
-        </small>
-
-
-        <select id="somSpecial">
-
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
-
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="tier legendary">
-
-        <strong>
-          👑 Lendário
-        </strong>
-
-        <small>
-          R$100+
-        </small>
-
-
-        <select id="somLegendary">
-
-          <option value="/sounds/basico.mp3">
-            basico.mp3
-          </option>
-
-          <option value="/sounds/medio.mp3">
-            medio.mp3
-          </option>
-
-          <option value="/sounds/epico.mp3">
-            epico.mp3
-          </option>
-
-          <option value="/sounds/especial.mp3">
-            especial.mp3
-          </option>
-
-          <option value="/sounds/lendario.mp3">
-            lendario.mp3
-          </option>
-
-        </select>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- TESTES -->
-
-  <div
-    class="card"
-    style="margin-top:20px;"
-  >
-
-    <h2>
-      🧪 Testar alertas
-    </h2>
-
-
-    <div class="teste-grid">
-
-      <button
-        class="btn-secundario basic"
-        onclick="testar('basic', this)"
-      >
-        💰 Testar R$5
-      </button>
-
-
-      <button
-        class="btn-secundario medium"
-        onclick="testar('medium', this)"
-      >
-        💎 Testar R$15
-      </button>
-
-
-      <button
-        class="btn-secundario epic"
-        onclick="testar('epic', this)"
-      >
-        🔥 Testar R$30
-      </button>
-
-
-      <button
-        class="btn-secundario special"
-        onclick="testar('special', this)"
-      >
-        🏆 Testar R$50
-      </button>
-
-
-      <button
-        class="btn-secundario legendary"
-        onclick="testar('legendary', this)"
-      >
-        👑 Testar R$100
-      </button>
-
-    </div>
-
-
-    <div class="acoes">
-
-      <button
-        class="btn-primary"
-        onclick="salvarConfiguracoes()"
-      >
-        💾 Salvar configurações
-      </button>
-
-
-      <button
-        class="btn-secundario"
-        onclick="carregarConfiguracoes()"
-      >
-        🔄 Recarregar
-      </button>
-
-
-      <button
-        class="btn-secundario"
-        onclick="restaurarPadrao()"
-      >
-        ↩ Restaurar padrão
-      </button>
-
-    </div>
-
-
-    <div
-      id="status"
-      class="status"
-    ></div>
-
-  </div>
-
-</div>
-
-
-<script>
-
-// ==========================================
-// SEGURANÇA
-// ==========================================
-
-const STORAGE_KEY =
-  "kevenzl_panel_session_secret";
-
-
-let panelSecret =
-  sessionStorage.getItem(
-    STORAGE_KEY
-  ) || "";
-
-
-const loginOverlay =
-  document.getElementById(
-    "loginOverlay"
-  );
-
-
-const senhaPainel =
-  document.getElementById(
-    "senhaPainel"
-  );
-
-
-const btnEntrar =
-  document.getElementById(
-    "btnEntrar"
-  );
-
-
-const loginErro =
-  document.getElementById(
-    "loginErro"
-  );
-
-
-// ==========================================
-// CAMPOS
-// ==========================================
-
-const campos = {
-
-  volumeMeme:
-    document.getElementById(
-      "volumeMeme"
-    ),
-
-  volumeVoz:
-    document.getElementById(
-      "volumeVoz"
-    ),
-
-  memesAtivos:
-    document.getElementById(
-      "memesAtivos"
-    ),
-
-  vozAtiva:
-    document.getElementById(
-      "vozAtiva"
-    ),
-
-  duracao:
-    document.getElementById(
-      "duracao"
-    ),
-
-  flashAtivo:
-    document.getElementById(
-      "flashAtivo"
-    ),
-
-  particulasAtivas:
-    document.getElementById(
-      "particulasAtivas"
-    ),
-
-  somBasic:
-    document.getElementById(
-      "somBasic"
-    ),
-
-  somMedium:
-    document.getElementById(
-      "somMedium"
-    ),
-
-  somEpic:
-    document.getElementById(
-      "somEpic"
-    ),
-
-  somSpecial:
-    document.getElementById(
-      "somSpecial"
-    ),
-
-  somLegendary:
-    document.getElementById(
-      "somLegendary"
-    )
-
-};
-
-
-const volumeMemeValor =
-  document.getElementById(
-    "volumeMemeValor"
-  );
-
-
-const volumeVozValor =
-  document.getElementById(
-    "volumeVozValor"
-  );
-
-
-const statusEl =
-  document.getElementById(
-    "status"
-  );
-
-
-// ==========================================
-// HEADERS PROTEGIDOS
-// ==========================================
-
-function headersProtegidos() {
-
-  return {
-
-    "Content-Type":
-      "application/json",
-
-    "x-panel-secret":
-      panelSecret
-
-  };
-
-}
-
-
-// ==========================================
-// BLOQUEAR / DESBLOQUEAR
-// ==========================================
-
-function mostrarLogin() {
-
-  loginOverlay.classList.remove(
-    "escondido"
-  );
-
-
-  document.body.classList.add(
-    "bloqueado"
-  );
-
-
-  setTimeout(
-    () => {
-
-      senhaPainel.focus();
-
-    },
-    100
-  );
-
-}
-
-
-function esconderLogin() {
-
-  loginOverlay.classList.add(
-    "escondido"
-  );
-
-
-  document.body.classList.remove(
-    "bloqueado"
-  );
-
-}
-
-
-// ==========================================
-// LOGIN
-// ==========================================
-
-async function entrar() {
-
-  const senha =
-    senhaPainel.value.trim();
-
-
-  if (!senha) {
-
-    loginErro.textContent =
-      "Digite a senha do painel.";
-
-
-    loginErro.classList.add(
-      "ativo"
+    duracao.addEventListener(
+      "input",
+      atualizarLabels
     );
 
 
-    return;
+    function pegarConfigTela() {
 
-  }
+      return {
 
+        volumeMeme:
+          Number(
+            volumeMeme.value
+          ) / 100,
 
-  btnEntrar.disabled =
-    true;
+        volumeVoz:
+          Number(
+            volumeVoz.value
+          ) / 100,
 
+        memesAtivos:
+          memesAtivos.checked,
 
-  btnEntrar.textContent =
-    "Verificando...";
+        vozAtiva:
+          vozAtiva.checked,
 
+        duracao:
+          Number(
+            duracao.value
+          ),
 
-  loginErro.classList.remove(
-    "ativo"
-  );
+        flashAtivo:
+          flashAtivo.checked,
 
+        particulasAtivas:
+          particulasAtivas.checked,
 
-  try {
+        sons: {
 
-    const response =
-      await fetch(
+          basic:
+            somBasic.value,
 
-        "/api/config",
+          medium:
+            somMedium.value,
 
-        {
+          epic:
+            somEpic.value,
 
-          method:
-            "GET",
+          special:
+            somSpecial.value,
 
-          headers: {
-
-            "x-panel-secret":
-              senha
-
-          },
-
-          cache:
-            "no-store"
+          legendary:
+            somLegendary.value
 
         }
 
-      );
-
-
-    if (
-      response.status ===
-      401
-    ) {
-
-      throw new Error(
-        "SENHA_INCORRETA"
-      );
+      };
 
     }
 
 
-    if (!response.ok) {
-
-      throw new Error(
-        "ERRO_SERVIDOR"
-      );
-
-    }
-
-
-    const config =
-      await response.json();
-
-
-    panelSecret =
-      senha;
-
-
-    sessionStorage.setItem(
-
-      STORAGE_KEY,
-
-      panelSecret
-
-    );
-
-
-    aplicarConfiguracoes(
+    function aplicarConfig(
       config
-    );
-
-
-    senhaPainel.value =
-      "";
-
-
-    esconderLogin();
-
-
-    mostrarStatus(
-      "✅ Painel conectado com segurança.",
-      "ok"
-    );
-
-
-  } catch (error) {
-
-    if (
-      error.message ===
-      "SENHA_INCORRETA"
     ) {
 
-      loginErro.textContent =
-        "Senha incorreta.";
+      volumeMeme.value =
+        Math.round(
+          Number(
+            config.volumeMeme ?? 1
+          ) * 100
+        );
 
-    } else {
 
-      loginErro.textContent =
-        "Não foi possível conectar ao servidor.";
+      volumeVoz.value =
+        Math.round(
+          Number(
+            config.volumeVoz ?? 1
+          ) * 100
+        );
+
+
+      duracao.value =
+        Number(
+          config.duracao ?? 12
+        );
+
+
+      memesAtivos.checked =
+        config.memesAtivos !== false;
+
+
+      vozAtiva.checked =
+        config.vozAtiva !== false;
+
+
+      flashAtivo.checked =
+        config.flashAtivo !== false;
+
+
+      particulasAtivas.checked =
+        config.particulasAtivas !== false;
+
+
+      if (config.sons) {
+
+        somBasic.value =
+          config.sons.basic ||
+          "/sounds/basico.mp3";
+
+
+        somMedium.value =
+          config.sons.medium ||
+          "/sounds/medio.mp3";
+
+
+        somEpic.value =
+          config.sons.epic ||
+          "/sounds/epico.mp3";
+
+
+        somSpecial.value =
+          config.sons.special ||
+          "/sounds/especial.mp3";
+
+
+        somLegendary.value =
+          config.sons.legendary ||
+          "/sounds/lendario.mp3";
+
+      }
+
+
+      atualizarLabels();
 
     }
 
 
-    loginErro.classList.add(
-      "ativo"
-    );
+    async function carregarConfig() {
+
+      const response =
+        await fetch(
+          "/api/config",
+          {
+
+            headers:
+              authHeaders()
+
+          }
+        );
 
 
-  } finally {
+      if (
+        response.status === 401
+      ) {
 
-    btnEntrar.disabled =
-      false;
+        throw new Error(
+          "unauthorized"
+        );
 
-
-    btnEntrar.textContent =
-      "Entrar no painel";
-
-  }
-
-}
+      }
 
 
-// ==========================================
-// SAIR
-// ==========================================
+      if (!response.ok) {
 
-function sair() {
+        throw new Error(
+          "Erro ao carregar configurações."
+        );
 
-  sessionStorage.removeItem(
-    STORAGE_KEY
-  );
+      }
 
 
-  panelSecret =
-    "";
+      const config =
+        await response.json();
 
 
-  senhaPainel.value =
-    "";
+      aplicarConfig(
+        config
+      );
 
 
-  mostrarLogin();
+      return config;
 
-}
-
-
-// ==========================================
-// TRATAR NÃO AUTORIZADO
-// ==========================================
-
-function verificarAutorizacao(
-  response
-) {
-
-  if (
-    response.status ===
-    401
-  ) {
-
-    sessionStorage.removeItem(
-      STORAGE_KEY
-    );
+    }
 
 
-    panelSecret =
-      "";
-
-
-    mostrarLogin();
-
-
-    throw new Error(
-      "Acesso não autorizado."
-    );
-
-  }
-
-}
-
-
-// ==========================================
-// ENTER NA SENHA
-// ==========================================
-
-senhaPainel.addEventListener(
-
-  "keydown",
-
-  event => {
-
-    if (
-      event.key ===
-      "Enter"
+    async function salvarConfig(
+      mostrarMensagem = true
     ) {
 
-      entrar();
+      const response =
+        await fetch(
+          "/api/config",
+          {
+
+            method:
+              "POST",
+
+            headers:
+              authHeaders({
+
+                "Content-Type":
+                  "application/json"
+
+              }),
+
+            body:
+              JSON.stringify(
+                pegarConfigTela()
+              )
+
+          }
+        );
+
+
+      if (
+        response.status === 401
+      ) {
+
+        logout();
+
+        throw new Error(
+          "Senha inválida."
+        );
+
+      }
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          "Erro ao salvar."
+        );
+
+      }
+
+
+      if (
+        mostrarMensagem
+      ) {
+
+        setStatus(
+          "Configurações salvas no Supabase. ✅",
+          "success"
+        );
+
+      }
+
+
+      return data;
 
     }
 
-  }
 
-);
+    async function testarAlerta(
+      tier
+    ) {
 
+      try {
 
-// ==========================================
-// SLIDERS
-// ==========================================
+        setStatus(
+          "Preparando teste..."
+        );
 
-campos.volumeMeme.addEventListener(
 
-  "input",
+        await salvarConfig(
+          false
+        );
 
-  () => {
 
-    volumeMemeValor.textContent =
-      campos.volumeMeme.value +
-      "%";
+        const response =
+          await fetch(
+            "/api/test-alert",
+            {
 
-  }
+              method:
+                "POST",
 
-);
+              headers:
+                authHeaders({
 
+                  "Content-Type":
+                    "application/json"
 
-campos.volumeVoz.addEventListener(
+                }),
 
-  "input",
+              body:
+                JSON.stringify({
+                  tier
+                })
 
-  () => {
+            }
+          );
 
-    volumeVozValor.textContent =
-      campos.volumeVoz.value +
-      "%";
 
-  }
+        if (
+          response.status === 401
+        ) {
 
-);
+          logout();
 
-
-// ==========================================
-// OBTER CONFIGURAÇÕES
-// ==========================================
-
-function obterConfiguracoes() {
-
-  return {
-
-    volumeMeme:
-
-      Number(
-        campos.volumeMeme.value
-      ) / 100,
-
-
-    volumeVoz:
-
-      Number(
-        campos.volumeVoz.value
-      ) / 100,
-
-
-    memesAtivos:
-
-      campos
-        .memesAtivos
-        .checked,
-
-
-    vozAtiva:
-
-      campos
-        .vozAtiva
-        .checked,
-
-
-    duracao:
-
-      Number(
-        campos.duracao.value
-      ),
-
-
-    flashAtivo:
-
-      campos
-        .flashAtivo
-        .checked,
-
-
-    particulasAtivas:
-
-      campos
-        .particulasAtivas
-        .checked,
-
-
-    sons: {
-
-      basic:
-        campos.somBasic.value,
-
-      medium:
-        campos.somMedium.value,
-
-      epic:
-        campos.somEpic.value,
-
-      special:
-        campos.somSpecial.value,
-
-      legendary:
-        campos.somLegendary.value
-
-    }
-
-  };
-
-}
-
-
-// ==========================================
-// APLICAR CONFIGURAÇÕES
-// ==========================================
-
-function aplicarConfiguracoes(
-  config
-) {
-
-  campos.volumeMeme.value =
-    Math.round(
-      (
-        config.volumeMeme ??
-        1
-      ) *
-      100
-    );
-
-
-  campos.volumeVoz.value =
-    Math.round(
-      (
-        config.volumeVoz ??
-        1
-      ) *
-      100
-    );
-
-
-  campos.memesAtivos.checked =
-    config.memesAtivos !==
-    false;
-
-
-  campos.vozAtiva.checked =
-    config.vozAtiva !==
-    false;
-
-
-  campos.duracao.value =
-    config.duracao ??
-    12;
-
-
-  campos.flashAtivo.checked =
-    config.flashAtivo !==
-    false;
-
-
-  campos.particulasAtivas.checked =
-    config.particulasAtivas !==
-    false;
-
-
-  if (
-    config.sons
-  ) {
-
-    campos.somBasic.value =
-      config.sons.basic ||
-      "/sounds/basico.mp3";
-
-
-    campos.somMedium.value =
-      config.sons.medium ||
-      "/sounds/medio.mp3";
-
-
-    campos.somEpic.value =
-      config.sons.epic ||
-      "/sounds/epico.mp3";
-
-
-    campos.somSpecial.value =
-      config.sons.special ||
-      "/sounds/especial.mp3";
-
-
-    campos.somLegendary.value =
-      config.sons.legendary ||
-      "/sounds/lendario.mp3";
-
-  }
-
-
-  volumeMemeValor.textContent =
-    campos.volumeMeme.value +
-    "%";
-
-
-  volumeVozValor.textContent =
-    campos.volumeVoz.value +
-    "%";
-
-}
-
-
-// ==========================================
-// STATUS
-// ==========================================
-
-function mostrarStatus(
-  texto,
-  tipo = "ok"
-) {
-
-  statusEl.textContent =
-    texto;
-
-
-  statusEl.className =
-    "status " +
-    tipo;
-
-}
-
-
-// ==========================================
-// CARREGAR CONFIGURAÇÕES
-// ==========================================
-
-async function carregarConfiguracoes() {
-
-  if (!panelSecret) {
-
-    mostrarLogin();
-
-    return;
-
-  }
-
-
-  mostrarStatus(
-
-    "Carregando configurações...",
-
-    "carregando"
-
-  );
-
-
-  try {
-
-    const response =
-      await fetch(
-
-        "/api/config",
-
-        {
-
-          method:
-            "GET",
-
-          headers: {
-
-            "x-panel-secret":
-              panelSecret
-
-          },
-
-          cache:
-            "no-store"
+          return;
 
         }
 
-      );
+
+        const data =
+          await response.json();
 
 
-    verificarAutorizacao(
-      response
-    );
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "Erro no teste."
+          );
+
+        }
 
 
-    if (!response.ok) {
-
-      throw new Error(
-        "Erro ao carregar."
-      );
-
-    }
+        setStatus(
+          "Alerta de teste enviado. ✅",
+          "success"
+        );
 
 
-    const config =
-      await response.json();
+      } catch (error) {
 
+        setStatus(
+          error.message,
+          "error"
+        );
 
-    aplicarConfiguracoes(
-      config
-    );
-
-
-    esconderLogin();
-
-
-    mostrarStatus(
-
-      "✅ Configurações carregadas do servidor.",
-
-      "ok"
-
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      error
-    );
-
-
-    if (panelSecret) {
-
-      mostrarStatus(
-
-        "❌ Não foi possível carregar as configurações.",
-
-        "erro"
-
-      );
+      }
 
     }
 
-  }
 
-}
-
-
-// ==========================================
-// SALVAR
-// ==========================================
-
-async function salvarConfiguracoes(
-  mostrarMensagem = true
-) {
-
-  if (!panelSecret) {
-
-    mostrarLogin();
-
-    return false;
-
-  }
-
-
-  const config =
-    obterConfiguracoes();
-
-
-  try {
-
-    if (
-      mostrarMensagem
+    function escaparHtml(
+      value
     ) {
 
-      mostrarStatus(
+      return String(
+        value ?? ""
+      )
 
-        "Salvando configurações...",
+        .replaceAll(
+          "&",
+          "&amp;"
+        )
 
-        "carregando"
+        .replaceAll(
+          "<",
+          "&lt;"
+        )
+
+        .replaceAll(
+          ">",
+          "&gt;"
+        )
+
+        .replaceAll(
+          '"',
+          "&quot;"
+        )
+
+        .replaceAll(
+          "'",
+          "&#039;"
+        );
+
+    }
+
+
+    function dinheiro(
+      valor
+    ) {
+
+      return Number(
+        valor || 0
+      ).toLocaleString(
+        "pt-BR",
+        {
+
+          style:
+            "currency",
+
+          currency:
+            "BRL"
+
+        }
+      );
+
+    }
+
+
+    function dataHora(
+      valor
+    ) {
+
+      if (!valor) {
+
+        return "-";
+
+      }
+
+
+      const data =
+        new Date(
+          valor
+        );
+
+
+      if (
+        Number.isNaN(
+          data.getTime()
+        )
+      ) {
+
+        return "-";
+
+      }
+
+
+      return data
+        .toLocaleString(
+          "pt-BR"
+        );
+
+    }
+
+
+    function nomeTier(
+      tier
+    ) {
+
+      const nomes = {
+
+        basic:
+          "Básico",
+
+        medium:
+          "Médio",
+
+        epic:
+          "Épico",
+
+        special:
+          "Especial",
+
+        legendary:
+          "Lendário"
+
+      };
+
+
+      return nomes[tier] ||
+        tier ||
+        "-";
+
+    }
+
+
+    function estaPago(
+      donation
+    ) {
+
+      return (
+
+        donation.status ===
+          "processed" ||
+
+        donation.status ===
+          "approved" ||
+
+        Boolean(
+          donation.paid_at
+        )
 
       );
 
     }
 
 
-    const response =
-      await fetch(
+    async function carregarHistorico() {
 
-        "/api/config",
+      historyList.innerHTML =
+        `
+          <div class="empty">
+            Carregando histórico...
+          </div>
+        `;
 
-        {
 
-          method:
-            "POST",
+      try {
 
-          headers:
-            headersProtegidos(),
+        const response =
+          await fetch(
+            "/api/donations?limit=50",
+            {
 
-          body:
-            JSON.stringify(
-              config
+              headers:
+                authHeaders()
+
+            }
+          );
+
+
+        if (
+          response.status === 401
+        ) {
+
+          logout();
+
+          return;
+
+        }
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            "Erro ao carregar histórico."
+          );
+
+        }
+
+
+        totalRecebido.textContent =
+          dinheiro(
+            data.resumo
+              ?.totalRecebido
+          );
+
+
+        totalPagas.textContent =
+          String(
+            data.resumo
+              ?.totalPagas ?? 0
+          );
+
+
+        totalRegistros.textContent =
+          String(
+            data.resumo
+              ?.totalRegistros ?? 0
+          );
+
+
+        const donations =
+          Array.isArray(
+            data.donations
+          )
+            ? data.donations
+            : [];
+
+
+        if (
+          donations.length === 0
+        ) {
+
+          historyList.innerHTML =
+            `
+              <div class="empty">
+                Nenhuma doação registrada ainda.
+              </div>
+            `;
+
+          return;
+
+        }
+
+
+        historyList.innerHTML =
+          donations
+            .map(
+
+              donation => {
+
+                const paga =
+                  estaPago(
+                    donation
+                  );
+
+
+                const statusTexto =
+                  paga
+                    ? "✅ Pago"
+                    : "⏳ Pendente";
+
+
+                const alertTexto =
+                  donation.alert_sent
+                    ? "🔊 Alerta enviado"
+                    : "🔇 Alerta não enviado";
+
+
+                const mensagem =
+                  donation.message
+                    ? escaparHtml(
+                        donation.message
+                      )
+                    : "Sem mensagem";
+
+
+                return `
+                  <article class="donation">
+
+                    <div>
+
+                      <div class="donation-top">
+
+                        <span class="donation-name">
+                          ${escaparHtml(
+                            donation.name
+                          )}
+                        </span>
+
+                        <span
+                          class="
+                            badge
+                            tier-${escaparHtml(
+                              donation.tier
+                            )}
+                          "
+                        >
+                          ${escaparHtml(
+                            nomeTier(
+                              donation.tier
+                            )
+                          )}
+                        </span>
+
+                      </div>
+
+                      <div class="donation-message">
+                        ${mensagem}
+                      </div>
+
+                      <div class="donation-info">
+
+                        <span
+                          class="${
+                            paga
+                              ? "paid"
+                              : "pending"
+                          }"
+                        >
+                          ${statusTexto}
+                        </span>
+
+                        <span>
+                          ${alertTexto}
+                        </span>
+
+                        <span>
+                          ${dataHora(
+                            donation
+                              .created_at
+                          )}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                    <div class="donation-value">
+                      ${dinheiro(
+                        donation.amount
+                      )}
+                    </div>
+
+                  </article>
+                `;
+
+              }
+
             )
+            .join("");
+
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+
+        historyList.innerHTML =
+          `
+            <div class="empty">
+              Não foi possível carregar o histórico.
+            </div>
+          `;
+
+      }
+
+    }
+
+
+    async function tentarLogin() {
+
+      const senha =
+        passwordInput.value;
+
+
+      if (!senha) {
+
+        loginError.textContent =
+          "Digite a senha.";
+
+        return;
+
+      }
+
+
+      loginButton.disabled =
+        true;
+
+
+      loginError.textContent =
+        "Entrando...";
+
+
+      panelSecret =
+        senha;
+
+
+      try {
+
+        await carregarConfig();
+
+
+        sessionStorage.setItem(
+          SESSION_KEY,
+          panelSecret
+        );
+
+
+        loginScreen.classList.add(
+          "hidden"
+        );
+
+
+        loginError.textContent =
+          "";
+
+
+        passwordInput.value =
+          "";
+
+
+        await carregarHistorico();
+
+
+      } catch (error) {
+
+        panelSecret =
+          "";
+
+
+        sessionStorage.removeItem(
+          SESSION_KEY
+        );
+
+
+        loginError.textContent =
+          error.message ===
+          "unauthorized"
+            ? "Senha incorreta."
+            : "Não foi possível entrar.";
+
+      } finally {
+
+        loginButton.disabled =
+          false;
+
+      }
+
+    }
+
+
+    function logout() {
+
+      panelSecret =
+        "";
+
+
+      sessionStorage.removeItem(
+        SESSION_KEY
+      );
+
+
+      loginScreen.classList.remove(
+        "hidden"
+      );
+
+
+      passwordInput.value =
+        "";
+
+
+      loginError.textContent =
+        "";
+
+    }
+
+
+    loginButton.addEventListener(
+      "click",
+      tentarLogin
+    );
+
+
+    passwordInput.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key ===
+          "Enter"
+        ) {
+
+          tentarLogin();
+
+        }
+
+      }
+    );
+
+
+    document
+      .getElementById(
+        "logoutButton"
+      )
+      .addEventListener(
+        "click",
+        logout
+      );
+
+
+    document
+      .getElementById(
+        "saveButton"
+      )
+      .addEventListener(
+
+        "click",
+
+        async () => {
+
+          try {
+
+            setStatus(
+              "Salvando..."
+            );
+
+
+            await salvarConfig(
+              true
+            );
+
+
+          } catch (error) {
+
+            setStatus(
+              error.message,
+              "error"
+            );
+
+          }
 
         }
 
       );
 
 
-    verificarAutorizacao(
-      response
-    );
+    document
+      .getElementById(
+        "reloadButton"
+      )
+      .addEventListener(
 
+        "click",
 
-    const data =
-      await response.json();
+        async () => {
 
+          try {
 
-    if (!response.ok) {
+            setStatus(
+              "Recarregando..."
+            );
 
-      throw new Error(
 
-        data.error ||
-        "Erro ao salvar."
+            await carregarConfig();
 
-      );
 
-    }
+            await carregarHistorico();
 
 
-    if (
-      mostrarMensagem
-    ) {
+            setStatus(
+              "Dados recarregados. ✅",
+              "success"
+            );
 
-      mostrarStatus(
 
-        "✅ Configurações salvas no servidor!",
+          } catch (error) {
 
-        "ok"
+            setStatus(
+              error.message,
+              "error"
+            );
 
-      );
-
-    }
-
-
-    return true;
-
-
-  } catch (error) {
-
-    console.error(
-      error
-    );
-
-
-    if (panelSecret) {
-
-      mostrarStatus(
-
-        "❌ Erro ao salvar configurações.",
-
-        "erro"
-
-      );
-
-    }
-
-
-    return false;
-
-  }
-
-}
-
-
-// ==========================================
-// TESTAR ALERTA
-// ==========================================
-
-async function testar(
-  tier,
-  botao
-) {
-
-  if (!panelSecret) {
-
-    mostrarLogin();
-
-    return;
-
-  }
-
-
-  const textoOriginal =
-    botao.textContent;
-
-
-  botao.disabled =
-    true;
-
-
-  botao.textContent =
-    "Enviando...";
-
-
-  mostrarStatus(
-
-    "Preparando alerta de teste...",
-
-    "carregando"
-
-  );
-
-
-  try {
-
-    const salvo =
-      await salvarConfiguracoes(
-        false
-      );
-
-
-    if (!salvo) {
-
-      throw new Error(
-        "Não foi possível salvar."
-      );
-
-    }
-
-
-    const response =
-      await fetch(
-
-        "/api/test-alert",
-
-        {
-
-          method:
-            "POST",
-
-          headers:
-            headersProtegidos(),
-
-          body:
-            JSON.stringify({
-
-              tier
-
-            })
+          }
 
         }
 
       );
 
 
-    verificarAutorizacao(
-      response
-    );
+    document
+      .getElementById(
+        "refreshHistoryButton"
+      )
+      .addEventListener(
+        "click",
+        carregarHistorico
+      );
 
 
-    const data =
-      await response.json();
+    document
+      .getElementById(
+        "defaultButton"
+      )
+      .addEventListener(
+
+        "click",
+
+        () => {
+
+          aplicarConfig({
+
+            volumeMeme:
+              1,
+
+            volumeVoz:
+              1,
+
+            memesAtivos:
+              true,
+
+            vozAtiva:
+              true,
+
+            duracao:
+              12,
+
+            flashAtivo:
+              true,
+
+            particulasAtivas:
+              true,
+
+            sons: {
+
+              basic:
+                "/sounds/basico.mp3",
+
+              medium:
+                "/sounds/medio.mp3",
+
+              epic:
+                "/sounds/epico.mp3",
+
+              special:
+                "/sounds/especial.mp3",
+
+              legendary:
+                "/sounds/lendario.mp3"
+
+            }
+
+          });
 
 
-    if (!response.ok) {
+          setStatus(
+            "Valores padrão carregados. Clique em Salvar para confirmar."
+          );
 
-      throw new Error(
-
-        data.error ||
-        "Erro no teste."
+        }
 
       );
+
+
+    document
+      .querySelectorAll(
+        ".test-button"
+      )
+      .forEach(
+
+        button => {
+
+          button.addEventListener(
+
+            "click",
+
+            () => {
+
+              testarAlerta(
+                button.dataset.tier
+              );
+
+            }
+
+          );
+
+        }
+
+      );
+
+
+    async function iniciarPainel() {
+
+      atualizarLabels();
+
+
+      if (!panelSecret) {
+
+        loginScreen.classList.remove(
+          "hidden"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        await carregarConfig();
+
+
+        loginScreen.classList.add(
+          "hidden"
+        );
+
+
+        await carregarHistorico();
+
+
+      } catch (error) {
+
+        logout();
+
+      }
 
     }
 
 
-    mostrarStatus(
+    iniciarPainel();
 
-      "✅ Alerta enviado! Veja o Streamlabs.",
-
-      "ok"
-
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      error
-    );
-
-
-    if (panelSecret) {
-
-      mostrarStatus(
-
-        "❌ Não foi possível enviar o alerta de teste.",
-
-        "erro"
-
-      );
-
-    }
-
-
-  } finally {
-
-    botao.disabled =
-      false;
-
-
-    botao.textContent =
-      textoOriginal;
-
-  }
-
-}
-
-
-// ==========================================
-// RESTAURAR PADRÃO
-// ==========================================
-
-async function restaurarPadrao() {
-
-  campos.volumeMeme.value =
-    100;
-
-
-  campos.volumeVoz.value =
-    100;
-
-
-  campos.memesAtivos.checked =
-    true;
-
-
-  campos.vozAtiva.checked =
-    true;
-
-
-  campos.duracao.value =
-    12;
-
-
-  campos.flashAtivo.checked =
-    true;
-
-
-  campos.particulasAtivas.checked =
-    true;
-
-
-  campos.somBasic.value =
-    "/sounds/basico.mp3";
-
-
-  campos.somMedium.value =
-    "/sounds/medio.mp3";
-
-
-  campos.somEpic.value =
-    "/sounds/epico.mp3";
-
-
-  campos.somSpecial.value =
-    "/sounds/especial.mp3";
-
-
-  campos.somLegendary.value =
-    "/sounds/lendario.mp3";
-
-
-  volumeMemeValor.textContent =
-    "100%";
-
-
-  volumeVozValor.textContent =
-    "100%";
-
-
-  const salvo =
-    await salvarConfiguracoes();
-
-
-  if (salvo) {
-
-    mostrarStatus(
-
-      "✅ Configurações padrão restauradas.",
-
-      "ok"
-
-    );
-
-  }
-
-}
-
-
-// ==========================================
-// INICIALIZAR PAINEL
-// ==========================================
-
-async function iniciarPainel() {
-
-  if (!panelSecret) {
-
-    mostrarLogin();
-
-    return;
-
-  }
-
-
-  await carregarConfiguracoes();
-
-}
-
-
-iniciarPainel();
-
-</script>
+  </script>
 
 </body>
 
