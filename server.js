@@ -53,6 +53,17 @@ function protegerPainel(req, res, next) {
 
 
 // ======================================================
+// MODO TESTE MERCADO PAGO
+// ======================================================
+
+function mercadoPagoEmTeste() {
+  const token = String(process.env.MP_ACCESS_TOKEN || "");
+
+  return token.startsWith("TEST-");
+}
+
+
+// ======================================================
 // VALIDAR WEBHOOK MERCADO PAGO
 // ======================================================
 
@@ -68,7 +79,6 @@ function validarWebhookMercadoPago(req) {
   const xRequestId = String(req.get("x-request-id") || "");
 
   if (!xSignature) {
-    console.warn("Webhook sem x-signature.");
     return false;
   }
 
@@ -88,7 +98,6 @@ function validarWebhookMercadoPago(req) {
   const v1 = partes.v1;
 
   if (!ts || !v1) {
-    console.warn("x-signature inválido.");
     return false;
   }
 
@@ -140,27 +149,22 @@ async function supabaseRequest(endpoint, options = {}) {
   const url = String(process.env.SUPABASE_URL || "")
     .replace(/\/+$/, "");
 
-  const key = String(
-    process.env.SUPABASE_SERVICE_KEY || ""
-  );
+  const key = String(process.env.SUPABASE_SERVICE_KEY || "");
 
   if (!url || !key) {
     throw new Error("Supabase não configurado.");
   }
 
-  return fetch(
-    `${url}/rest/v1/${endpoint}`,
-    {
-      ...options,
+  return fetch(`${url}/rest/v1/${endpoint}`, {
+    ...options,
 
-      headers: {
-        apikey: key,
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-        ...(options.headers || {})
-      }
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
     }
-  );
+  });
 }
 
 
@@ -174,7 +178,7 @@ const audios = new Map();
 
 
 // ======================================================
-// CONFIGURAÇÃO PADRÃO
+// CONFIGURAÇÃO DOS ALERTAS
 // ======================================================
 
 let alertConfig = {
@@ -196,10 +200,6 @@ let alertConfig = {
 };
 
 
-// ======================================================
-// SONS PERMITIDOS
-// ======================================================
-
 const allowedSounds = new Set([
   "/sounds/basico.mp3",
   "/sounds/medio.mp3",
@@ -210,16 +210,19 @@ const allowedSounds = new Set([
 
 
 // ======================================================
-// CONFIG DO BANCO → SISTEMA
+// CONFIGURAÇÃO BANCO
 // ======================================================
 
 function configDoBanco(row) {
   return {
     volumeMeme: Number(row.volume_meme),
     volumeVoz: Number(row.volume_voz),
+
     memesAtivos: row.memes_ativos,
     vozAtiva: row.voz_ativa,
+
     duracao: Number(row.duracao),
+
     flashAtivo: row.flash_ativo,
     particulasAtivas: row.particulas_ativas,
 
@@ -234,70 +237,41 @@ function configDoBanco(row) {
 }
 
 
-// ======================================================
-// CONFIG DO SISTEMA → BANCO
-// ======================================================
-
 function configParaBanco(config) {
   return {
     id: 1,
 
-    volume_meme:
-      config.volumeMeme,
+    volume_meme: config.volumeMeme,
+    volume_voz: config.volumeVoz,
 
-    volume_voz:
-      config.volumeVoz,
+    memes_ativos: config.memesAtivos,
+    voz_ativa: config.vozAtiva,
 
-    memes_ativos:
-      config.memesAtivos,
+    duracao: config.duracao,
 
-    voz_ativa:
-      config.vozAtiva,
+    flash_ativo: config.flashAtivo,
+    particulas_ativas: config.particulasAtivas,
 
-    duracao:
-      config.duracao,
+    som_basic: config.sons.basic,
+    som_medium: config.sons.medium,
+    som_epic: config.sons.epic,
+    som_special: config.sons.special,
+    som_legendary: config.sons.legendary,
 
-    flash_ativo:
-      config.flashAtivo,
-
-    particulas_ativas:
-      config.particulasAtivas,
-
-    som_basic:
-      config.sons.basic,
-
-    som_medium:
-      config.sons.medium,
-
-    som_epic:
-      config.sons.epic,
-
-    som_special:
-      config.sons.special,
-
-    som_legendary:
-      config.sons.legendary,
-
-    updated_at:
-      new Date().toISOString()
+    updated_at: new Date().toISOString()
   };
 }
 
 
-// ======================================================
-// CARREGAR CONFIGURAÇÃO DO SUPABASE
-// ======================================================
-
 async function carregarConfigBanco() {
   try {
-    const response =
-      await supabaseRequest(
-        "alert_config?id=eq.1&select=*"
-      );
+    const response = await supabaseRequest(
+      "alert_config?id=eq.1&select=*"
+    );
 
     if (!response.ok) {
       console.error(
-        "Erro ao carregar configuração do Supabase:",
+        "Erro ao carregar configuração:",
         response.status,
         await response.text()
       );
@@ -305,74 +279,52 @@ async function carregarConfigBanco() {
       return false;
     }
 
-    const rows =
-      await response.json();
+    const rows = await response.json();
 
-    if (
-      Array.isArray(rows) &&
-      rows.length > 0
-    ) {
-      alertConfig =
-        configDoBanco(rows[0]);
+    if (Array.isArray(rows) && rows.length > 0) {
+      alertConfig = configDoBanco(rows[0]);
 
-      console.log(
-        "Configurações carregadas do Supabase."
-      );
+      console.log("Configurações carregadas do Supabase.");
 
       return true;
     }
 
-    console.warn(
-      "Registro alert_config id=1 não encontrado."
-    );
-
     return false;
+
   } catch (error) {
-    console.error(
-      "Erro ao carregar configuração:",
-      error
-    );
+    console.error("Erro ao carregar configuração:", error);
 
     return false;
   }
 }
 
 
-// ======================================================
-// SALVAR CONFIGURAÇÃO NO SUPABASE
-// ======================================================
-
 async function salvarConfigBanco() {
-  const response =
-    await supabaseRequest(
-      "alert_config?on_conflict=id",
-      {
-        method: "POST",
+  const response = await supabaseRequest(
+    "alert_config?on_conflict=id",
+    {
+      method: "POST",
 
-        headers: {
-          Prefer:
-            "resolution=merge-duplicates,return=representation"
-        },
+      headers: {
+        Prefer:
+          "resolution=merge-duplicates,return=representation"
+      },
 
-        body:
-          JSON.stringify(
-            configParaBanco(alertConfig)
-          )
-      }
-    );
+      body: JSON.stringify(
+        configParaBanco(alertConfig)
+      )
+    }
+  );
 
   if (!response.ok) {
-    const erro =
-      await response.text();
-
     console.error(
-      "Erro ao salvar configuração no Supabase:",
+      "Erro ao salvar configuração:",
       response.status,
-      erro
+      await response.text()
     );
 
     throw new Error(
-      "Não foi possível salvar configurações no banco."
+      "Não foi possível salvar configurações."
     );
   }
 
@@ -381,13 +333,12 @@ async function salvarConfigBanco() {
 
 
 // ======================================================
-// DOAÇÃO DO BANCO → SISTEMA
+// DOAÇÕES
 // ======================================================
 
 function donationDoBanco(row) {
   return {
-    orderId:
-      row.order_id,
+    orderId: row.order_id,
 
     externalReference:
       row.external_reference,
@@ -413,6 +364,9 @@ function donationDoBanco(row) {
     alertSent:
       Boolean(row.alert_sent),
 
+    isTest:
+      Boolean(row.is_test),
+
     createdAt:
       row.created_at,
 
@@ -421,10 +375,6 @@ function donationDoBanco(row) {
   };
 }
 
-
-// ======================================================
-// SALVAR DOAÇÃO NO SUPABASE
-// ======================================================
 
 async function salvarDonationBanco(donation) {
   const body = {
@@ -455,6 +405,9 @@ async function salvarDonationBanco(donation) {
     alert_sent:
       Boolean(donation.alertSent),
 
+    is_test:
+      Boolean(donation.isTest),
+
     created_at:
       donation.createdAt ||
       new Date().toISOString(),
@@ -466,21 +419,20 @@ async function salvarDonationBanco(donation) {
       new Date().toISOString()
   };
 
-  const response =
-    await supabaseRequest(
-      "donations?on_conflict=order_id",
-      {
-        method: "POST",
+  const response = await supabaseRequest(
+    "donations?on_conflict=order_id",
+    {
+      method: "POST",
 
-        headers: {
-          Prefer:
-            "resolution=merge-duplicates,return=representation"
-        },
+      headers: {
+        Prefer:
+          "resolution=merge-duplicates,return=representation"
+      },
 
-        body:
-          JSON.stringify(body)
-      }
-    );
+      body:
+        JSON.stringify(body)
+    }
+  );
 
   if (!response.ok) {
     console.error(
@@ -496,16 +448,10 @@ async function salvarDonationBanco(donation) {
 }
 
 
-// ======================================================
-// BUSCAR DOAÇÃO NO SUPABASE
-// ======================================================
-
 async function buscarDonationBanco(orderId) {
   try {
     const id =
-      encodeURIComponent(
-        String(orderId)
-      );
+      encodeURIComponent(String(orderId));
 
     const response =
       await supabaseRequest(
@@ -532,12 +478,11 @@ async function buscarDonationBanco(orderId) {
       return null;
     }
 
-    return donationDoBanco(
-      rows[0]
-    );
+    return donationDoBanco(rows[0]);
+
   } catch (error) {
     console.error(
-      "Erro ao buscar doação no Supabase:",
+      "Erro ao buscar doação:",
       error
     );
 
@@ -546,19 +491,13 @@ async function buscarDonationBanco(orderId) {
 }
 
 
-// ======================================================
-// ATUALIZAR DOAÇÃO NO SUPABASE
-// ======================================================
-
 async function atualizarDonationBanco(
   orderId,
   campos
 ) {
   try {
     const id =
-      encodeURIComponent(
-        String(orderId)
-      );
+      encodeURIComponent(String(orderId));
 
     const response =
       await supabaseRequest(
@@ -567,7 +506,8 @@ async function atualizarDonationBanco(
           method: "PATCH",
 
           headers: {
-            Prefer: "return=minimal"
+            Prefer:
+              "return=minimal"
           },
 
           body:
@@ -591,6 +531,7 @@ async function atualizarDonationBanco(
     }
 
     return true;
+
   } catch (error) {
     console.error(
       "Erro ao atualizar doação:",
@@ -603,16 +544,12 @@ async function atualizarDonationBanco(
 
 
 // ======================================================
-// VOZ ELEVENLABS
+// UTILIDADES
 // ======================================================
 
 const DEFAULT_VOICE_ID =
   "JBFqnCBsd6RMkjVDRZzb";
 
-
-// ======================================================
-// DEFINIR CATEGORIA
-// ======================================================
 
 function tierFor(amount) {
   if (amount < 10) {
@@ -635,10 +572,6 @@ function tierFor(amount) {
 }
 
 
-// ======================================================
-// LIMPAR TEXTO
-// ======================================================
-
 function cleanText(text) {
   if (!text) {
     return "";
@@ -654,16 +587,9 @@ function cleanText(text) {
       " "
     )
     .trim()
-    .slice(
-      0,
-      250
-    );
+    .slice(0, 250);
 }
 
-
-// ======================================================
-// TRANSMITIR PARA OVERLAY
-// ======================================================
 
 function broadcast(payload) {
   const data =
@@ -672,7 +598,8 @@ function broadcast(payload) {
   for (const res of subscribers) {
     try {
       res.write(data);
-    } catch (error) {
+
+    } catch {
       subscribers.delete(res);
     }
   }
@@ -688,13 +615,7 @@ async function generateTTS(
   amount,
   message
 ) {
-  if (
-    !process.env.ELEVENLABS_API_KEY
-  ) {
-    console.log(
-      "ElevenLabs não configurada."
-    );
-
+  if (!process.env.ELEVENLABS_API_KEY) {
     return null;
   }
 
@@ -705,17 +626,15 @@ async function generateTTS(
   const safeMessage =
     cleanText(message);
 
-  const value =
-    Number(amount);
-
   const money =
-    value.toLocaleString(
-      "pt-BR",
-      {
-        style: "currency",
-        currency: "BRL"
-      }
-    );
+    Number(amount)
+      .toLocaleString(
+        "pt-BR",
+        {
+          style: "currency",
+          currency: "BRL"
+        }
+      );
 
   let text =
     `${safeName} enviou ${money}.`;
@@ -766,7 +685,7 @@ async function generateTTS(
 
   if (!response.ok) {
     console.error(
-      "ERRO ELEVENLABS:",
+      "Erro ElevenLabs:",
       response.status,
       await response.text()
     );
@@ -802,10 +721,6 @@ async function generateTTS(
 }
 
 
-// ======================================================
-// MONTAR E ENVIAR ALERTA
-// ======================================================
-
 async function enviarAlertaDonation(
   donation,
   extra = {}
@@ -820,6 +735,7 @@ async function enviarAlertaDonation(
           donation.amount,
           donation.message
         );
+
     } catch (error) {
       console.error(
         "Erro ao gerar voz:",
@@ -829,7 +745,8 @@ async function enviarAlertaDonation(
   }
 
   const payload = {
-    type: "donation",
+    type:
+      "donation",
 
     orderId:
       String(donation.orderId),
@@ -878,6 +795,9 @@ app.get(
           process.env.MP_ACCESS_TOKEN
         ),
 
+      mercadoPagoTeste:
+        mercadoPagoEmTeste(),
+
       webhookProtegido:
         Boolean(
           process.env.MP_WEBHOOK_SECRET
@@ -904,7 +824,7 @@ app.get(
 
 
 // ======================================================
-// TESTAR SUPABASE
+// TESTE SUPABASE
 // ======================================================
 
 app.get(
@@ -917,9 +837,6 @@ app.get(
           "alert_config?id=eq.1&select=*"
         );
 
-      const texto =
-        await response.text();
-
       if (!response.ok) {
         return res
           .status(500)
@@ -931,7 +848,7 @@ app.get(
       }
 
       const data =
-        JSON.parse(texto);
+        await response.json();
 
       res.json({
         ok: true,
@@ -942,12 +859,12 @@ app.get(
             ? data.length
             : 0
       });
+
     } catch (error) {
       res
         .status(500)
         .json({
           ok: false,
-          supabase: "erro",
           error: error.message
         });
     }
@@ -956,7 +873,7 @@ app.get(
 
 
 // ======================================================
-// PEGAR CONFIGURAÇÕES
+// CONFIGURAÇÕES
 // ======================================================
 
 app.get(
@@ -967,10 +884,6 @@ app.get(
   }
 );
 
-
-// ======================================================
-// SALVAR CONFIGURAÇÕES
-// ======================================================
 
 app.post(
   "/api/config",
@@ -989,44 +902,33 @@ app.post(
       const duracao =
         Number(body.duracao);
 
-      if (
-        Number.isFinite(volumeMeme)
-      ) {
+
+      if (Number.isFinite(volumeMeme)) {
         alertConfig.volumeMeme =
           Math.min(
             1,
-            Math.max(
-              0,
-              volumeMeme
-            )
+            Math.max(0, volumeMeme)
           );
       }
 
-      if (
-        Number.isFinite(volumeVoz)
-      ) {
+
+      if (Number.isFinite(volumeVoz)) {
         alertConfig.volumeVoz =
           Math.min(
             1,
-            Math.max(
-              0,
-              volumeVoz
-            )
+            Math.max(0, volumeVoz)
           );
       }
 
-      if (
-        Number.isFinite(duracao)
-      ) {
+
+      if (Number.isFinite(duracao)) {
         alertConfig.duracao =
           Math.min(
             60,
-            Math.max(
-              3,
-              duracao
-            )
+            Math.max(3, duracao)
           );
       }
+
 
       if (
         typeof body.memesAtivos ===
@@ -1036,6 +938,7 @@ app.post(
           body.memesAtivos;
       }
 
+
       if (
         typeof body.vozAtiva ===
         "boolean"
@@ -1043,6 +946,7 @@ app.post(
         alertConfig.vozAtiva =
           body.vozAtiva;
       }
+
 
       if (
         typeof body.flashAtivo ===
@@ -1052,6 +956,7 @@ app.post(
           body.flashAtivo;
       }
 
+
       if (
         typeof body.particulasAtivas ===
         "boolean"
@@ -1059,6 +964,7 @@ app.post(
         alertConfig.particulasAtivas =
           body.particulasAtivas;
       }
+
 
       if (
         body.sons &&
@@ -1086,22 +992,21 @@ app.post(
         }
       }
 
+
       await salvarConfigBanco();
+
 
       broadcast({
         type: "config",
         config: alertConfig
       });
 
+
       res.json({
         ok: true,
-        saved: "supabase",
         config: alertConfig
       });
 
-      console.log(
-        "Configurações salvas no Supabase."
-      );
     } catch (error) {
       console.error(
         "Erro ao salvar configurações:",
@@ -1112,7 +1017,7 @@ app.post(
         .status(500)
         .json({
           error:
-            "Erro ao salvar configurações no banco."
+            "Erro ao salvar configurações."
         });
     }
   }
@@ -1120,7 +1025,7 @@ app.post(
 
 
 // ======================================================
-// TESTAR ALERTA
+// TESTE DE ALERTA
 // ======================================================
 
 app.post(
@@ -1155,6 +1060,7 @@ app.post(
       const amount =
         testValues[tier];
 
+
       const donation = {
         orderId:
           `teste_${crypto.randomUUID()}`,
@@ -1167,8 +1073,11 @@ app.post(
         message:
           "Este é um teste do alerta Pix.",
 
-        tier
+        tier,
+
+        isTest: true
       };
+
 
       const payload =
         await enviarAlertaDonation(
@@ -1178,10 +1087,12 @@ app.post(
           }
         );
 
+
       res.json({
         ok: true,
         alert: payload
       });
+
     } catch (error) {
       console.error(
         "Erro no teste:",
@@ -1214,8 +1125,10 @@ app.post(
         message = ""
       } = req.body;
 
+
       const value =
         Number(amount);
+
 
       if (
         !Number.isFinite(value) ||
@@ -1226,15 +1139,14 @@ app.post(
           .status(400)
           .json({
             error:
-              "Valor inválido. Use entre R$ 1 e R$ 10.000."
+              "Valor inválido."
           });
       }
 
+
       if (
         !name ||
-        String(name)
-          .trim()
-          .length < 2
+        String(name).trim().length < 2
       ) {
         return res
           .status(400)
@@ -1244,10 +1156,10 @@ app.post(
           });
       }
 
+
       if (
         !email ||
-        !String(email)
-          .includes("@")
+        !String(email).includes("@")
       ) {
         return res
           .status(400)
@@ -1257,9 +1169,8 @@ app.post(
           });
       }
 
-      if (
-        !process.env.MP_ACCESS_TOKEN
-      ) {
+
+      if (!process.env.MP_ACCESS_TOKEN) {
         return res
           .status(500)
           .json({
@@ -1268,11 +1179,13 @@ app.post(
           });
       }
 
+
       const externalReference =
         `kevenzl_${crypto.randomUUID()}`;
 
       const idempotencyKey =
         crypto.randomUUID();
+
 
       const donation = {
         externalReference,
@@ -1297,12 +1210,16 @@ app.post(
         alertSent:
           false,
 
+        isTest:
+          mercadoPagoEmTeste(),
+
         createdAt:
           new Date().toISOString(),
 
         paidAt:
           null
       };
+
 
       const orderBody = {
         type: "online",
@@ -1339,6 +1256,7 @@ app.post(
         }
       };
 
+
       const response =
         await fetch(
           "https://api.mercadopago.com/v1/orders",
@@ -1364,6 +1282,7 @@ app.post(
           }
         );
 
+
       const rawText =
         await response.text();
 
@@ -1378,6 +1297,7 @@ app.post(
         };
       }
 
+
       if (!response.ok) {
         console.error(
           "Mercado Pago:",
@@ -1386,9 +1306,7 @@ app.post(
         );
 
         return res
-          .status(
-            response.status || 502
-          )
+          .status(response.status || 502)
           .json({
             error:
               "Mercado Pago recusou a criação do Pix.",
@@ -1398,11 +1316,13 @@ app.post(
           });
       }
 
+
       const payment =
         data
           ?.transactions
           ?.payments
           ?.[0];
+
 
       donation.orderId =
         String(data.id);
@@ -1412,26 +1332,17 @@ app.post(
         payment?.status ||
         "pending";
 
+
       donations.set(
         donation.orderId,
         donation
       );
 
-      const salvoNoBanco =
-        await salvarDonationBanco(
-          donation
-        );
 
-      if (salvoNoBanco) {
-        console.log(
-          "Doação salva no Supabase:",
-          donation.orderId
-        );
-      } else {
-        console.warn(
-          "Pix criado, mas houve erro ao salvar no Supabase."
-        );
-      }
+      await salvarDonationBanco(
+        donation
+      );
+
 
       res.json({
         orderId:
@@ -1462,8 +1373,12 @@ app.post(
             ?.qr_code_base64 ||
           payment
             ?.qr_code_base64 ||
-          null
+          null,
+
+        isTest:
+          donation.isTest
       });
+
     } catch (error) {
       console.error(
         "Erro em /api/create-pix:",
@@ -1489,19 +1404,15 @@ app.post(
   "/api/webhook/mercadopago",
   async (req, res) => {
     try {
-      if (
-        !validarWebhookMercadoPago(req)
-      ) {
-        console.warn(
-          "Webhook rejeitado: assinatura inválida."
-        );
-
+      if (!validarWebhookMercadoPago(req)) {
         return res.sendStatus(401);
       }
+
 
       const orderId =
         req.query?.["data.id"] ||
         req.body?.data?.id;
+
 
       if (
         !orderId ||
@@ -1510,7 +1421,9 @@ app.post(
         return res.sendStatus(200);
       }
 
+
       res.sendStatus(200);
+
 
       const orderResponse =
         await fetch(
@@ -1528,6 +1441,7 @@ app.post(
           }
         );
 
+
       if (!orderResponse.ok) {
         console.error(
           "Erro consultando ordem:",
@@ -1538,8 +1452,10 @@ app.post(
         return;
       }
 
+
       const order =
         await orderResponse.json();
+
 
       const payment =
         order
@@ -1547,17 +1463,14 @@ app.post(
           ?.payments
           ?.[0];
 
+
       let donation =
         donations.get(
           String(orderId)
         );
 
-      if (!donation) {
-        console.log(
-          "Buscando doação no Supabase:",
-          orderId
-        );
 
+      if (!donation) {
         donation =
           await buscarDonationBanco(
             orderId
@@ -1571,25 +1484,24 @@ app.post(
         }
       }
 
-      if (!donation) {
-        console.log(
-          "Doação não encontrada:",
-          orderId
-        );
 
+      if (!donation) {
         return;
       }
+
 
       donation.status =
         order.status ||
         payment?.status ||
         "pending";
 
+
       const approved =
         order.status === "processed" ||
         payment?.status === "processed" ||
         payment?.status === "approved" ||
         payment?.status_detail === "accredited";
+
 
       await atualizarDonationBanco(
         orderId,
@@ -1607,6 +1519,7 @@ app.post(
         }
       );
 
+
       if (
         approved &&
         !donation.alertSent
@@ -1614,6 +1527,7 @@ app.post(
         donation.paidAt =
           donation.paidAt ||
           new Date().toISOString();
+
 
         const marcou =
           await atualizarDonationBanco(
@@ -1630,25 +1544,21 @@ app.post(
             }
           );
 
-        if (!marcou) {
-          console.error(
-            "Não foi possível marcar alerta no banco."
-          );
 
+        if (!marcou) {
           return;
         }
+
 
         donation.alertSent =
           true;
 
+
         await enviarAlertaDonation(
           donation
         );
-
-        console.log(
-          "Alerta enviado e registrado no Supabase."
-        );
       }
+
     } catch (error) {
       console.error(
         "Webhook error:",
@@ -1664,7 +1574,7 @@ app.post(
 
 
 // ======================================================
-// SERVIR ÁUDIO
+// ÁUDIO
 // ======================================================
 
 app.get(
@@ -1693,13 +1603,15 @@ app.get(
       "no-store"
     );
 
-    res.send(audio.buffer);
+    res.send(
+      audio.buffer
+    );
   }
 );
 
 
 // ======================================================
-// HISTÓRICO DE DOAÇÕES
+// HISTÓRICO
 // ======================================================
 
 app.get(
@@ -1712,9 +1624,11 @@ app.get(
           req.query.limit || 50
         );
 
+
       if (!Number.isFinite(limit)) {
         limit = 50;
       }
+
 
       limit =
         Math.min(
@@ -1725,19 +1639,18 @@ app.get(
           )
         );
 
+
       const response =
         await supabaseRequest(
-          `donations?select=id,order_id,amount,name,email,message,tier,status,alert_sent,created_at,paid_at&order=created_at.desc&limit=${limit}`
+          `donations?select=id,order_id,amount,name,message,tier,status,alert_sent,is_test,created_at,paid_at&order=created_at.desc&limit=${limit}`
         );
 
-      if (!response.ok) {
-        const erro =
-          await response.text();
 
+      if (!response.ok) {
         console.error(
-          "Erro ao buscar histórico:",
+          "Erro histórico:",
           response.status,
-          erro
+          await response.text()
         );
 
         return res
@@ -1748,30 +1661,46 @@ app.get(
           });
       }
 
+
       const rows =
         await response.json();
 
+
       const totalResponse =
         await supabaseRequest(
-          "donations?select=amount,status,paid_at"
+          "donations?select=amount,status,paid_at,is_test"
         );
+
 
       let totalRecebido = 0;
       let totalPagas = 0;
+      let totalTestes = 0;
+
 
       if (totalResponse.ok) {
         const totalRows =
           await totalResponse.json();
 
-        for (
-          const donation of totalRows
-        ) {
+
+        for (const donation of totalRows) {
           const paga =
             donation.status === "processed" ||
             donation.status === "approved" ||
             Boolean(donation.paid_at);
 
-          if (paga) {
+
+          if (donation.is_test) {
+            totalTestes++;
+          }
+
+
+          /*
+            Testes NÃO entram no total recebido.
+          */
+          if (
+            paga &&
+            !donation.is_test
+          ) {
             totalRecebido +=
               Number(
                 donation.amount || 0
@@ -1781,6 +1710,7 @@ app.get(
           }
         }
       }
+
 
       res.json({
         ok: true,
@@ -1793,6 +1723,8 @@ app.get(
 
           totalPagas,
 
+          totalTestes,
+
           totalRegistros:
             Array.isArray(rows)
               ? rows.length
@@ -1804,9 +1736,10 @@ app.get(
             ? rows
             : []
       });
+
     } catch (error) {
       console.error(
-        "Erro em /api/donations:",
+        "Erro histórico:",
         error
       );
 
@@ -1822,7 +1755,7 @@ app.get(
 
 
 // ======================================================
-// REPETIR ALERTA DE UMA DOAÇÃO
+// REPETIR ALERTA
 // ======================================================
 
 app.post(
@@ -1835,19 +1768,12 @@ app.post(
           req.params.orderId || ""
         );
 
-      if (!orderId) {
-        return res
-          .status(400)
-          .json({
-            error:
-              "ID da doação inválido."
-          });
-      }
 
       const donation =
         await buscarDonationBanco(
           orderId
         );
+
 
       if (!donation) {
         return res
@@ -1858,10 +1784,12 @@ app.post(
           });
       }
 
+
       const paga =
         donation.status === "processed" ||
         donation.status === "approved" ||
         Boolean(donation.paidAt);
+
 
       if (!paga) {
         return res
@@ -1872,28 +1800,24 @@ app.post(
           });
       }
 
-      const payload =
-        await enviarAlertaDonation(
-          donation,
-          {
-            replay: true
-          }
-        );
 
-      console.log(
-        "Alerta repetido manualmente:",
-        orderId
+      await enviarAlertaDonation(
+        donation,
+        {
+          replay: true
+        }
       );
+
 
       res.json({
         ok: true,
         message:
-          "Alerta repetido com sucesso.",
-        alert: payload
+          "Alerta repetido."
       });
+
     } catch (error) {
       console.error(
-        "Erro ao repetir alerta:",
+        "Erro repetir alerta:",
         error
       );
 
@@ -1909,17 +1833,258 @@ app.post(
 
 
 // ======================================================
-// STATUS DA DOAÇÃO
+// EXCLUIR SOMENTE UMA DOAÇÃO DE TESTE
+// ======================================================
+
+app.delete(
+  "/api/donations/:orderId",
+  protegerPainel,
+  async (req, res) => {
+    try {
+      const orderId =
+        String(
+          req.params.orderId || ""
+        );
+
+
+      const donation =
+        await buscarDonationBanco(
+          orderId
+        );
+
+
+      if (!donation) {
+        return res
+          .status(404)
+          .json({
+            error:
+              "Doação não encontrada."
+          });
+      }
+
+
+      /*
+        PROTEÇÃO PRINCIPAL:
+        se não estiver marcada como teste,
+        o servidor se recusa a apagar.
+      */
+      if (!donation.isTest) {
+        return res
+          .status(403)
+          .json({
+            error:
+              "Proteção ativada: esta doação não é de teste e não pode ser excluída."
+          });
+      }
+
+
+      const confirmacao =
+        String(
+          req.body?.confirmation || ""
+        );
+
+
+      if (
+        confirmacao !==
+        "EXCLUIR TESTE"
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Confirmação de exclusão inválida."
+          });
+      }
+
+
+      const id =
+        encodeURIComponent(
+          orderId
+        );
+
+
+      const response =
+        await supabaseRequest(
+          `donations?order_id=eq.${id}&is_test=eq.true`,
+          {
+            method: "DELETE",
+
+            headers: {
+              Prefer:
+                "return=representation"
+            }
+          }
+        );
+
+
+      if (!response.ok) {
+        console.error(
+          "Erro ao excluir:",
+          response.status,
+          await response.text()
+        );
+
+        return res
+          .status(500)
+          .json({
+            error:
+              "Não foi possível excluir o teste."
+          });
+      }
+
+
+      donations.delete(
+        orderId
+      );
+
+
+      res.json({
+        ok: true,
+        message:
+          "Doação de teste excluída."
+      });
+
+    } catch (error) {
+      console.error(
+        "Erro ao excluir teste:",
+        error
+      );
+
+      res
+        .status(500)
+        .json({
+          error:
+            "Erro interno ao excluir teste."
+        });
+    }
+  }
+);
+
+
+// ======================================================
+// LIMPAR TODAS AS DOAÇÕES DE TESTE
+// ======================================================
+
+app.post(
+  "/api/donations/clear-tests",
+  protegerPainel,
+  async (req, res) => {
+    try {
+      const confirmacao =
+        String(
+          req.body?.confirmation || ""
+        );
+
+
+      if (
+        confirmacao !==
+        "EXCLUIR TODOS OS TESTES"
+      ) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Confirmação inválida."
+          });
+      }
+
+
+      /*
+        O filtro is_test=eq.true garante que
+        nenhuma doação real seja apagada.
+      */
+      const response =
+        await supabaseRequest(
+          "donations?is_test=eq.true",
+          {
+            method: "DELETE",
+
+            headers: {
+              Prefer:
+                "return=representation"
+            }
+          }
+        );
+
+
+      if (!response.ok) {
+        console.error(
+          "Erro limpeza testes:",
+          response.status,
+          await response.text()
+        );
+
+        return res
+          .status(500)
+          .json({
+            error:
+              "Não foi possível limpar as doações de teste."
+          });
+      }
+
+
+      const removidas =
+        await response.json();
+
+
+      for (
+        const [
+          orderId,
+          donation
+        ] of donations.entries()
+      ) {
+        if (donation.isTest) {
+          donations.delete(
+            orderId
+          );
+        }
+      }
+
+
+      res.json({
+        ok: true,
+
+        removidas:
+          Array.isArray(removidas)
+            ? removidas.length
+            : 0
+      });
+
+    } catch (error) {
+      console.error(
+        "Erro limpando testes:",
+        error
+      );
+
+      res
+        .status(500)
+        .json({
+          error:
+            "Erro interno ao limpar testes."
+        });
+    }
+  }
+);
+
+
+// ======================================================
+// STATUS
 // ======================================================
 
 app.get(
   "/api/status/:orderId",
   async (req, res) => {
     const orderId =
-      String(req.params.orderId);
+      String(
+        req.params.orderId
+      );
+
 
     let donation =
-      donations.get(orderId);
+      donations.get(
+        orderId
+      );
+
 
     if (!donation) {
       donation =
@@ -1927,6 +2092,7 @@ app.get(
           orderId
         );
     }
+
 
     if (!donation) {
       return res
@@ -1936,6 +2102,7 @@ app.get(
             "Doação não encontrada."
         });
     }
+
 
     res.json({
       orderId:
@@ -1961,7 +2128,7 @@ app.get(
 
 
 // ======================================================
-// STREAM DO OVERLAY
+// STREAM OVERLAY
 // ======================================================
 
 app.get(
@@ -1982,9 +2149,14 @@ app.get(
       "keep-alive"
     );
 
+
     res.flushHeaders?.();
 
-    subscribers.add(res);
+
+    subscribers.add(
+      res
+    );
+
 
     res.write(
       `data: ${JSON.stringify({
@@ -1993,10 +2165,13 @@ app.get(
       })}\n\n`
     );
 
+
     req.on(
       "close",
       () => {
-        subscribers.delete(res);
+        subscribers.delete(
+          res
+        );
       }
     );
   }
@@ -2004,7 +2179,7 @@ app.get(
 
 
 // ======================================================
-// OVERLAY
+// PÁGINAS
 // ======================================================
 
 app.get(
@@ -2021,10 +2196,6 @@ app.get(
 );
 
 
-// ======================================================
-// PAINEL
-// ======================================================
-
 app.get(
   "/painel",
   (req, res) => {
@@ -2040,7 +2211,7 @@ app.get(
 
 
 // ======================================================
-// INICIAR SISTEMA
+// INICIAR
 // ======================================================
 
 async function iniciarServidor() {
@@ -2048,51 +2219,28 @@ async function iniciarServidor() {
     "Iniciando KevenZL Pix Alertas..."
   );
 
+
   if (
     process.env.SUPABASE_URL &&
     process.env.SUPABASE_SERVICE_KEY
   ) {
     await carregarConfigBanco();
-  } else {
-    console.warn(
-      "Supabase não configurado."
-    );
   }
+
 
   app.listen(
     PORT,
     HOST,
     () => {
       console.log(
-        `KevenZL Pix Alertas na porta ${PORT}`
+        `Servidor iniciado na porta ${PORT}`
       );
 
       console.log(
         "Mercado Pago:",
-        process.env.MP_ACCESS_TOKEN
-          ? "OK"
-          : "NÃO CONFIGURADO"
-      );
-
-      console.log(
-        "Webhook:",
-        process.env.MP_WEBHOOK_SECRET
-          ? "PROTEGIDO"
-          : "NÃO CONFIGURADO"
-      );
-
-      console.log(
-        "ElevenLabs:",
-        process.env.ELEVENLABS_API_KEY
-          ? "OK"
-          : "NÃO CONFIGURADO"
-      );
-
-      console.log(
-        "Painel:",
-        process.env.PANEL_SECRET
-          ? "PROTEGIDO"
-          : "NÃO CONFIGURADO"
+        mercadoPagoEmTeste()
+          ? "MODO TESTE"
+          : "PRODUÇÃO / NÃO IDENTIFICADO"
       );
 
       console.log(
@@ -2105,5 +2253,6 @@ async function iniciarServidor() {
     }
   );
 }
+
 
 iniciarServidor();
