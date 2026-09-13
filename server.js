@@ -141,9 +141,7 @@ function validarWebhookMercadoPago(req) {
       !chave ||
       !resto.length
     ) {
-
       continue;
-
     }
 
 
@@ -395,13 +393,9 @@ const allowedSounds =
   new Set([
 
     "/sounds/basico.mp3",
-
     "/sounds/medio.mp3",
-
     "/sounds/epico.mp3",
-
     "/sounds/especial.mp3",
-
     "/sounds/lendario.mp3"
 
   ]);
@@ -1555,7 +1549,6 @@ app.post(
       }
 
 
-      // SALVA PERMANENTEMENTE
       await salvarConfigBanco();
 
 
@@ -2069,14 +2062,12 @@ app.post(
         "pending";
 
 
-      // SALVA NA MEMÓRIA
       donations.set(
         donation.orderId,
         donation
       );
 
 
-      // SALVA NO BANCO
       const salvoNoBanco =
         await salvarDonationBanco(
           donation
@@ -2205,7 +2196,6 @@ app.post(
       }
 
 
-      // CONFIRMA RECEBIMENTO AO MERCADO PAGO
       res.sendStatus(200);
 
 
@@ -2260,15 +2250,12 @@ app.post(
           ?.[0];
 
 
-      // PRIMEIRO TENTA MEMÓRIA
       let donation =
         donations.get(
           String(orderId)
         );
 
 
-      // SE O RENDER REINICIOU,
-      // BUSCA NO SUPABASE
       if (!donation) {
 
         console.log(
@@ -2329,7 +2316,6 @@ app.post(
           "accredited";
 
 
-      // ATUALIZA STATUS NO BANCO
       await atualizarDonationBanco(
 
         orderId,
@@ -2364,8 +2350,6 @@ app.post(
           new Date().toISOString();
 
 
-        // MARCA PRIMEIRO NO BANCO
-        // PARA EVITAR ALERTA DUPLICADO
         const marcou =
           await atualizarDonationBanco(
 
@@ -2541,6 +2525,185 @@ app.get(
     res.send(
       audio.buffer
     );
+
+  }
+
+);
+
+
+// ======================================================
+// HISTÓRICO DE DOAÇÕES
+// ======================================================
+
+app.get(
+
+  "/api/donations",
+
+  protegerPainel,
+
+  async (req, res) => {
+
+    try {
+
+      let limit =
+        Number(req.query.limit || 50);
+
+
+      if (
+        !Number.isFinite(limit)
+      ) {
+
+        limit = 50;
+
+      }
+
+
+      limit =
+        Math.min(
+          100,
+          Math.max(
+            1,
+            Math.floor(limit)
+          )
+        );
+
+
+      const response =
+        await supabaseRequest(
+
+          `donations?select=id,order_id,amount,name,email,message,tier,status,alert_sent,created_at,paid_at&order=created_at.desc&limit=${limit}`
+
+        );
+
+
+      if (!response.ok) {
+
+        const erro =
+          await response.text();
+
+
+        console.error(
+          "Erro ao buscar histórico:",
+          response.status,
+          erro
+        );
+
+
+        return res
+          .status(500)
+          .json({
+
+            error:
+              "Não foi possível carregar o histórico."
+
+          });
+
+      }
+
+
+      const rows =
+        await response.json();
+
+
+      const totalResponse =
+        await supabaseRequest(
+
+          "donations?select=amount,status,paid_at"
+
+        );
+
+
+      let totalRecebido = 0;
+      let totalPagas = 0;
+
+
+      if (
+        totalResponse.ok
+      ) {
+
+        const totalRows =
+          await totalResponse.json();
+
+
+        for (
+          const donation of totalRows
+        ) {
+
+          const paga =
+
+            donation.status === "processed" ||
+
+            donation.status === "approved" ||
+
+            Boolean(
+              donation.paid_at
+            );
+
+
+          if (paga) {
+
+            totalRecebido +=
+              Number(
+                donation.amount || 0
+              );
+
+
+            totalPagas++;
+
+          }
+
+        }
+
+      }
+
+
+      res.json({
+
+        ok:
+          true,
+
+        resumo: {
+
+          totalRecebido:
+            Number(
+              totalRecebido.toFixed(2)
+            ),
+
+          totalPagas,
+
+          totalRegistros:
+            Array.isArray(rows)
+              ? rows.length
+              : 0
+
+        },
+
+        donations:
+          Array.isArray(rows)
+            ? rows
+            : []
+
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        "Erro em /api/donations:",
+        error
+      );
+
+
+      res
+        .status(500)
+        .json({
+
+          error:
+            "Erro interno ao carregar histórico."
+
+        });
+
+    }
 
   }
 
