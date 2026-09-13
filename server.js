@@ -35,10 +35,12 @@ function protegerPainel(req, res, next) {
 
   }
 
+
   const segredoRecebido =
     String(
       req.get("x-panel-secret") || ""
     );
+
 
   if (!segredoRecebido) {
 
@@ -49,18 +51,24 @@ function protegerPainel(req, res, next) {
 
   }
 
+
   const recebido =
     Buffer.from(segredoRecebido);
 
   const esperado =
     Buffer.from(segredoServidor);
 
+
   const valido =
-    recebido.length === esperado.length &&
+
+    recebido.length ===
+      esperado.length &&
+
     crypto.timingSafeEqual(
       recebido,
       esperado
     );
+
 
   if (!valido) {
 
@@ -70,6 +78,7 @@ function protegerPainel(req, res, next) {
     });
 
   }
+
 
   next();
 }
@@ -84,6 +93,7 @@ function validarWebhookMercadoPago(req) {
   const secret =
     process.env.MP_WEBHOOK_SECRET;
 
+
   if (!secret) {
 
     console.error(
@@ -91,6 +101,7 @@ function validarWebhookMercadoPago(req) {
     );
 
     return false;
+
   }
 
 
@@ -98,6 +109,7 @@ function validarWebhookMercadoPago(req) {
     String(
       req.get("x-signature") || ""
     );
+
 
   const xRequestId =
     String(
@@ -112,10 +124,12 @@ function validarWebhookMercadoPago(req) {
     );
 
     return false;
+
   }
 
 
   const partes = {};
+
 
   for (
     const parte of xSignature.split(",")
@@ -126,14 +140,22 @@ function validarWebhookMercadoPago(req) {
       ...resto
     ] = parte.split("=");
 
-    if (!chave || !resto.length) {
+
+    if (
+      !chave ||
+      !resto.length
+    ) {
+
       continue;
+
     }
+
 
     partes[
       chave.trim()
     ] =
-      resto.join("=")
+      resto
+        .join("=")
         .trim();
 
   }
@@ -153,6 +175,7 @@ function validarWebhookMercadoPago(req) {
     );
 
     return false;
+
   }
 
 
@@ -176,13 +199,8 @@ function validarWebhookMercadoPago(req) {
       : "";
 
 
-  // Manifesto oficial do Mercado Pago:
-  // id:<data.id>;request-id:<x-request-id>;ts:<ts>;
-  //
-  // Se algum campo não existir,
-  // ele é omitido.
-
-  let manifest = "";
+  let manifest =
+    "";
 
 
   if (dataId) {
@@ -218,9 +236,6 @@ function validarWebhookMercadoPago(req) {
       .update(manifest)
       .digest("hex");
 
-
-  // Uma assinatura SHA-256 hexadecimal
-  // deve possuir 64 caracteres.
 
   if (
     !/^[a-fA-F0-9]{64}$/.test(v1)
@@ -263,6 +278,68 @@ function validarWebhookMercadoPago(req) {
     calculadaBuffer,
     recebidaBuffer
   );
+
+}
+
+
+// ======================================================
+// CONEXÃO COM SUPABASE
+// ======================================================
+
+async function supabaseRequest(
+  endpoint,
+  options = {}
+) {
+
+  const url =
+    String(
+      process.env.SUPABASE_URL || ""
+    ).replace(/\/+$/, "");
+
+
+  const key =
+    process.env.SUPABASE_SERVICE_KEY;
+
+
+  if (!url || !key) {
+
+    throw new Error(
+      "Supabase não configurado."
+    );
+
+  }
+
+
+  const response =
+    await fetch(
+
+      `${url}/rest/v1/${endpoint}`,
+
+      {
+
+        ...options,
+
+        headers: {
+
+          apikey:
+            key,
+
+          Authorization:
+            `Bearer ${key}`,
+
+          "Content-Type":
+            "application/json",
+
+          ...(options.headers || {})
+
+        }
+
+      }
+
+    );
+
+
+  return response;
 
 }
 
@@ -375,6 +452,7 @@ function tierFor(amount) {
   }
 
   return "legendary";
+
 }
 
 
@@ -388,16 +466,21 @@ function cleanText(text) {
     return "";
   }
 
+
   return String(text)
+
     .replace(
       /(https?:\/\/[^\s]+)/gi,
       ""
     )
+
     .replace(
       /\s+/g,
       " "
     )
+
     .trim()
+
     .slice(
       0,
       250
@@ -414,6 +497,7 @@ function broadcast(payload) {
 
   const data =
     `data: ${JSON.stringify(payload)}\n\n`;
+
 
   for (
     const res of subscribers
@@ -474,11 +558,13 @@ async function generateTTS(
     value.toLocaleString(
       "pt-BR",
       {
+
         style:
           "currency",
 
         currency:
           "BRL"
+
       }
     );
 
@@ -517,6 +603,7 @@ async function generateTTS(
         method:
           "POST",
 
+
         headers: {
 
           "xi-api-key":
@@ -529,6 +616,7 @@ async function generateTTS(
             "audio/mpeg"
 
         },
+
 
         body:
           JSON.stringify({
@@ -598,10 +686,12 @@ async function generateTTS(
     audioId,
 
     {
+
       buffer,
 
       createdAt:
         Date.now()
+
     }
 
   );
@@ -647,27 +737,163 @@ app.get(
       ok:
         true,
 
+
       mercadopagoConfigured:
+
         Boolean(
           process.env.MP_ACCESS_TOKEN
         ),
 
+
       webhookProtegido:
+
         Boolean(
           process.env.MP_WEBHOOK_SECRET
         ),
 
+
       elevenlabsConfigured:
+
         Boolean(
           process.env.ELEVENLABS_API_KEY
         ),
 
+
       painelProtegido:
+
         Boolean(
           process.env.PANEL_SECRET
+        ),
+
+
+      supabaseConfigured:
+
+        Boolean(
+          process.env.SUPABASE_URL &&
+          process.env.SUPABASE_SERVICE_KEY
         )
 
     });
+
+  }
+
+);
+
+
+// ======================================================
+// TESTAR CONEXÃO COM SUPABASE
+// PROTEGIDO
+// ======================================================
+
+app.get(
+
+  "/api/db-test",
+
+  protegerPainel,
+
+  async (req, res) => {
+
+    try {
+
+      const response =
+        await supabaseRequest(
+          "alert_config?id=eq.1&select=*"
+        );
+
+
+      const texto =
+        await response.text();
+
+
+      if (!response.ok) {
+
+        console.error(
+          "Erro Supabase:",
+          response.status,
+          texto
+        );
+
+
+        return res
+          .status(500)
+          .json({
+
+            ok:
+              false,
+
+            supabase:
+              "erro",
+
+            error:
+              "Não foi possível acessar o Supabase.",
+
+            status:
+              response.status
+
+          });
+
+      }
+
+
+      let data =
+        [];
+
+
+      try {
+
+        data =
+          JSON.parse(texto);
+
+      } catch (error) {
+
+        console.error(
+          "Resposta inválida do Supabase:",
+          texto
+        );
+
+      }
+
+
+      res.json({
+
+        ok:
+          true,
+
+        supabase:
+          "conectado",
+
+        registros:
+          Array.isArray(data)
+            ? data.length
+            : 0
+
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao testar Supabase:",
+        error
+      );
+
+
+      res
+        .status(500)
+        .json({
+
+          ok:
+            false,
+
+          supabase:
+            "erro",
+
+          error:
+            error.message
+
+        });
+
+    }
 
   }
 
@@ -838,11 +1064,17 @@ app.post(
       ) {
 
         const tiers = [
+
           "basic",
+
           "medium",
+
           "epic",
+
           "special",
+
           "legendary"
+
         ];
 
 
@@ -1035,8 +1267,11 @@ app.post(
         tier,
 
         audioUrl:
+
           audioId
+
             ? `/api/audio/${audioId}`
+
             : null,
 
         config:
@@ -1103,10 +1338,15 @@ app.post(
     try {
 
       const {
+
         amount,
+
         name,
+
         email,
+
         message = ""
+
       } = req.body;
 
 
@@ -1239,6 +1479,7 @@ app.post(
         processing_mode:
           "automatic",
 
+
         payer: {
 
           email:
@@ -1249,6 +1490,7 @@ app.post(
             "APRO"
 
         },
+
 
         transactions: {
 
@@ -1288,6 +1530,7 @@ app.post(
             method:
               "POST",
 
+
             headers: {
 
               Authorization:
@@ -1303,6 +1546,7 @@ app.post(
                 idempotencyKey
 
             },
+
 
             body:
               JSON.stringify(
@@ -1331,8 +1575,10 @@ app.post(
       } catch (error) {
 
         data = {
+
           raw:
             rawText
+
         };
 
       }
@@ -1344,6 +1590,7 @@ app.post(
           "ERRO MERCADO PAGO COMPLETO:",
           JSON.stringify(
             {
+
               status:
                 response.status,
 
@@ -1352,6 +1599,7 @@ app.post(
 
               response:
                 data
+
             },
             null,
             2
@@ -1413,28 +1661,40 @@ app.post(
         status:
           donation.status,
 
+
         ticketUrl:
+
           payment
             ?.payment_method
             ?.ticket_url ||
+
           payment
             ?.ticket_url ||
+
           null,
+
 
         qrCode:
+
           payment
             ?.payment_method
             ?.qr_code ||
+
           payment
             ?.qr_code ||
+
           null,
 
+
         qrCodeBase64:
+
           payment
             ?.payment_method
             ?.qr_code_base64 ||
+
           payment
             ?.qr_code_base64 ||
+
           null
 
       });
@@ -1501,14 +1761,6 @@ app.post(
       );
 
 
-      console.log(
-        "Webhook recebido:",
-        JSON.stringify(
-          req.body
-        )
-      );
-
-
       const orderId =
         req.query?.["data.id"] ||
         req.body
@@ -1532,8 +1784,6 @@ app.post(
       }
 
 
-      // Respondemos ao Mercado Pago
-      // após validar a autenticidade.
       res.sendStatus(200);
 
 
@@ -1696,8 +1946,11 @@ app.post(
             donation.tier,
 
           audioUrl:
+
             audioId
+
               ? `/api/audio/${audioId}`
+
               : null,
 
           config:
@@ -1885,11 +2138,13 @@ app.get(
 
       `data: ${JSON.stringify(
         {
+
           type:
             "connected",
 
           config:
             alertConfig
+
         }
       )}\n\n`
 
@@ -2011,6 +2266,15 @@ app.listen(
       process.env.PANEL_SECRET
         ? "ATIVA"
         : "NÃO CONFIGURADA"
+    );
+
+
+    console.log(
+      "Supabase:",
+      process.env.SUPABASE_URL &&
+      process.env.SUPABASE_SERVICE_KEY
+        ? "CONFIGURADO"
+        : "NÃO CONFIGURADO"
     );
 
   }
