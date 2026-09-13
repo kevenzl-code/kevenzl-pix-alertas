@@ -51,8 +51,7 @@
           calc(100% - 32px)
         );
 
-      margin:
-        0 auto;
+      margin: 0 auto;
 
       padding:
         32px 0 60px;
@@ -60,8 +59,11 @@
 
     .header {
       display: flex;
+
       align-items: center;
-      justify-content: space-between;
+
+      justify-content:
+        space-between;
 
       gap: 20px;
 
@@ -86,8 +88,7 @@
 
       border-radius: 10px;
 
-      padding:
-        11px 18px;
+      padding: 11px 18px;
 
       cursor: pointer;
     }
@@ -116,11 +117,9 @@
       border:
         1px solid #30263c;
 
-      border-radius:
-        16px;
+      border-radius: 16px;
 
-      padding:
-        22px;
+      padding: 22px;
 
       box-shadow:
         0 15px 40px
@@ -138,16 +137,12 @@
     }
 
     .card h2 {
-      margin:
-        0 0 20px;
-
-      font-size:
-        21px;
+      margin: 0 0 20px;
+      font-size: 21px;
     }
 
     .field {
-      margin-bottom:
-        20px;
+      margin-bottom: 20px;
     }
 
     .field:last-child {
@@ -157,32 +152,24 @@
     .label-row {
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       justify-content:
         space-between;
 
       gap: 15px;
 
-      margin-bottom:
-        9px;
+      margin-bottom: 9px;
     }
 
     label {
-      color:
-        #ded8e6;
-
-      font-weight:
-        600;
+      color: #ded8e6;
+      font-weight: 600;
     }
 
     .value {
-      color:
-        #cb8cff;
-
-      font-weight:
-        700;
+      color: #cb8cff;
+      font-weight: 700;
     }
 
     input[type="range"] {
@@ -190,44 +177,39 @@
       accent-color: #a855f7;
     }
 
-    select {
+    select,
+    .search-input {
       width: 100%;
 
       border:
         1px solid #3b3148;
 
-      background:
-        #0e0b13;
+      background: #0e0b13;
+      color: white;
 
-      color:
-        white;
+      border-radius: 10px;
 
-      border-radius:
-        10px;
+      padding: 12px;
 
-      padding:
-        12px;
+      outline: none;
+    }
 
-      outline:
-        none;
-
-      margin-top:
-        8px;
+    select:focus,
+    .search-input:focus {
+      border-color: #9333ea;
     }
 
     .toggle-row {
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       justify-content:
         space-between;
 
       gap: 20px;
 
-      padding:
-        13px 0;
+      padding: 13px 0;
 
       border-bottom:
         1px solid #251e2e;
@@ -240,14 +222,10 @@
     .switch {
       position: relative;
 
-      width:
-        48px;
+      width: 48px;
+      height: 26px;
 
-      height:
-        26px;
-
-      flex:
-        0 0 auto;
+      flex: 0 0 auto;
     }
 
     .switch input {
@@ -260,45 +238,34 @@
 
       cursor: pointer;
 
-      background:
-        #3b3441;
+      background: #3b3441;
 
-      border-radius:
-        30px;
+      border-radius: 30px;
 
-      transition:
-        .2s;
+      transition: .2s;
     }
 
     .slider::before {
       content: "";
 
-      position:
-        absolute;
+      position: absolute;
 
-      width:
-        20px;
-
-      height:
-        20px;
+      width: 20px;
+      height: 20px;
 
       top: 3px;
       left: 3px;
 
-      border-radius:
-        50%;
+      border-radius: 50%;
 
-      background:
-        white;
+      background: white;
 
-      transition:
-        .2s;
+      transition: .2s;
     }
 
     .switch input:checked +
     .slider {
-      background:
-        #9333ea;
+      background: #9333ea;
     }
 
     .switch input:checked +
@@ -310,8 +277,7 @@
     .buttons {
       display: flex;
 
-      flex-wrap:
-        wrap;
+      flex-wrap: wrap;
 
       gap: 10px;
     }
@@ -319,17 +285,13 @@
     button {
       border: 0;
 
-      border-radius:
-        10px;
+      border-radius: 10px;
 
-      padding:
-        12px 16px;
+      padding: 12px 16px;
 
-      font-weight:
-        700;
+      font-weight: 700;
 
-      cursor:
-        pointer;
+      cursor: pointer;
 
       transition:
         transform .15s,
@@ -342,14 +304,11 @@
     }
 
     button:disabled {
-      cursor:
-        not-allowed;
+      cursor: not-allowed;
 
-      opacity:
-        .55;
+      opacity: .55;
 
-      transform:
-        none;
+      transform: none;
     }
 
     .primary {
@@ -364,123 +323,70 @@
     }
 
     .secondary {
-      background:
-        #26202e;
-
+      background: #26202e;
       color: white;
     }
 
     .danger {
-      background:
-        #3b1620;
-
-      color:
-        #ff9ba9;
-    }
-
-    .repeat-button {
-      margin-top:
-        12px;
-
-      padding:
-        9px 12px;
-
-      background:
-        linear-gradient(
-          135deg,
-          #6d28d9,
-          #9333ea
-        );
-
-      color:
-        white;
-
-      font-size:
-        12px;
-    }
-
-    .repeat-button.loading {
-      opacity:
-        .6;
-
-      pointer-events:
-        none;
+      background: #3b1620;
+      color: #ff9ba9;
     }
 
     .test-basic {
-      background:
-        #eeeeee;
-
-      color:
-        #111111;
+      background: #eeeeee;
+      color: #111111;
     }
 
     .test-medium {
-      background:
-        #a855f7;
-
-      color:
-        white;
+      background: #a855f7;
+      color: white;
     }
 
     .test-epic {
-      background:
-        #5b5cf0;
-
-      color:
-        white;
+      background: #5b5cf0;
+      color: white;
     }
 
     .test-special {
-      background:
-        #d98c18;
-
-      color:
-        white;
+      background: #d98c18;
+      color: white;
     }
 
     .test-legendary {
-      background:
-        #a4162b;
-
-      color:
-        white;
+      background: #a4162b;
+      color: white;
     }
 
     .status {
-      min-height:
-        24px;
+      min-height: 24px;
 
-      margin-top:
-        15px;
+      margin-top: 15px;
 
-      color:
-        #b8afc2;
+      color: #b8afc2;
     }
 
     .status.success {
-      color:
-        #6ee7a8;
+      color: #6ee7a8;
     }
 
     .status.error {
-      color:
-        #ff8c9d;
+      color: #ff8c9d;
     }
+
+
+    /* HISTÓRICO */
 
     .history-header {
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
       justify-content:
         space-between;
 
       gap: 15px;
 
-      margin-bottom:
-        20px;
+      margin-bottom: 20px;
     }
 
     .history-header h2 {
@@ -492,60 +398,85 @@
 
       grid-template-columns:
         repeat(
-          3,
+          4,
           minmax(0, 1fr)
         );
 
       gap: 14px;
 
-      margin-bottom:
-        22px;
+      margin-bottom: 20px;
     }
 
     .stat {
-      background:
-        #0d0a12;
+      background: #0d0a12;
 
       border:
         1px solid #2f2738;
 
-      border-radius:
-        14px;
+      border-radius: 14px;
 
-      padding:
-        17px;
+      padding: 17px;
     }
 
     .stat span {
       display: block;
 
-      color:
-        #a69ead;
+      color: #a69ead;
 
-      font-size:
-        13px;
+      font-size: 13px;
 
-      margin-bottom:
-        8px;
+      margin-bottom: 8px;
     }
 
     .stat strong {
       display: block;
 
-      font-size:
-        24px;
+      font-size: 24px;
     }
 
     #totalRecebido {
-      color:
-        #83efb2;
+      color: #83efb2;
     }
+
+
+    /* FILTROS */
+
+    .history-filters {
+      display: grid;
+
+      grid-template-columns:
+        2fr 1fr 1fr 1fr;
+
+      gap: 12px;
+
+      margin-bottom: 14px;
+    }
+
+    .filter-field label {
+      display: block;
+
+      font-size: 12px;
+
+      color: #93899d;
+
+      margin-bottom: 7px;
+    }
+
+    .history-result-info {
+      color: #918898;
+
+      font-size: 13px;
+
+      margin-bottom: 16px;
+    }
+
+
+    /* DOAÇÃO */
 
     .history-list {
       display: flex;
 
-      flex-direction:
-        column;
+      flex-direction: column;
 
       gap: 12px;
     }
@@ -558,224 +489,213 @@
 
       gap: 18px;
 
-      padding:
-        17px;
+      padding: 17px;
 
-      border-radius:
-        14px;
+      border-radius: 14px;
 
       border:
         1px solid #2d2635;
 
-      background:
-        #0d0a12;
+      background: #0d0a12;
     }
 
     .donation-top {
       display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      flex-wrap:
-        wrap;
+      flex-wrap: wrap;
 
       gap: 10px;
 
-      margin-bottom:
-        8px;
+      margin-bottom: 8px;
     }
 
     .donation-name {
-      font-size:
-        17px;
+      font-size: 17px;
 
-      font-weight:
-        700;
+      font-weight: 700;
     }
 
     .donation-message {
-      color:
-        #c6becd;
+      color: #c6becd;
 
-      line-height:
-        1.45;
+      line-height: 1.45;
 
-      overflow-wrap:
-        anywhere;
+      overflow-wrap: anywhere;
     }
 
     .donation-info {
-      margin-top:
-        10px;
+      margin-top: 10px;
 
-      display:
-        flex;
+      display: flex;
 
-      flex-wrap:
-        wrap;
+      flex-wrap: wrap;
 
-      gap:
-        12px;
+      gap: 12px;
 
-      color:
-        #8f8798;
+      color: #8f8798;
 
-      font-size:
-        13px;
+      font-size: 13px;
+    }
+
+    .order-id {
+      margin-top: 12px;
+
+      color: #6f6876;
+
+      font-size: 11px;
+
+      overflow-wrap: anywhere;
     }
 
     .donation-right {
       display: flex;
 
-      flex-direction:
-        column;
+      flex-direction: column;
 
-      align-items:
-        flex-end;
+      align-items: flex-end;
 
-      justify-content:
-        space-between;
+      gap: 10px;
 
-      min-width:
-        130px;
+      min-width: 155px;
     }
 
     .donation-value {
-      font-size:
-        20px;
+      font-size: 20px;
 
-      font-weight:
-        800;
+      font-weight: 800;
 
-      white-space:
-        nowrap;
+      white-space: nowrap;
 
-      text-align:
-        right;
+      text-align: right;
+    }
+
+    .donation-actions {
+      display: flex;
+
+      flex-direction: column;
+
+      width: 100%;
+
+      gap: 8px;
+    }
+
+    .repeat-button,
+    .copy-button {
+      width: 100%;
+
+      padding: 9px 12px;
+
+      font-size: 12px;
+    }
+
+    .repeat-button {
+      background:
+        linear-gradient(
+          135deg,
+          #6d28d9,
+          #9333ea
+        );
+
+      color: white;
+    }
+
+    .copy-button {
+      background: #24202b;
+      color: #d5cddd;
+
+      border:
+        1px solid #3b3444;
     }
 
     .badge {
-      display:
-        inline-flex;
+      display: inline-flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
-      border-radius:
-        999px;
+      border-radius: 999px;
 
-      padding:
-        5px 10px;
+      padding: 5px 10px;
 
-      font-size:
-        11px;
+      font-size: 11px;
 
-      font-weight:
-        800;
+      font-weight: 800;
 
-      text-transform:
-        uppercase;
+      text-transform: uppercase;
     }
 
     .tier-basic {
-      background:
-        #e6e6e6;
-
-      color:
-        #111;
+      background: #e6e6e6;
+      color: #111;
     }
 
     .tier-medium {
-      background:
-        #7e22ce;
-
-      color:
-        white;
+      background: #7e22ce;
+      color: white;
     }
 
     .tier-epic {
-      background:
-        #4338ca;
-
-      color:
-        white;
+      background: #4338ca;
+      color: white;
     }
 
     .tier-special {
-      background:
-        #b96e0a;
-
-      color:
-        white;
+      background: #b96e0a;
+      color: white;
     }
 
     .tier-legendary {
-      background:
-        #8c1324;
-
-      color:
-        white;
+      background: #8c1324;
+      color: white;
     }
 
     .paid {
-      color:
-        #67e8a0;
+      color: #67e8a0;
     }
 
     .pending {
-      color:
-        #f8d069;
+      color: #f8d069;
     }
 
     .empty {
-      padding:
-        30px;
+      padding: 30px;
 
-      text-align:
-        center;
+      text-align: center;
 
-      color:
-        #8f8798;
+      color: #8f8798;
 
       border:
         1px dashed #3a3044;
 
-      border-radius:
-        14px;
+      border-radius: 14px;
     }
 
+
+    /* LOGIN */
+
     .login {
-      position:
-        fixed;
+      position: fixed;
 
       inset: 0;
 
-      z-index:
-        9999;
+      z-index: 9999;
 
-      display:
-        flex;
+      display: flex;
 
-      align-items:
-        center;
+      align-items: center;
 
-      justify-content:
-        center;
+      justify-content: center;
 
-      padding:
-        20px;
+      padding: 20px;
 
-      background:
-        #08070c;
+      background: #08070c;
     }
 
     .login.hidden {
-      display:
-        none;
+      display: none;
     }
 
     .login-box {
@@ -788,14 +708,11 @@
       border:
         1px solid #352941;
 
-      border-radius:
-        18px;
+      border-radius: 18px;
 
-      padding:
-        28px;
+      padding: 28px;
 
-      background:
-        #120e19;
+      background: #120e19;
 
       box-shadow:
         0 25px 80px
@@ -808,41 +725,32 @@
     }
 
     .login-box h1 {
-      margin:
-        0 0 8px;
+      margin: 0 0 8px;
     }
 
     .login-box p {
-      margin:
-        0 0 22px;
+      margin: 0 0 22px;
 
-      color:
-        #9f96a8;
+      color: #9f96a8;
     }
 
     .login-box input {
       width: 100%;
 
-      padding:
-        13px;
+      padding: 13px;
 
-      border-radius:
-        10px;
+      border-radius: 10px;
 
       border:
         1px solid #3b3148;
 
-      background:
-        #09070d;
+      background: #09070d;
 
-      color:
-        white;
+      color: white;
 
-      outline:
-        none;
+      outline: none;
 
-      margin-bottom:
-        12px;
+      margin-bottom: 12px;
     }
 
     .login-box button {
@@ -850,21 +758,41 @@
     }
 
     .login-error {
-      color:
-        #ff8697;
+      color: #ff8697;
 
-      margin-top:
-        13px;
+      margin-top: 13px;
 
-      min-height:
-        20px;
+      min-height: 20px;
 
-      font-size:
-        14px;
+      font-size: 14px;
     }
 
+
     @media (
-      max-width: 800px
+      max-width: 900px
+    ) {
+
+      .stats {
+        grid-template-columns:
+          repeat(
+            2,
+            1fr
+          );
+      }
+
+      .history-filters {
+        grid-template-columns:
+          repeat(
+            2,
+            1fr
+          );
+      }
+
+    }
+
+
+    @media (
+      max-width: 650px
     ) {
 
       .grid {
@@ -873,11 +801,15 @@
       }
 
       .card.full {
-        grid-column:
-          auto;
+        grid-column: auto;
       }
 
       .stats {
+        grid-template-columns:
+          1fr;
+      }
+
+      .history-filters {
         grid-template-columns:
           1fr;
       }
@@ -890,11 +822,12 @@
       .donation-right {
         align-items:
           flex-start;
+
+        width: 100%;
       }
 
       .donation-value {
-        text-align:
-          left;
+        text-align: left;
       }
 
       .header {
@@ -914,6 +847,8 @@
 
 <body>
 
+
+  <!-- LOGIN -->
 
   <div
     class="login"
@@ -954,6 +889,8 @@
   </div>
 
 
+  <!-- PAINEL -->
+
   <main class="page">
 
     <header class="header">
@@ -982,6 +919,8 @@
 
     <section class="grid">
 
+
+      <!-- ÁUDIO -->
 
       <div class="card">
 
@@ -1047,6 +986,8 @@
       </div>
 
 
+      <!-- EFEITOS -->
+
       <div class="card">
 
         <h2>
@@ -1056,7 +997,9 @@
 
         <div class="toggle-row">
 
-          <span>Memes</span>
+          <span>
+            Memes
+          </span>
 
           <label class="switch">
 
@@ -1075,7 +1018,9 @@
 
         <div class="toggle-row">
 
-          <span>Voz IA</span>
+          <span>
+            Voz IA
+          </span>
 
           <label class="switch">
 
@@ -1094,7 +1039,9 @@
 
         <div class="toggle-row">
 
-          <span>Flash</span>
+          <span>
+            Flash
+          </span>
 
           <label class="switch">
 
@@ -1113,7 +1060,9 @@
 
         <div class="toggle-row">
 
-          <span>Partículas</span>
+          <span>
+            Partículas
+          </span>
 
           <label class="switch">
 
@@ -1131,6 +1080,8 @@
 
       </div>
 
+
+      <!-- DURAÇÃO -->
 
       <div class="card">
 
@@ -1167,6 +1118,8 @@
 
       </div>
 
+
+      <!-- SONS -->
 
       <div class="card">
 
@@ -1342,6 +1295,8 @@
       </div>
 
 
+      <!-- TESTES -->
+
       <div class="card full">
 
         <h2>
@@ -1390,6 +1345,8 @@
       </div>
 
 
+      <!-- SALVAR -->
+
       <div class="card full">
 
         <div class="buttons">
@@ -1424,6 +1381,8 @@
 
       </div>
 
+
+      <!-- HISTÓRICO -->
 
       <div class="card full">
 
@@ -1474,7 +1433,7 @@
           <div class="stat">
 
             <span>
-              Registros exibidos
+              Registros carregados
             </span>
 
             <strong id="totalRegistros">
@@ -1483,6 +1442,140 @@
 
           </div>
 
+
+          <div class="stat">
+
+            <span>
+              Resultados exibidos
+            </span>
+
+            <strong id="resultadosExibidos">
+              0
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- FILTROS -->
+
+        <div class="history-filters">
+
+          <div class="filter-field">
+
+            <label for="historySearch">
+              Buscar
+            </label>
+
+            <input
+              class="search-input"
+              id="historySearch"
+              type="text"
+              placeholder="Nome, mensagem ou Order ID"
+            >
+
+          </div>
+
+
+          <div class="filter-field">
+
+            <label for="historyStatus">
+              Status
+            </label>
+
+            <select id="historyStatus">
+
+              <option value="all">
+                Todos
+              </option>
+
+              <option value="paid">
+                Pagos
+              </option>
+
+              <option value="pending">
+                Pendentes
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="filter-field">
+
+            <label for="historyTier">
+              Categoria
+            </label>
+
+            <select id="historyTier">
+
+              <option value="all">
+                Todas
+              </option>
+
+              <option value="basic">
+                Básico
+              </option>
+
+              <option value="medium">
+                Médio
+              </option>
+
+              <option value="epic">
+                Épico
+              </option>
+
+              <option value="special">
+                Especial
+              </option>
+
+              <option value="legendary">
+                Lendário
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="filter-field">
+
+            <label for="historyPeriod">
+              Período
+            </label>
+
+            <select id="historyPeriod">
+
+              <option value="all">
+                Todos
+              </option>
+
+              <option value="today">
+                Hoje
+              </option>
+
+              <option value="7">
+                Últimos 7 dias
+              </option>
+
+              <option value="30">
+                Últimos 30 dias
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="history-result-info"
+          id="historyResultInfo"
+        >
+          Carregando...
         </div>
 
 
@@ -1515,6 +1608,9 @@
       sessionStorage.getItem(
         SESSION_KEY
       ) || "";
+
+
+    let historicoCompleto = [];
 
 
     const loginScreen =
@@ -1642,14 +1738,49 @@
         "totalRegistros"
       );
 
+    const resultadosExibidos =
+      document.getElementById(
+        "resultadosExibidos"
+      );
 
-    function authHeaders(extra = {}) {
+    const historyResultInfo =
+      document.getElementById(
+        "historyResultInfo"
+      );
+
+
+    const historySearch =
+      document.getElementById(
+        "historySearch"
+      );
+
+    const historyStatus =
+      document.getElementById(
+        "historyStatus"
+      );
+
+    const historyTier =
+      document.getElementById(
+        "historyTier"
+      );
+
+    const historyPeriod =
+      document.getElementById(
+        "historyPeriod"
+      );
+
+
+    function authHeaders(
+      extra = {}
+    ) {
 
       return {
+
         "x-panel-secret":
           panelSecret,
 
         ...extra
+
       };
 
     }
@@ -1666,10 +1797,13 @@
       statusEl.className =
         "status";
 
+
       if (type) {
+
         statusEl.classList.add(
           type
         );
+
       }
 
     }
@@ -1708,6 +1842,7 @@
     function pegarConfigTela() {
 
       return {
+
         volumeMeme:
           Number(
             volumeMeme.value
@@ -1736,6 +1871,7 @@
           particulasAtivas.checked,
 
         sons: {
+
           basic:
             somBasic.value,
 
@@ -1750,13 +1886,17 @@
 
           legendary:
             somLegendary.value
+
         }
+
       };
 
     }
 
 
-    function aplicarConfig(config) {
+    function aplicarConfig(
+      config
+    ) {
 
       volumeMeme.value =
         Math.round(
@@ -1789,6 +1929,7 @@
       particulasAtivas.checked =
         config.particulasAtivas !== false;
 
+
       if (config.sons) {
 
         somBasic.value =
@@ -1813,6 +1954,7 @@
 
       }
 
+
       atualizarLabels();
 
     }
@@ -1829,24 +1971,35 @@
           }
         );
 
+
       if (
         response.status === 401
       ) {
+
         throw new Error(
           "unauthorized"
         );
+
       }
 
+
       if (!response.ok) {
+
         throw new Error(
           "Erro ao carregar configurações."
         );
+
       }
+
 
       const config =
         await response.json();
 
-      aplicarConfig(config);
+
+      aplicarConfig(
+        config
+      );
+
 
       return config;
 
@@ -1876,39 +2029,54 @@
           }
         );
 
+
       if (
         response.status === 401
       ) {
+
         logout();
 
         throw new Error(
           "Senha inválida."
         );
+
       }
+
 
       const data =
         await response.json();
 
+
       if (!response.ok) {
+
         throw new Error(
           data.error ||
           "Erro ao salvar."
         );
+
       }
 
-      if (mostrarMensagem) {
+
+      if (
+        mostrarMensagem
+      ) {
+
         setStatus(
           "Configurações salvas no Supabase. ✅",
           "success"
         );
+
       }
+
 
       return data;
 
     }
 
 
-    async function testarAlerta(tier) {
+    async function testarAlerta(
+      tier
+    ) {
 
       try {
 
@@ -1916,9 +2084,11 @@
           "Preparando teste..."
         );
 
+
         await salvarConfig(
           false
         );
+
 
         const response =
           await fetch(
@@ -1940,27 +2110,37 @@
             }
           );
 
+
         if (
           response.status === 401
         ) {
+
           logout();
+
           return;
+
         }
+
 
         const data =
           await response.json();
 
+
         if (!response.ok) {
+
           throw new Error(
             data.error ||
             "Erro no teste."
           );
+
         }
+
 
         setStatus(
           "Alerta de teste enviado. ✅",
           "success"
         );
+
 
       } catch (error) {
 
@@ -1983,22 +2163,22 @@
         return;
       }
 
+
       const textoOriginal =
         button.textContent;
+
 
       button.disabled =
         true;
 
-      button.classList.add(
-        "loading"
-      );
-
       button.textContent =
         "Repetindo...";
+
 
       setStatus(
         "Preparando o alerta..."
       );
+
 
       try {
 
@@ -2008,8 +2188,7 @@
               orderId
             )}/repeat`,
             {
-              method:
-                "POST",
+              method: "POST",
 
               headers:
                 authHeaders({
@@ -2019,38 +2198,52 @@
             }
           );
 
+
         if (
           response.status === 401
         ) {
+
           logout();
+
           return;
+
         }
+
 
         const data =
           await response.json();
 
+
         if (!response.ok) {
+
           throw new Error(
             data.error ||
             "Não foi possível repetir o alerta."
           );
+
         }
+
 
         setStatus(
           "Alerta repetido com sucesso. 🔊✅",
           "success"
         );
 
+
         button.textContent =
           "✅ Enviado";
 
+
         setTimeout(
           () => {
+
             button.textContent =
               textoOriginal;
+
           },
           1800
         );
+
 
       } catch (error) {
 
@@ -2059,16 +2252,68 @@
           "error"
         );
 
+
         button.textContent =
           textoOriginal;
+
 
       } finally {
 
         button.disabled =
           false;
 
-        button.classList.remove(
-          "loading"
+      }
+
+    }
+
+
+    async function copiarOrderId(
+      orderId,
+      button
+    ) {
+
+      if (!orderId) {
+        return;
+      }
+
+
+      const textoOriginal =
+        button.textContent;
+
+
+      try {
+
+        await navigator.clipboard.writeText(
+          orderId
+        );
+
+
+        button.textContent =
+          "✅ Copiado";
+
+
+        setStatus(
+          "Order ID copiado. ✅",
+          "success"
+        );
+
+
+        setTimeout(
+          () => {
+
+            button.textContent =
+              textoOriginal;
+
+          },
+          1500
+        );
+
+
+      } catch (error) {
+
+        setStatus(
+          "Não foi possível copiar o Order ID.",
+          "error"
         );
 
       }
@@ -2076,27 +2321,34 @@
     }
 
 
-    function escaparHtml(value) {
+    function escaparHtml(
+      value
+    ) {
 
       return String(
         value ?? ""
       )
+
         .replaceAll(
           "&",
           "&amp;"
         )
+
         .replaceAll(
           "<",
           "&lt;"
         )
+
         .replaceAll(
           ">",
           "&gt;"
         )
+
         .replaceAll(
           '"',
           "&quot;"
         )
+
         .replaceAll(
           "'",
           "&#039;"
@@ -2105,40 +2357,50 @@
     }
 
 
-    function dinheiro(valor) {
+    function dinheiro(
+      valor
+    ) {
 
       return Number(
         valor || 0
-      ).toLocaleString(
-        "pt-BR",
-        {
-          style:
-            "currency",
+      )
+        .toLocaleString(
+          "pt-BR",
+          {
+            style:
+              "currency",
 
-          currency:
-            "BRL"
-        }
-      );
+            currency:
+              "BRL"
+          }
+        );
 
     }
 
 
-    function dataHora(valor) {
+    function dataHora(
+      valor
+    ) {
 
       if (!valor) {
         return "-";
       }
 
+
       const data =
         new Date(valor);
+
 
       if (
         Number.isNaN(
           data.getTime()
         )
       ) {
+
         return "-";
+
       }
+
 
       return data
         .toLocaleString(
@@ -2148,9 +2410,12 @@
     }
 
 
-    function nomeTier(tier) {
+    function nomeTier(
+      tier
+    ) {
 
       const nomes = {
+
         basic:
           "Básico",
 
@@ -2165,7 +2430,9 @@
 
         legendary:
           "Lendário"
+
       };
+
 
       return nomes[tier] ||
         tier ||
@@ -2174,9 +2441,12 @@
     }
 
 
-    function estaPago(donation) {
+    function estaPago(
+      donation
+    ) {
 
       return (
+
         donation.status ===
           "processed" ||
 
@@ -2186,7 +2456,444 @@
         Boolean(
           donation.paid_at
         )
+
       );
+
+    }
+
+
+    function dentroPeriodo(
+      donation,
+      periodo
+    ) {
+
+      if (
+        periodo === "all"
+      ) {
+
+        return true;
+
+      }
+
+
+      if (
+        !donation.created_at
+      ) {
+
+        return false;
+
+      }
+
+
+      const dataDonation =
+        new Date(
+          donation.created_at
+        );
+
+
+      if (
+        Number.isNaN(
+          dataDonation.getTime()
+        )
+      ) {
+
+        return false;
+
+      }
+
+
+      const agora =
+        new Date();
+
+
+      if (
+        periodo === "today"
+      ) {
+
+        return (
+          dataDonation.getFullYear() ===
+            agora.getFullYear() &&
+
+          dataDonation.getMonth() ===
+            agora.getMonth() &&
+
+          dataDonation.getDate() ===
+            agora.getDate()
+        );
+
+      }
+
+
+      const dias =
+        Number(periodo);
+
+
+      if (
+        !Number.isFinite(dias)
+      ) {
+
+        return true;
+
+      }
+
+
+      const limite =
+        new Date(
+          agora.getTime() -
+          dias *
+          24 *
+          60 *
+          60 *
+          1000
+        );
+
+
+      return (
+        dataDonation >= limite
+      );
+
+    }
+
+
+    function filtrarHistorico() {
+
+      const busca =
+        historySearch.value
+          .trim()
+          .toLowerCase();
+
+
+      const status =
+        historyStatus.value;
+
+
+      const tier =
+        historyTier.value;
+
+
+      const periodo =
+        historyPeriod.value;
+
+
+      return historicoCompleto
+        .filter(
+          donation => {
+
+            const paga =
+              estaPago(
+                donation
+              );
+
+
+            if (
+              status === "paid" &&
+              !paga
+            ) {
+
+              return false;
+
+            }
+
+
+            if (
+              status === "pending" &&
+              paga
+            ) {
+
+              return false;
+
+            }
+
+
+            if (
+              tier !== "all" &&
+              donation.tier !== tier
+            ) {
+
+              return false;
+
+            }
+
+
+            if (
+              !dentroPeriodo(
+                donation,
+                periodo
+              )
+            ) {
+
+              return false;
+
+            }
+
+
+            if (busca) {
+
+              const texto =
+                [
+                  donation.name,
+                  donation.message,
+                  donation.order_id,
+                  donation.amount
+                ]
+                  .join(" ")
+                  .toLowerCase();
+
+
+              if (
+                !texto.includes(
+                  busca
+                )
+              ) {
+
+                return false;
+
+              }
+
+            }
+
+
+            return true;
+
+          }
+        );
+
+    }
+
+
+    function renderizarHistorico() {
+
+      const donations =
+        filtrarHistorico();
+
+
+      resultadosExibidos.textContent =
+        String(
+          donations.length
+        );
+
+
+      historyResultInfo.textContent =
+        `Exibindo ${donations.length} de ${historicoCompleto.length} registros carregados.`;
+
+
+      if (
+        donations.length === 0
+      ) {
+
+        historyList.innerHTML =
+          `
+            <div class="empty">
+              Nenhuma doação encontrada com esses filtros.
+            </div>
+          `;
+
+        return;
+
+      }
+
+
+      historyList.innerHTML =
+        donations
+          .map(
+            donation => {
+
+              const paga =
+                estaPago(
+                  donation
+                );
+
+
+              const statusTexto =
+                paga
+                  ? "✅ Pago"
+                  : "⏳ Pendente";
+
+
+              const alertTexto =
+                donation.alert_sent
+                  ? "🔊 Alerta enviado"
+                  : "🔇 Alerta não enviado";
+
+
+              const mensagem =
+                donation.message
+                  ? escaparHtml(
+                      donation.message
+                    )
+                  : "Sem mensagem";
+
+
+              const repeatButton =
+                paga
+                  ? `
+                    <button
+                      class="repeat-button"
+                      data-repeat-order="${escaparHtml(
+                        donation.order_id
+                      )}"
+                    >
+                      🔁 Repetir alerta
+                    </button>
+                  `
+                  : "";
+
+
+              return `
+                <article class="donation">
+
+                  <div>
+
+                    <div class="donation-top">
+
+                      <span class="donation-name">
+                        ${escaparHtml(
+                          donation.name
+                        )}
+                      </span>
+
+                      <span
+                        class="
+                          badge
+                          tier-${escaparHtml(
+                            donation.tier
+                          )}
+                        "
+                      >
+                        ${escaparHtml(
+                          nomeTier(
+                            donation.tier
+                          )
+                        )}
+                      </span>
+
+                    </div>
+
+
+                    <div class="donation-message">
+                      ${mensagem}
+                    </div>
+
+
+                    <div class="donation-info">
+
+                      <span
+                        class="${
+                          paga
+                            ? "paid"
+                            : "pending"
+                        }"
+                      >
+                        ${statusTexto}
+                      </span>
+
+                      <span>
+                        ${alertTexto}
+                      </span>
+
+                      <span>
+                        ${dataHora(
+                          donation.created_at
+                        )}
+                      </span>
+
+                    </div>
+
+
+                    <div class="order-id">
+
+                      Order ID:
+                      ${escaparHtml(
+                        donation.order_id
+                      )}
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="donation-right">
+
+                    <div class="donation-value">
+                      ${dinheiro(
+                        donation.amount
+                      )}
+                    </div>
+
+
+                    <div class="donation-actions">
+
+                      ${repeatButton}
+
+                      <button
+                        class="copy-button"
+                        data-copy-order="${escaparHtml(
+                          donation.order_id
+                        )}"
+                      >
+                        📋 Copiar Order ID
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </article>
+              `;
+
+            }
+          )
+          .join("");
+
+
+      document
+        .querySelectorAll(
+          "[data-repeat-order]"
+        )
+        .forEach(
+          button => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                repetirAlerta(
+                  button.dataset
+                    .repeatOrder,
+
+                  button
+                );
+
+              }
+            );
+
+          }
+        );
+
+
+      document
+        .querySelectorAll(
+          "[data-copy-order]"
+        )
+        .forEach(
+          button => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                copiarOrderId(
+                  button.dataset
+                    .copyOrder,
+
+                  button
+                );
+
+              }
+            );
+
+          }
+        );
 
     }
 
@@ -2200,33 +2907,43 @@
           </div>
         `;
 
+
       try {
 
         const response =
           await fetch(
-            "/api/donations?limit=50",
+            "/api/donations?limit=100",
             {
               headers:
                 authHeaders()
             }
           );
 
+
         if (
           response.status === 401
         ) {
+
           logout();
+
           return;
+
         }
+
 
         const data =
           await response.json();
 
+
         if (!response.ok) {
+
           throw new Error(
             data.error ||
             "Erro ao carregar histórico."
           );
+
         }
+
 
         totalRecebido.textContent =
           dinheiro(
@@ -2234,190 +2951,37 @@
               ?.totalRecebido
           );
 
+
         totalPagas.textContent =
           String(
             data.resumo
               ?.totalPagas ?? 0
           );
 
-        totalRegistros.textContent =
-          String(
-            data.resumo
-              ?.totalRegistros ?? 0
-          );
 
-        const donations =
+        historicoCompleto =
           Array.isArray(
             data.donations
           )
             ? data.donations
             : [];
 
-        if (
-          donations.length === 0
-        ) {
 
-          historyList.innerHTML =
-            `
-              <div class="empty">
-                Nenhuma doação registrada ainda.
-              </div>
-            `;
-
-          return;
-
-        }
-
-        historyList.innerHTML =
-          donations
-            .map(
-              donation => {
-
-                const paga =
-                  estaPago(
-                    donation
-                  );
-
-                const statusTexto =
-                  paga
-                    ? "✅ Pago"
-                    : "⏳ Pendente";
-
-                const alertTexto =
-                  donation.alert_sent
-                    ? "🔊 Alerta enviado"
-                    : "🔇 Alerta não enviado";
-
-                const mensagem =
-                  donation.message
-                    ? escaparHtml(
-                        donation.message
-                      )
-                    : "Sem mensagem";
-
-                const repeatButton =
-                  paga
-                    ? `
-                      <button
-                        class="repeat-button"
-                        data-repeat-order="${escaparHtml(
-                          donation.order_id
-                        )}"
-                      >
-                        🔁 Repetir alerta
-                      </button>
-                    `
-                    : "";
-
-                return `
-                  <article class="donation">
-
-                    <div>
-
-                      <div class="donation-top">
-
-                        <span class="donation-name">
-                          ${escaparHtml(
-                            donation.name
-                          )}
-                        </span>
-
-                        <span
-                          class="
-                            badge
-                            tier-${escaparHtml(
-                              donation.tier
-                            )}
-                          "
-                        >
-                          ${escaparHtml(
-                            nomeTier(
-                              donation.tier
-                            )
-                          )}
-                        </span>
-
-                      </div>
-
-                      <div class="donation-message">
-                        ${mensagem}
-                      </div>
-
-                      <div class="donation-info">
-
-                        <span
-                          class="${
-                            paga
-                              ? "paid"
-                              : "pending"
-                          }"
-                        >
-                          ${statusTexto}
-                        </span>
-
-                        <span>
-                          ${alertTexto}
-                        </span>
-
-                        <span>
-                          ${dataHora(
-                            donation.created_at
-                          )}
-                        </span>
-
-                      </div>
-
-                    </div>
-
-
-                    <div class="donation-right">
-
-                      <div class="donation-value">
-                        ${dinheiro(
-                          donation.amount
-                        )}
-                      </div>
-
-                      ${repeatButton}
-
-                    </div>
-
-                  </article>
-                `;
-
-              }
-            )
-            .join("");
-
-
-        document
-          .querySelectorAll(
-            "[data-repeat-order]"
-          )
-          .forEach(
-            button => {
-
-              button.addEventListener(
-                "click",
-                () => {
-
-                  repetirAlerta(
-                    button.dataset
-                      .repeatOrder,
-
-                    button
-                  );
-
-                }
-              );
-
-            }
+        totalRegistros.textContent =
+          String(
+            historicoCompleto.length
           );
+
+
+        renderizarHistorico();
 
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          error
+        );
+
 
         historyList.innerHTML =
           `
@@ -2426,9 +2990,37 @@
             </div>
           `;
 
+
+        historyResultInfo.textContent =
+          "Erro ao carregar dados.";
+
       }
 
     }
+
+
+    historySearch.addEventListener(
+      "input",
+      renderizarHistorico
+    );
+
+
+    historyStatus.addEventListener(
+      "change",
+      renderizarHistorico
+    );
+
+
+    historyTier.addEventListener(
+      "change",
+      renderizarHistorico
+    );
+
+
+    historyPeriod.addEventListener(
+      "change",
+      renderizarHistorico
+    );
 
 
     async function tentarLogin() {
@@ -2436,57 +3028,73 @@
       const senha =
         passwordInput.value;
 
+
       if (!senha) {
+
         loginError.textContent =
           "Digite a senha.";
 
         return;
+
       }
+
 
       loginButton.disabled =
         true;
 
+
       loginError.textContent =
         "Entrando...";
+
 
       panelSecret =
         senha;
 
+
       try {
 
         await carregarConfig();
+
 
         sessionStorage.setItem(
           SESSION_KEY,
           panelSecret
         );
 
+
         loginScreen.classList.add(
           "hidden"
         );
 
+
         loginError.textContent =
           "";
+
 
         passwordInput.value =
           "";
 
+
         await carregarHistorico();
+
 
       } catch (error) {
 
         panelSecret =
           "";
 
+
         sessionStorage.removeItem(
           SESSION_KEY
         );
+
 
         loginError.textContent =
           error.message ===
           "unauthorized"
             ? "Senha incorreta."
             : "Não foi possível entrar.";
+
 
       } finally {
 
@@ -2503,16 +3111,24 @@
       panelSecret =
         "";
 
+
+      historicoCompleto =
+        [];
+
+
       sessionStorage.removeItem(
         SESSION_KEY
       );
+
 
       loginScreen.classList.remove(
         "hidden"
       );
 
+
       passwordInput.value =
         "";
+
 
       loginError.textContent =
         "";
@@ -2531,10 +3147,11 @@
       event => {
 
         if (
-          event.key ===
-          "Enter"
+          event.key === "Enter"
         ) {
+
           tentarLogin();
+
         }
 
       }
@@ -2565,9 +3182,11 @@
               "Salvando..."
             );
 
+
             await salvarConfig(
               true
             );
+
 
           } catch (error) {
 
@@ -2596,14 +3215,18 @@
               "Recarregando..."
             );
 
+
             await carregarConfig();
 
+
             await carregarHistorico();
+
 
             setStatus(
               "Dados recarregados. ✅",
               "success"
             );
+
 
           } catch (error) {
 
@@ -2637,7 +3260,9 @@
         () => {
 
           aplicarConfig({
+
             volumeMeme: 1,
+
             volumeVoz: 1,
 
             memesAtivos:
@@ -2646,8 +3271,7 @@
             vozAtiva:
               true,
 
-            duracao:
-              12,
+            duracao: 12,
 
             flashAtivo:
               true,
@@ -2656,6 +3280,7 @@
               true,
 
             sons: {
+
               basic:
                 "/sounds/basico.mp3",
 
@@ -2670,8 +3295,11 @@
 
               legendary:
                 "/sounds/lendario.mp3"
+
             }
+
           });
+
 
           setStatus(
             "Valores padrão carregados. Clique em Salvar para confirmar."
@@ -2707,23 +3335,30 @@
 
       atualizarLabels();
 
+
       if (!panelSecret) {
+
         loginScreen.classList.remove(
           "hidden"
         );
 
         return;
+
       }
+
 
       try {
 
         await carregarConfig();
 
+
         loginScreen.classList.add(
           "hidden"
         );
 
+
         await carregarHistorico();
+
 
       } catch (error) {
 
