@@ -20,12 +20,16 @@ app.use(express.static("public"));
 function protegerPainel(req, res, next) {
 
   const segredoServidor =
-    process.env.PANEL_SECRET;
+    String(process.env.PANEL_SECRET || "");
+
+  const segredoRecebido =
+    String(req.get("x-panel-secret") || "");
+
 
   if (!segredoServidor) {
 
     console.error(
-      "PANEL_SECRET não configurado no servidor."
+      "PANEL_SECRET não configurado."
     );
 
     return res.status(500).json({
@@ -34,12 +38,6 @@ function protegerPainel(req, res, next) {
     });
 
   }
-
-
-  const segredoRecebido =
-    String(
-      req.get("x-panel-secret") || ""
-    );
 
 
   if (!segredoRecebido) {
@@ -60,10 +58,7 @@ function protegerPainel(req, res, next) {
 
 
   const valido =
-
-    recebido.length ===
-      esperado.length &&
-
+    recebido.length === esperado.length &&
     crypto.timingSafeEqual(
       recebido,
       esperado
@@ -85,13 +80,15 @@ function protegerPainel(req, res, next) {
 
 
 // ======================================================
-// VALIDAR WEBHOOK DO MERCADO PAGO
+// VALIDAR WEBHOOK MERCADO PAGO
 // ======================================================
 
 function validarWebhookMercadoPago(req) {
 
   const secret =
-    process.env.MP_WEBHOOK_SECRET;
+    String(
+      process.env.MP_WEBHOOK_SECRET || ""
+    );
 
 
   if (!secret) {
@@ -109,7 +106,6 @@ function validarWebhookMercadoPago(req) {
     String(
       req.get("x-signature") || ""
     );
-
 
   const xRequestId =
     String(
@@ -151,12 +147,8 @@ function validarWebhookMercadoPago(req) {
     }
 
 
-    partes[
-      chave.trim()
-    ] =
-      resto
-        .join("=")
-        .trim();
+    partes[chave.trim()] =
+      resto.join("=").trim();
 
   }
 
@@ -219,12 +211,8 @@ function validarWebhookMercadoPago(req) {
   }
 
 
-  if (ts) {
-
-    manifest +=
-      `ts:${ts};`;
-
-  }
+  manifest +=
+    `ts:${ts};`;
 
 
   const assinaturaCalculada =
@@ -241,23 +229,18 @@ function validarWebhookMercadoPago(req) {
     !/^[a-fA-F0-9]{64}$/.test(v1)
   ) {
 
-    console.warn(
-      "Assinatura Mercado Pago em formato inválido."
-    );
-
     return false;
 
   }
 
 
-  const calculadaBuffer =
+  const calculada =
     Buffer.from(
       assinaturaCalculada,
       "hex"
     );
 
-
-  const recebidaBuffer =
+  const recebida =
     Buffer.from(
       v1,
       "hex"
@@ -265,8 +248,8 @@ function validarWebhookMercadoPago(req) {
 
 
   if (
-    calculadaBuffer.length !==
-    recebidaBuffer.length
+    calculada.length !==
+    recebida.length
   ) {
 
     return false;
@@ -275,15 +258,15 @@ function validarWebhookMercadoPago(req) {
 
 
   return crypto.timingSafeEqual(
-    calculadaBuffer,
-    recebidaBuffer
+    calculada,
+    recebida
   );
 
 }
 
 
 // ======================================================
-// CONEXÃO COM SUPABASE
+// SUPABASE
 // ======================================================
 
 async function supabaseRequest(
@@ -296,9 +279,10 @@ async function supabaseRequest(
       process.env.SUPABASE_URL || ""
     ).replace(/\/+$/, "");
 
-
   const key =
-    process.env.SUPABASE_SERVICE_KEY;
+    String(
+      process.env.SUPABASE_SERVICE_KEY || ""
+    );
 
 
   if (!url || !key) {
@@ -310,36 +294,32 @@ async function supabaseRequest(
   }
 
 
-  const response =
-    await fetch(
+  return fetch(
 
-      `${url}/rest/v1/${endpoint}`,
+    `${url}/rest/v1/${endpoint}`,
 
-      {
+    {
 
-        ...options,
+      ...options,
 
-        headers: {
+      headers: {
 
-          apikey:
-            key,
+        apikey:
+          key,
 
-          Authorization:
-            `Bearer ${key}`,
+        Authorization:
+          `Bearer ${key}`,
 
-          "Content-Type":
-            "application/json",
+        "Content-Type":
+          "application/json",
 
-          ...(options.headers || {})
-
-        }
+        ...(options.headers || {})
 
       }
 
-    );
+    }
 
-
-  return response;
+  );
 
 }
 
@@ -359,7 +339,7 @@ const audios =
 
 
 // ======================================================
-// CONFIGURAÇÕES DOS ALERTAS
+// CONFIGURAÇÃO PADRÃO
 // ======================================================
 
 let alertConfig = {
@@ -413,12 +393,556 @@ let alertConfig = {
 
 const allowedSounds =
   new Set([
+
     "/sounds/basico.mp3",
+
     "/sounds/medio.mp3",
+
     "/sounds/epico.mp3",
+
     "/sounds/especial.mp3",
+
     "/sounds/lendario.mp3"
+
   ]);
+
+
+// ======================================================
+// CONVERTER CONFIGURAÇÃO BANCO → SISTEMA
+// ======================================================
+
+function configDoBanco(row) {
+
+  return {
+
+    volumeMeme:
+      Number(row.volume_meme),
+
+    volumeVoz:
+      Number(row.volume_voz),
+
+    memesAtivos:
+      row.memes_ativos,
+
+    vozAtiva:
+      row.voz_ativa,
+
+    duracao:
+      Number(row.duracao),
+
+    flashAtivo:
+      row.flash_ativo,
+
+    particulasAtivas:
+      row.particulas_ativas,
+
+    sons: {
+
+      basic:
+        row.som_basic,
+
+      medium:
+        row.som_medium,
+
+      epic:
+        row.som_epic,
+
+      special:
+        row.som_special,
+
+      legendary:
+        row.som_legendary
+
+    }
+
+  };
+
+}
+
+
+// ======================================================
+// CONVERTER CONFIGURAÇÃO SISTEMA → BANCO
+// ======================================================
+
+function configParaBanco(config) {
+
+  return {
+
+    id:
+      1,
+
+    volume_meme:
+      config.volumeMeme,
+
+    volume_voz:
+      config.volumeVoz,
+
+    memes_ativos:
+      config.memesAtivos,
+
+    voz_ativa:
+      config.vozAtiva,
+
+    duracao:
+      config.duracao,
+
+    flash_ativo:
+      config.flashAtivo,
+
+    particulas_ativas:
+      config.particulasAtivas,
+
+    som_basic:
+      config.sons.basic,
+
+    som_medium:
+      config.sons.medium,
+
+    som_epic:
+      config.sons.epic,
+
+    som_special:
+      config.sons.special,
+
+    som_legendary:
+      config.sons.legendary,
+
+    updated_at:
+      new Date().toISOString()
+
+  };
+
+}
+
+
+// ======================================================
+// CARREGAR CONFIGURAÇÃO DO SUPABASE
+// ======================================================
+
+async function carregarConfigBanco() {
+
+  try {
+
+    const response =
+      await supabaseRequest(
+        "alert_config?id=eq.1&select=*"
+      );
+
+
+    if (!response.ok) {
+
+      console.error(
+        "Erro ao carregar configuração do Supabase:",
+        response.status,
+        await response.text()
+      );
+
+      return false;
+
+    }
+
+
+    const rows =
+      await response.json();
+
+
+    if (
+      Array.isArray(rows) &&
+      rows.length > 0
+    ) {
+
+      alertConfig =
+        configDoBanco(
+          rows[0]
+        );
+
+
+      console.log(
+        "Configurações carregadas do Supabase."
+      );
+
+
+      return true;
+
+    }
+
+
+    console.warn(
+      "Registro alert_config id=1 não encontrado."
+    );
+
+
+    return false;
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao carregar configuração:",
+      error
+    );
+
+
+    return false;
+
+  }
+
+}
+
+
+// ======================================================
+// SALVAR CONFIGURAÇÃO NO SUPABASE
+// ======================================================
+
+async function salvarConfigBanco() {
+
+  const response =
+    await supabaseRequest(
+
+      "alert_config?on_conflict=id",
+
+      {
+
+        method:
+          "POST",
+
+        headers: {
+
+          Prefer:
+            "resolution=merge-duplicates,return=representation"
+
+        },
+
+        body:
+          JSON.stringify(
+            configParaBanco(
+              alertConfig
+            )
+          )
+
+      }
+
+    );
+
+
+  if (!response.ok) {
+
+    const erro =
+      await response.text();
+
+
+    console.error(
+      "Erro ao salvar configuração no Supabase:",
+      response.status,
+      erro
+    );
+
+
+    throw new Error(
+      "Não foi possível salvar configurações no banco."
+    );
+
+  }
+
+
+  return response.json();
+
+}
+
+
+// ======================================================
+// CONVERTER DOAÇÃO DO BANCO
+// ======================================================
+
+function donationDoBanco(row) {
+
+  return {
+
+    orderId:
+      row.order_id,
+
+    externalReference:
+      row.external_reference,
+
+    amount:
+      Number(row.amount),
+
+    name:
+      row.name,
+
+    email:
+      row.email,
+
+    message:
+      row.message || "",
+
+    tier:
+      row.tier,
+
+    status:
+      row.status,
+
+    alertSent:
+      Boolean(row.alert_sent),
+
+    createdAt:
+      row.created_at,
+
+    paidAt:
+      row.paid_at
+
+  };
+
+}
+
+
+// ======================================================
+// SALVAR DOAÇÃO NO SUPABASE
+// ======================================================
+
+async function salvarDonationBanco(
+  donation
+) {
+
+  const body = {
+
+    order_id:
+      String(donation.orderId),
+
+    external_reference:
+      donation.externalReference ||
+      null,
+
+    amount:
+      Number(donation.amount),
+
+    name:
+      donation.name,
+
+    email:
+      donation.email || null,
+
+    message:
+      donation.message || "",
+
+    tier:
+      donation.tier,
+
+    status:
+      donation.status || "pending",
+
+    alert_sent:
+      Boolean(
+        donation.alertSent
+      ),
+
+    created_at:
+      donation.createdAt ||
+      new Date().toISOString(),
+
+    paid_at:
+      donation.paidAt || null,
+
+    updated_at:
+      new Date().toISOString()
+
+  };
+
+
+  const response =
+    await supabaseRequest(
+
+      "donations?on_conflict=order_id",
+
+      {
+
+        method:
+          "POST",
+
+        headers: {
+
+          Prefer:
+            "resolution=merge-duplicates,return=representation"
+
+        },
+
+        body:
+          JSON.stringify(body)
+
+      }
+
+    );
+
+
+  if (!response.ok) {
+
+    console.error(
+      "Erro ao salvar doação:",
+      response.status,
+      await response.text()
+    );
+
+
+    return false;
+
+  }
+
+
+  return true;
+
+}
+
+
+// ======================================================
+// BUSCAR DOAÇÃO NO SUPABASE
+// ======================================================
+
+async function buscarDonationBanco(
+  orderId
+) {
+
+  try {
+
+    const id =
+      encodeURIComponent(
+        String(orderId)
+      );
+
+
+    const response =
+      await supabaseRequest(
+        `donations?order_id=eq.${id}&select=*`
+      );
+
+
+    if (!response.ok) {
+
+      console.error(
+        "Erro ao buscar doação:",
+        response.status,
+        await response.text()
+      );
+
+
+      return null;
+
+    }
+
+
+    const rows =
+      await response.json();
+
+
+    if (
+      !Array.isArray(rows) ||
+      rows.length === 0
+    ) {
+
+      return null;
+
+    }
+
+
+    return donationDoBanco(
+      rows[0]
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao buscar doação no Supabase:",
+      error
+    );
+
+
+    return null;
+
+  }
+
+}
+
+
+// ======================================================
+// ATUALIZAR DOAÇÃO NO SUPABASE
+// ======================================================
+
+async function atualizarDonationBanco(
+  orderId,
+  campos
+) {
+
+  try {
+
+    const id =
+      encodeURIComponent(
+        String(orderId)
+      );
+
+
+    const response =
+      await supabaseRequest(
+
+        `donations?order_id=eq.${id}`,
+
+        {
+
+          method:
+            "PATCH",
+
+          headers: {
+
+            Prefer:
+              "return=minimal"
+
+          },
+
+          body:
+            JSON.stringify({
+
+              ...campos,
+
+              updated_at:
+                new Date()
+                  .toISOString()
+
+            })
+
+        }
+
+      );
+
+
+    if (!response.ok) {
+
+      console.error(
+        "Erro ao atualizar doação:",
+        response.status,
+        await response.text()
+      );
+
+
+      return false;
+
+    }
+
+
+    return true;
+
+
+  } catch (error) {
+
+    console.error(
+      "Erro ao atualizar doação:",
+      error
+    );
+
+
+    return false;
+
+  }
+
+}
 
 
 // ======================================================
@@ -430,7 +954,7 @@ const DEFAULT_VOICE_ID =
 
 
 // ======================================================
-// DEFINIR CATEGORIA PELO VALOR
+// DEFINIR CATEGORIA
 // ======================================================
 
 function tierFor(amount) {
@@ -490,7 +1014,7 @@ function cleanText(text) {
 
 
 // ======================================================
-// TRANSMITIR EVENTO PARA OVERLAY
+// TRANSMITIR PARA OVERLAY
 // ======================================================
 
 function broadcast(payload) {
@@ -519,7 +1043,7 @@ function broadcast(payload) {
 
 
 // ======================================================
-// GERAR VOZ ELEVENLABS
+// ELEVENLABS
 // ======================================================
 
 async function generateTTS(
@@ -586,11 +1110,6 @@ async function generateTTS(
     DEFAULT_VOICE_ID;
 
 
-  console.log(
-    "Gerando voz ElevenLabs..."
-  );
-
-
   const response =
     await fetch(
 
@@ -602,7 +1121,6 @@ async function generateTTS(
 
         method:
           "POST",
-
 
         headers: {
 
@@ -616,7 +1134,6 @@ async function generateTTS(
             "audio/mpeg"
 
         },
-
 
         body:
           JSON.stringify({
@@ -651,14 +1168,10 @@ async function generateTTS(
 
   if (!response.ok) {
 
-    const errorText =
-      await response.text();
-
-
     console.error(
       "ERRO ELEVENLABS:",
       response.status,
-      errorText
+      await response.text()
     );
 
 
@@ -671,12 +1184,6 @@ async function generateTTS(
     await response.arrayBuffer();
 
 
-  const buffer =
-    Buffer.from(
-      arrayBuffer
-    );
-
-
   const audioId =
     crypto.randomUUID();
 
@@ -687,7 +1194,10 @@ async function generateTTS(
 
     {
 
-      buffer,
+      buffer:
+        Buffer.from(
+          arrayBuffer
+        ),
 
       createdAt:
         Date.now()
@@ -712,18 +1222,13 @@ async function generateTTS(
   );
 
 
-  console.log(
-    "Voz criada com sucesso."
-  );
-
-
   return audioId;
 
 }
 
 
 // ======================================================
-// HEALTH CHECK
+// HEALTH
 // ======================================================
 
 app.get(
@@ -737,37 +1242,27 @@ app.get(
       ok:
         true,
 
-
       mercadopagoConfigured:
-
         Boolean(
           process.env.MP_ACCESS_TOKEN
         ),
 
-
       webhookProtegido:
-
         Boolean(
           process.env.MP_WEBHOOK_SECRET
         ),
 
-
       elevenlabsConfigured:
-
         Boolean(
           process.env.ELEVENLABS_API_KEY
         ),
 
-
       painelProtegido:
-
         Boolean(
           process.env.PANEL_SECRET
         ),
 
-
       supabaseConfigured:
-
         Boolean(
           process.env.SUPABASE_URL &&
           process.env.SUPABASE_SERVICE_KEY
@@ -781,8 +1276,7 @@ app.get(
 
 
 // ======================================================
-// TESTAR CONEXÃO COM SUPABASE
-// PROTEGIDO
+// TESTAR SUPABASE
 // ======================================================
 
 app.get(
@@ -807,13 +1301,6 @@ app.get(
 
       if (!response.ok) {
 
-        console.error(
-          "Erro Supabase:",
-          response.status,
-          texto
-        );
-
-
         return res
           .status(500)
           .json({
@@ -824,9 +1311,6 @@ app.get(
             supabase:
               "erro",
 
-            error:
-              "Não foi possível acessar o Supabase.",
-
             status:
               response.status
 
@@ -835,23 +1319,8 @@ app.get(
       }
 
 
-      let data =
-        [];
-
-
-      try {
-
-        data =
-          JSON.parse(texto);
-
-      } catch (error) {
-
-        console.error(
-          "Resposta inválida do Supabase:",
-          texto
-        );
-
-      }
+      const data =
+        JSON.parse(texto);
 
 
       res.json({
@@ -871,12 +1340,6 @@ app.get(
 
 
     } catch (error) {
-
-      console.error(
-        "Erro ao testar Supabase:",
-        error
-      );
-
 
       res
         .status(500)
@@ -902,7 +1365,6 @@ app.get(
 
 // ======================================================
 // PEGAR CONFIGURAÇÕES
-// PROTEGIDO
 // ======================================================
 
 app.get(
@@ -924,7 +1386,6 @@ app.get(
 
 // ======================================================
 // SALVAR CONFIGURAÇÕES
-// PROTEGIDO
 // ======================================================
 
 app.post(
@@ -933,7 +1394,7 @@ app.post(
 
   protegerPainel,
 
-  (req, res) => {
+  async (req, res) => {
 
     try {
 
@@ -946,12 +1407,10 @@ app.post(
           body.volumeMeme
         );
 
-
       const volumeVoz =
         Number(
           body.volumeVoz
         );
-
 
       const duracao =
         Number(
@@ -1064,17 +1523,11 @@ app.post(
       ) {
 
         const tiers = [
-
           "basic",
-
           "medium",
-
           "epic",
-
           "special",
-
           "legendary"
-
         ];
 
 
@@ -1102,6 +1555,10 @@ app.post(
       }
 
 
+      // SALVA PERMANENTEMENTE
+      await salvarConfigBanco();
+
+
       broadcast({
 
         type:
@@ -1118,6 +1575,9 @@ app.post(
         ok:
           true,
 
+        saved:
+          "supabase",
+
         config:
           alertConfig
 
@@ -1125,7 +1585,7 @@ app.post(
 
 
       console.log(
-        "Configurações atualizadas."
+        "Configurações salvas no Supabase."
       );
 
 
@@ -1142,7 +1602,7 @@ app.post(
         .json({
 
           error:
-            "Erro ao salvar configurações."
+            "Erro ao salvar configurações no banco."
 
         });
 
@@ -1154,8 +1614,7 @@ app.post(
 
 
 // ======================================================
-// TESTE MANUAL DE ALERTA
-// PROTEGIDO
+// TESTAR ALERTA
 // ======================================================
 
 app.post(
@@ -1267,11 +1726,8 @@ app.post(
         tier,
 
         audioUrl:
-
           audioId
-
             ? `/api/audio/${audioId}`
-
             : null,
 
         config:
@@ -1282,11 +1738,6 @@ app.post(
 
       broadcast(
         payload
-      );
-
-
-      console.log(
-        `Alerta de teste enviado: ${tier}`
       );
 
 
@@ -1338,15 +1789,10 @@ app.post(
     try {
 
       const {
-
         amount,
-
         name,
-
         email,
-
         message = ""
-
       } = req.body;
 
 
@@ -1418,7 +1864,7 @@ app.post(
           .json({
 
             error:
-              "Mercado Pago ainda não está configurado no servidor."
+              "Mercado Pago não configurado."
 
           });
 
@@ -1441,16 +1887,13 @@ app.post(
           value,
 
         name:
-          String(name)
-            .trim(),
+          String(name).trim(),
 
         email:
-          String(email)
-            .trim(),
+          String(email).trim(),
 
         message:
-          String(message)
-            .trim(),
+          cleanText(message),
 
         tier:
           tierFor(value),
@@ -1458,9 +1901,14 @@ app.post(
         status:
           "pending",
 
+        alertSent:
+          false,
+
         createdAt:
-          new Date()
-            .toISOString()
+          new Date().toISOString(),
+
+        paidAt:
+          null
 
       };
 
@@ -1479,18 +1927,15 @@ app.post(
         processing_mode:
           "automatic",
 
-
         payer: {
 
           email:
-            String(email)
-              .trim(),
+            String(email).trim(),
 
           first_name:
             "APRO"
 
         },
-
 
         transactions: {
 
@@ -1530,7 +1975,6 @@ app.post(
             method:
               "POST",
 
-
             headers: {
 
               Authorization:
@@ -1546,7 +1990,6 @@ app.post(
                 idempotencyKey
 
             },
-
 
             body:
               JSON.stringify(
@@ -1572,13 +2015,11 @@ app.post(
             rawText
           );
 
-      } catch (error) {
+      } catch {
 
         data = {
-
           raw:
             rawText
-
         };
 
       }
@@ -1587,23 +2028,9 @@ app.post(
       if (!response.ok) {
 
         console.error(
-          "ERRO MERCADO PAGO COMPLETO:",
-          JSON.stringify(
-            {
-
-              status:
-                response.status,
-
-              statusText:
-                response.statusText,
-
-              response:
-                data
-
-            },
-            null,
-            2
-          )
+          "Mercado Pago:",
+          response.status,
+          data
         );
 
 
@@ -1616,9 +2043,6 @@ app.post(
 
             error:
               "Mercado Pago recusou a criação do Pix.",
-
-            mercadopagoStatus:
-              response.status,
 
             details:
               data
@@ -1636,7 +2060,7 @@ app.post(
 
 
       donation.orderId =
-        data.id;
+        String(data.id);
 
 
       donation.status =
@@ -1645,12 +2069,34 @@ app.post(
         "pending";
 
 
+      // SALVA NA MEMÓRIA
       donations.set(
-        String(
-          data.id
-        ),
+        donation.orderId,
         donation
       );
+
+
+      // SALVA NO BANCO
+      const salvoNoBanco =
+        await salvarDonationBanco(
+          donation
+        );
+
+
+      if (salvoNoBanco) {
+
+        console.log(
+          "Doação salva no Supabase:",
+          donation.orderId
+        );
+
+      } else {
+
+        console.warn(
+          "Pix criado, mas houve erro ao salvar no Supabase."
+        );
+
+      }
 
 
       res.json({
@@ -1661,40 +2107,28 @@ app.post(
         status:
           donation.status,
 
-
         ticketUrl:
-
           payment
             ?.payment_method
             ?.ticket_url ||
-
           payment
             ?.ticket_url ||
-
           null,
-
 
         qrCode:
-
           payment
             ?.payment_method
             ?.qr_code ||
-
           payment
             ?.qr_code ||
-
           null,
 
-
         qrCodeBase64:
-
           payment
             ?.payment_method
             ?.qr_code_base64 ||
-
           payment
             ?.qr_code_base64 ||
-
           null
 
       });
@@ -1703,7 +2137,7 @@ app.post(
     } catch (error) {
 
       console.error(
-        "Erro interno em /api/create-pix:",
+        "Erro em /api/create-pix:",
         error
       );
 
@@ -1726,7 +2160,6 @@ app.post(
 
 // ======================================================
 // WEBHOOK MERCADO PAGO
-// PROTEGIDO COM HMAC-SHA256
 // ======================================================
 
 app.post(
@@ -1737,16 +2170,14 @@ app.post(
 
     try {
 
-      const assinaturaValida =
-        validarWebhookMercadoPago(
+      if (
+        !validarWebhookMercadoPago(
           req
-        );
-
-
-      if (!assinaturaValida) {
+        )
+      ) {
 
         console.warn(
-          "Webhook Mercado Pago rejeitado: assinatura inválida."
+          "Webhook rejeitado: assinatura inválida."
         );
 
 
@@ -1754,11 +2185,6 @@ app.post(
           .sendStatus(401);
 
       }
-
-
-      console.log(
-        "Webhook Mercado Pago autenticado."
-      );
 
 
       const orderId =
@@ -1773,21 +2199,17 @@ app.post(
         !process.env.MP_ACCESS_TOKEN
       ) {
 
-        console.warn(
-          "Webhook válido, mas sem orderId ou MP_ACCESS_TOKEN."
-        );
-
-
         return res
           .sendStatus(200);
 
       }
 
 
+      // CONFIRMA RECEBIMENTO AO MERCADO PAGO
       res.sendStatus(200);
 
 
-      const response =
+      const orderResponse =
         await fetch(
 
           `https://api.mercadopago.com/v1/orders/${encodeURIComponent(
@@ -1811,12 +2233,14 @@ app.post(
         );
 
 
-      if (!response.ok) {
+      if (
+        !orderResponse.ok
+      ) {
 
         console.error(
-          "Erro ao consultar ordem no webhook:",
-          response.status,
-          await response.text()
+          "Erro consultando ordem:",
+          orderResponse.status,
+          await orderResponse.text()
         );
 
 
@@ -1826,7 +2250,7 @@ app.post(
 
 
       const order =
-        await response.json();
+        await orderResponse.json();
 
 
       const payment =
@@ -1836,16 +2260,45 @@ app.post(
           ?.[0];
 
 
-      const donation =
+      // PRIMEIRO TENTA MEMÓRIA
+      let donation =
         donations.get(
           String(orderId)
         );
 
 
+      // SE O RENDER REINICIOU,
+      // BUSCA NO SUPABASE
       if (!donation) {
 
         console.log(
-          "Doação não encontrada na memória:",
+          "Buscando doação no Supabase:",
+          orderId
+        );
+
+
+        donation =
+          await buscarDonationBanco(
+            orderId
+          );
+
+
+        if (donation) {
+
+          donations.set(
+            String(orderId),
+            donation
+          );
+
+        }
+
+      }
+
+
+      if (!donation) {
+
+        console.log(
+          "Doação não encontrada:",
           orderId
         );
 
@@ -1859,13 +2312,6 @@ app.post(
         order.status ||
         payment?.status ||
         "pending";
-
-
-      console.log(
-        "Status da ordem:",
-        donation.status,
-        payment?.status_detail
-      );
 
 
       const approved =
@@ -1883,10 +2329,75 @@ app.post(
           "accredited";
 
 
+      // ATUALIZA STATUS NO BANCO
+      await atualizarDonationBanco(
+
+        orderId,
+
+        {
+
+          status:
+            donation.status,
+
+          ...(approved
+            ? {
+
+                paid_at:
+                  donation.paidAt ||
+                  new Date().toISOString()
+
+              }
+            : {})
+
+        }
+
+      );
+
+
       if (
         approved &&
         !donation.alertSent
       ) {
+
+        donation.paidAt =
+          donation.paidAt ||
+          new Date().toISOString();
+
+
+        // MARCA PRIMEIRO NO BANCO
+        // PARA EVITAR ALERTA DUPLICADO
+        const marcou =
+          await atualizarDonationBanco(
+
+            orderId,
+
+            {
+
+              status:
+                donation.status,
+
+              alert_sent:
+                true,
+
+              paid_at:
+                donation.paidAt
+
+            }
+
+          );
+
+
+        if (!marcou) {
+
+          console.error(
+            "Não foi possível marcar alerta no banco."
+          );
+
+
+          return;
+
+        }
+
 
         donation.alertSent =
           true;
@@ -1946,11 +2457,8 @@ app.post(
             donation.tier,
 
           audioUrl:
-
             audioId
-
               ? `/api/audio/${audioId}`
-
               : null,
 
           config:
@@ -1960,7 +2468,7 @@ app.post(
 
 
         console.log(
-          "Alerta enviado ao overlay."
+          "Alerta enviado e registrado no Supabase."
         );
 
       }
@@ -1990,7 +2498,7 @@ app.post(
 
 
 // ======================================================
-// SERVIR ÁUDIO GERADO
+// SERVIR ÁUDIO
 // ======================================================
 
 app.get(
@@ -2047,14 +2555,28 @@ app.get(
 
   "/api/status/:orderId",
 
-  (req, res) => {
+  async (req, res) => {
 
-    const donation =
-      donations.get(
-        String(
-          req.params.orderId
-        )
+    const orderId =
+      String(
+        req.params.orderId
       );
+
+
+    let donation =
+      donations.get(
+        orderId
+      );
+
+
+    if (!donation) {
+
+      donation =
+        await buscarDonationBanco(
+          orderId
+        );
+
+    }
 
 
     if (!donation) {
@@ -2099,7 +2621,7 @@ app.get(
 
 
 // ======================================================
-// STREAM SSE DO OVERLAY
+// STREAM DO OVERLAY
 // ======================================================
 
 app.get(
@@ -2113,12 +2635,10 @@ app.get(
       "text/event-stream"
     );
 
-
     res.setHeader(
       "Cache-Control",
       "no-cache"
     );
-
 
     res.setHeader(
       "Connection",
@@ -2136,17 +2656,15 @@ app.get(
 
     res.write(
 
-      `data: ${JSON.stringify(
-        {
+      `data: ${JSON.stringify({
 
-          type:
-            "connected",
+        type:
+          "connected",
 
-          config:
-            alertConfig
+        config:
+          alertConfig
 
-        }
-      )}\n\n`
+      })}\n\n`
 
     );
 
@@ -2171,7 +2689,7 @@ app.get(
 
 
 // ======================================================
-// PÁGINA DO OVERLAY
+// OVERLAY
 // ======================================================
 
 app.get(
@@ -2196,7 +2714,7 @@ app.get(
 
 
 // ======================================================
-// PÁGINA DO PAINEL
+// PAINEL
 // ======================================================
 
 app.get(
@@ -2221,62 +2739,90 @@ app.get(
 
 
 // ======================================================
-// INICIAR SERVIDOR
+// INICIAR SISTEMA
 // ======================================================
 
-app.listen(
+async function iniciarServidor() {
 
-  PORT,
-
-  HOST,
-
-  () => {
-
-    console.log(
-      `KevenZL Pix Alertas na porta ${PORT}`
-    );
+  console.log(
+    "Iniciando KevenZL Pix Alertas..."
+  );
 
 
-    console.log(
-      "Mercado Pago:",
-      process.env.MP_ACCESS_TOKEN
-        ? "OK"
-        : "NÃO CONFIGURADO"
-    );
+  if (
+    process.env.SUPABASE_URL &&
+    process.env.SUPABASE_SERVICE_KEY
+  ) {
 
+    await carregarConfigBanco();
 
-    console.log(
-      "Webhook Mercado Pago:",
-      process.env.MP_WEBHOOK_SECRET
-        ? "PROTEGIDO"
-        : "NÃO CONFIGURADO"
-    );
+  } else {
 
-
-    console.log(
-      "ElevenLabs:",
-      process.env.ELEVENLABS_API_KEY
-        ? "OK"
-        : "NÃO CONFIGURADO"
-    );
-
-
-    console.log(
-      "Proteção do painel:",
-      process.env.PANEL_SECRET
-        ? "ATIVA"
-        : "NÃO CONFIGURADA"
-    );
-
-
-    console.log(
-      "Supabase:",
-      process.env.SUPABASE_URL &&
-      process.env.SUPABASE_SERVICE_KEY
-        ? "CONFIGURADO"
-        : "NÃO CONFIGURADO"
+    console.warn(
+      "Supabase não configurado."
     );
 
   }
 
-);
+
+  app.listen(
+
+    PORT,
+
+    HOST,
+
+    () => {
+
+      console.log(
+        `KevenZL Pix Alertas na porta ${PORT}`
+      );
+
+
+      console.log(
+        "Mercado Pago:",
+        process.env.MP_ACCESS_TOKEN
+          ? "OK"
+          : "NÃO CONFIGURADO"
+      );
+
+
+      console.log(
+        "Webhook:",
+        process.env.MP_WEBHOOK_SECRET
+          ? "PROTEGIDO"
+          : "NÃO CONFIGURADO"
+      );
+
+
+      console.log(
+        "ElevenLabs:",
+        process.env.ELEVENLABS_API_KEY
+          ? "OK"
+          : "NÃO CONFIGURADO"
+      );
+
+
+      console.log(
+        "Painel:",
+        process.env.PANEL_SECRET
+          ? "PROTEGIDO"
+          : "NÃO CONFIGURADO"
+      );
+
+
+      console.log(
+        "Supabase:",
+        process.env.SUPABASE_URL &&
+        process.env.SUPABASE_SERVICE_KEY
+          ? "OK"
+          : "NÃO CONFIGURADO"
+      );
+
+    }
+
+  );
+
+}
+
+
+iniciarServidor();
