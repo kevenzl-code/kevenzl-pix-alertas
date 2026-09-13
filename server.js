@@ -18,62 +18,35 @@ app.use(express.static("public"));
 // ======================================================
 
 function protegerPainel(req, res, next) {
-
-  const segredoServidor =
-    String(process.env.PANEL_SECRET || "");
-
-  const segredoRecebido =
-    String(req.get("x-panel-secret") || "");
-
+  const segredoServidor = String(process.env.PANEL_SECRET || "");
+  const segredoRecebido = String(req.get("x-panel-secret") || "");
 
   if (!segredoServidor) {
-
-    console.error(
-      "PANEL_SECRET não configurado."
-    );
+    console.error("PANEL_SECRET não configurado.");
 
     return res.status(500).json({
-      error:
-        "Segurança do painel não configurada."
+      error: "Segurança do painel não configurada."
     });
-
   }
-
 
   if (!segredoRecebido) {
-
     return res.status(401).json({
-      error:
-        "Acesso não autorizado."
+      error: "Acesso não autorizado."
     });
-
   }
 
-
-  const recebido =
-    Buffer.from(segredoRecebido);
-
-  const esperado =
-    Buffer.from(segredoServidor);
-
+  const recebido = Buffer.from(segredoRecebido);
+  const esperado = Buffer.from(segredoServidor);
 
   const valido =
     recebido.length === esperado.length &&
-    crypto.timingSafeEqual(
-      recebido,
-      esperado
-    );
-
+    crypto.timingSafeEqual(recebido, esperado);
 
   if (!valido) {
-
     return res.status(401).json({
-      error:
-        "Acesso não autorizado."
+      error: "Acesso não autorizado."
     });
-
   }
-
 
   next();
 }
@@ -84,182 +57,78 @@ function protegerPainel(req, res, next) {
 // ======================================================
 
 function validarWebhookMercadoPago(req) {
-
-  const secret =
-    String(
-      process.env.MP_WEBHOOK_SECRET || ""
-    );
-
+  const secret = String(process.env.MP_WEBHOOK_SECRET || "");
 
   if (!secret) {
-
-    console.error(
-      "MP_WEBHOOK_SECRET não configurado."
-    );
-
+    console.error("MP_WEBHOOK_SECRET não configurado.");
     return false;
-
   }
 
-
-  const xSignature =
-    String(
-      req.get("x-signature") || ""
-    );
-
-  const xRequestId =
-    String(
-      req.get("x-request-id") || ""
-    );
-
+  const xSignature = String(req.get("x-signature") || "");
+  const xRequestId = String(req.get("x-request-id") || "");
 
   if (!xSignature) {
-
-    console.warn(
-      "Webhook sem x-signature."
-    );
-
+    console.warn("Webhook sem x-signature.");
     return false;
-
   }
-
 
   const partes = {};
 
+  for (const parte of xSignature.split(",")) {
+    const [chave, ...resto] = parte.split("=");
 
-  for (
-    const parte of xSignature.split(",")
-  ) {
-
-    const [
-      chave,
-      ...resto
-    ] = parte.split("=");
-
-
-    if (
-      !chave ||
-      !resto.length
-    ) {
+    if (!chave || !resto.length) {
       continue;
     }
 
-
-    partes[chave.trim()] =
-      resto.join("=").trim();
-
+    partes[chave.trim()] = resto.join("=").trim();
   }
 
-
-  const ts =
-    partes.ts;
-
-  const v1 =
-    partes.v1;
-
+  const ts = partes.ts;
+  const v1 = partes.v1;
 
   if (!ts || !v1) {
-
-    console.warn(
-      "x-signature inválido."
-    );
-
+    console.warn("x-signature inválido.");
     return false;
-
   }
 
+  let dataId = req.query?.["data.id"];
 
-  let dataId =
-    req.query?.["data.id"];
-
-
-  if (
-    Array.isArray(dataId)
-  ) {
-
-    dataId =
-      dataId[0];
-
+  if (Array.isArray(dataId)) {
+    dataId = dataId[0];
   }
 
+  dataId = dataId ? String(dataId) : "";
 
-  dataId =
-    dataId
-      ? String(dataId)
-      : "";
-
-
-  let manifest =
-    "";
-
+  let manifest = "";
 
   if (dataId) {
-
-    manifest +=
-      `id:${dataId};`;
-
+    manifest += `id:${dataId};`;
   }
-
 
   if (xRequestId) {
-
-    manifest +=
-      `request-id:${xRequestId};`;
-
+    manifest += `request-id:${xRequestId};`;
   }
 
+  manifest += `ts:${ts};`;
 
-  manifest +=
-    `ts:${ts};`;
+  const assinaturaCalculada = crypto
+    .createHmac("sha256", secret)
+    .update(manifest)
+    .digest("hex");
 
-
-  const assinaturaCalculada =
-    crypto
-      .createHmac(
-        "sha256",
-        secret
-      )
-      .update(manifest)
-      .digest("hex");
-
-
-  if (
-    !/^[a-fA-F0-9]{64}$/.test(v1)
-  ) {
-
+  if (!/^[a-fA-F0-9]{64}$/.test(v1)) {
     return false;
-
   }
 
+  const calculada = Buffer.from(assinaturaCalculada, "hex");
+  const recebida = Buffer.from(v1, "hex");
 
-  const calculada =
-    Buffer.from(
-      assinaturaCalculada,
-      "hex"
-    );
-
-  const recebida =
-    Buffer.from(
-      v1,
-      "hex"
-    );
-
-
-  if (
-    calculada.length !==
-    recebida.length
-  ) {
-
+  if (calculada.length !== recebida.length) {
     return false;
-
   }
 
-
-  return crypto.timingSafeEqual(
-    calculada,
-    recebida
-  );
-
+  return crypto.timingSafeEqual(calculada, recebida);
 }
 
 
@@ -267,58 +136,31 @@ function validarWebhookMercadoPago(req) {
 // SUPABASE
 // ======================================================
 
-async function supabaseRequest(
-  endpoint,
-  options = {}
-) {
+async function supabaseRequest(endpoint, options = {}) {
+  const url = String(process.env.SUPABASE_URL || "")
+    .replace(/\/+$/, "");
 
-  const url =
-    String(
-      process.env.SUPABASE_URL || ""
-    ).replace(/\/+$/, "");
-
-  const key =
-    String(
-      process.env.SUPABASE_SERVICE_KEY || ""
-    );
-
+  const key = String(
+    process.env.SUPABASE_SERVICE_KEY || ""
+  );
 
   if (!url || !key) {
-
-    throw new Error(
-      "Supabase não configurado."
-    );
-
+    throw new Error("Supabase não configurado.");
   }
 
-
   return fetch(
-
     `${url}/rest/v1/${endpoint}`,
-
     {
-
       ...options,
 
       headers: {
-
-        apikey:
-          key,
-
-        Authorization:
-          `Bearer ${key}`,
-
-        "Content-Type":
-          "application/json",
-
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
         ...(options.headers || {})
-
       }
-
     }
-
   );
-
 }
 
 
@@ -326,14 +168,9 @@ async function supabaseRequest(
 // MEMÓRIA TEMPORÁRIA
 // ======================================================
 
-const donations =
-  new Map();
-
-const subscribers =
-  new Set();
-
-const audios =
-  new Map();
+const donations = new Map();
+const subscribers = new Set();
+const audios = new Map();
 
 
 // ======================================================
@@ -341,47 +178,21 @@ const audios =
 // ======================================================
 
 let alertConfig = {
-
-  volumeMeme:
-    1,
-
-  volumeVoz:
-    1,
-
-  memesAtivos:
-    true,
-
-  vozAtiva:
-    true,
-
-  duracao:
-    12,
-
-  flashAtivo:
-    true,
-
-  particulasAtivas:
-    true,
+  volumeMeme: 1,
+  volumeVoz: 1,
+  memesAtivos: true,
+  vozAtiva: true,
+  duracao: 12,
+  flashAtivo: true,
+  particulasAtivas: true,
 
   sons: {
-
-    basic:
-      "/sounds/basico.mp3",
-
-    medium:
-      "/sounds/medio.mp3",
-
-    epic:
-      "/sounds/epico.mp3",
-
-    special:
-      "/sounds/especial.mp3",
-
-    legendary:
-      "/sounds/lendario.mp3"
-
+    basic: "/sounds/basico.mp3",
+    medium: "/sounds/medio.mp3",
+    epic: "/sounds/epico.mp3",
+    special: "/sounds/especial.mp3",
+    legendary: "/sounds/lendario.mp3"
   }
-
 };
 
 
@@ -389,81 +200,47 @@ let alertConfig = {
 // SONS PERMITIDOS
 // ======================================================
 
-const allowedSounds =
-  new Set([
-
-    "/sounds/basico.mp3",
-    "/sounds/medio.mp3",
-    "/sounds/epico.mp3",
-    "/sounds/especial.mp3",
-    "/sounds/lendario.mp3"
-
-  ]);
+const allowedSounds = new Set([
+  "/sounds/basico.mp3",
+  "/sounds/medio.mp3",
+  "/sounds/epico.mp3",
+  "/sounds/especial.mp3",
+  "/sounds/lendario.mp3"
+]);
 
 
 // ======================================================
-// CONVERTER CONFIGURAÇÃO BANCO → SISTEMA
+// CONFIG DO BANCO → SISTEMA
 // ======================================================
 
 function configDoBanco(row) {
-
   return {
-
-    volumeMeme:
-      Number(row.volume_meme),
-
-    volumeVoz:
-      Number(row.volume_voz),
-
-    memesAtivos:
-      row.memes_ativos,
-
-    vozAtiva:
-      row.voz_ativa,
-
-    duracao:
-      Number(row.duracao),
-
-    flashAtivo:
-      row.flash_ativo,
-
-    particulasAtivas:
-      row.particulas_ativas,
+    volumeMeme: Number(row.volume_meme),
+    volumeVoz: Number(row.volume_voz),
+    memesAtivos: row.memes_ativos,
+    vozAtiva: row.voz_ativa,
+    duracao: Number(row.duracao),
+    flashAtivo: row.flash_ativo,
+    particulasAtivas: row.particulas_ativas,
 
     sons: {
-
-      basic:
-        row.som_basic,
-
-      medium:
-        row.som_medium,
-
-      epic:
-        row.som_epic,
-
-      special:
-        row.som_special,
-
-      legendary:
-        row.som_legendary
-
+      basic: row.som_basic,
+      medium: row.som_medium,
+      epic: row.som_epic,
+      special: row.som_special,
+      legendary: row.som_legendary
     }
-
   };
-
 }
 
 
 // ======================================================
-// CONVERTER CONFIGURAÇÃO SISTEMA → BANCO
+// CONFIG DO SISTEMA → BANCO
 // ======================================================
 
 function configParaBanco(config) {
-
   return {
-
-    id:
-      1,
+    id: 1,
 
     volume_meme:
       config.volumeMeme,
@@ -503,9 +280,7 @@ function configParaBanco(config) {
 
     updated_at:
       new Date().toISOString()
-
   };
-
 }
 
 
@@ -514,17 +289,13 @@ function configParaBanco(config) {
 // ======================================================
 
 async function carregarConfigBanco() {
-
   try {
-
     const response =
       await supabaseRequest(
         "alert_config?id=eq.1&select=*"
       );
 
-
     if (!response.ok) {
-
       console.error(
         "Erro ao carregar configuração do Supabase:",
         response.status,
@@ -532,55 +303,38 @@ async function carregarConfigBanco() {
       );
 
       return false;
-
     }
-
 
     const rows =
       await response.json();
-
 
     if (
       Array.isArray(rows) &&
       rows.length > 0
     ) {
-
       alertConfig =
-        configDoBanco(
-          rows[0]
-        );
-
+        configDoBanco(rows[0]);
 
       console.log(
         "Configurações carregadas do Supabase."
       );
 
-
       return true;
-
     }
-
 
     console.warn(
       "Registro alert_config id=1 não encontrado."
     );
 
-
     return false;
-
-
   } catch (error) {
-
     console.error(
       "Erro ao carregar configuração:",
       error
     );
 
-
     return false;
-
   }
-
 }
 
 
@@ -589,41 +343,27 @@ async function carregarConfigBanco() {
 // ======================================================
 
 async function salvarConfigBanco() {
-
   const response =
     await supabaseRequest(
-
       "alert_config?on_conflict=id",
-
       {
-
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
-
           Prefer:
             "resolution=merge-duplicates,return=representation"
-
         },
 
         body:
           JSON.stringify(
-            configParaBanco(
-              alertConfig
-            )
+            configParaBanco(alertConfig)
           )
-
       }
-
     );
 
-
   if (!response.ok) {
-
     const erro =
       await response.text();
-
 
     console.error(
       "Erro ao salvar configuração no Supabase:",
@@ -631,27 +371,21 @@ async function salvarConfigBanco() {
       erro
     );
 
-
     throw new Error(
       "Não foi possível salvar configurações no banco."
     );
-
   }
 
-
   return response.json();
-
 }
 
 
 // ======================================================
-// CONVERTER DOAÇÃO DO BANCO
+// DOAÇÃO DO BANCO → SISTEMA
 // ======================================================
 
 function donationDoBanco(row) {
-
   return {
-
     orderId:
       row.order_id,
 
@@ -684,9 +418,7 @@ function donationDoBanco(row) {
 
     paidAt:
       row.paid_at
-
   };
-
 }
 
 
@@ -694,18 +426,13 @@ function donationDoBanco(row) {
 // SALVAR DOAÇÃO NO SUPABASE
 // ======================================================
 
-async function salvarDonationBanco(
-  donation
-) {
-
+async function salvarDonationBanco(donation) {
   const body = {
-
     order_id:
       String(donation.orderId),
 
     external_reference:
-      donation.externalReference ||
-      null,
+      donation.externalReference || null,
 
     amount:
       Number(donation.amount),
@@ -726,9 +453,7 @@ async function salvarDonationBanco(
       donation.status || "pending",
 
     alert_sent:
-      Boolean(
-        donation.alertSent
-      ),
+      Boolean(donation.alertSent),
 
     created_at:
       donation.createdAt ||
@@ -739,51 +464,35 @@ async function salvarDonationBanco(
 
     updated_at:
       new Date().toISOString()
-
   };
-
 
   const response =
     await supabaseRequest(
-
       "donations?on_conflict=order_id",
-
       {
-
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
-
           Prefer:
             "resolution=merge-duplicates,return=representation"
-
         },
 
         body:
           JSON.stringify(body)
-
       }
-
     );
 
-
   if (!response.ok) {
-
     console.error(
       "Erro ao salvar doação:",
       response.status,
       await response.text()
     );
 
-
     return false;
-
   }
 
-
   return true;
-
 }
 
 
@@ -791,69 +500,49 @@ async function salvarDonationBanco(
 // BUSCAR DOAÇÃO NO SUPABASE
 // ======================================================
 
-async function buscarDonationBanco(
-  orderId
-) {
-
+async function buscarDonationBanco(orderId) {
   try {
-
     const id =
       encodeURIComponent(
         String(orderId)
       );
-
 
     const response =
       await supabaseRequest(
         `donations?order_id=eq.${id}&select=*`
       );
 
-
     if (!response.ok) {
-
       console.error(
         "Erro ao buscar doação:",
         response.status,
         await response.text()
       );
 
-
       return null;
-
     }
-
 
     const rows =
       await response.json();
-
 
     if (
       !Array.isArray(rows) ||
       rows.length === 0
     ) {
-
       return null;
-
     }
-
 
     return donationDoBanco(
       rows[0]
     );
-
-
   } catch (error) {
-
     console.error(
       "Erro ao buscar doação no Supabase:",
       error
     );
 
-
     return null;
-
   }
-
 }
 
 
@@ -865,82 +554,56 @@ async function atualizarDonationBanco(
   orderId,
   campos
 ) {
-
   try {
-
     const id =
       encodeURIComponent(
         String(orderId)
       );
 
-
     const response =
       await supabaseRequest(
-
         `donations?order_id=eq.${id}`,
-
         {
-
-          method:
-            "PATCH",
+          method: "PATCH",
 
           headers: {
-
-            Prefer:
-              "return=minimal"
-
+            Prefer: "return=minimal"
           },
 
           body:
             JSON.stringify({
-
               ...campos,
 
               updated_at:
-                new Date()
-                  .toISOString()
-
+                new Date().toISOString()
             })
-
         }
-
       );
 
-
     if (!response.ok) {
-
       console.error(
         "Erro ao atualizar doação:",
         response.status,
         await response.text()
       );
 
-
       return false;
-
     }
 
-
     return true;
-
-
   } catch (error) {
-
     console.error(
       "Erro ao atualizar doação:",
       error
     );
 
-
     return false;
-
   }
-
 }
 
 
 // ======================================================
-// VOZ PADRÃO ELEVENLABS
+// VOZ ELEVENLABS
 // ======================================================
 
 const DEFAULT_VOICE_ID =
@@ -952,7 +615,6 @@ const DEFAULT_VOICE_ID =
 // ======================================================
 
 function tierFor(amount) {
-
   if (amount < 10) {
     return "basic";
   }
@@ -970,7 +632,6 @@ function tierFor(amount) {
   }
 
   return "legendary";
-
 }
 
 
@@ -979,31 +640,24 @@ function tierFor(amount) {
 // ======================================================
 
 function cleanText(text) {
-
   if (!text) {
     return "";
   }
 
-
   return String(text)
-
     .replace(
       /(https?:\/\/[^\s]+)/gi,
       ""
     )
-
     .replace(
       /\s+/g,
       " "
     )
-
     .trim()
-
     .slice(
       0,
       250
     );
-
 }
 
 
@@ -1012,27 +666,16 @@ function cleanText(text) {
 // ======================================================
 
 function broadcast(payload) {
-
   const data =
     `data: ${JSON.stringify(payload)}\n\n`;
 
-
-  for (
-    const res of subscribers
-  ) {
-
+  for (const res of subscribers) {
     try {
-
       res.write(data);
-
     } catch (error) {
-
       subscribers.delete(res);
-
     }
-
   }
-
 }
 
 
@@ -1045,79 +688,55 @@ async function generateTTS(
   amount,
   message
 ) {
-
   if (
     !process.env.ELEVENLABS_API_KEY
   ) {
-
     console.log(
       "ElevenLabs não configurada."
     );
 
     return null;
-
   }
-
 
   const safeName =
     cleanText(name) ||
     "Alguém";
 
-
   const safeMessage =
     cleanText(message);
 
-
   const value =
     Number(amount);
-
 
   const money =
     value.toLocaleString(
       "pt-BR",
       {
-
-        style:
-          "currency",
-
-        currency:
-          "BRL"
-
+        style: "currency",
+        currency: "BRL"
       }
     );
-
 
   let text =
     `${safeName} enviou ${money}.`;
 
-
   if (safeMessage) {
-
-    text +=
-      ` ${safeMessage}`;
-
+    text += ` ${safeMessage}`;
   }
-
 
   const voiceId =
     process.env.ELEVENLABS_VOICE_ID ||
     DEFAULT_VOICE_ID;
 
-
   const response =
     await fetch(
-
       `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(
         voiceId
       )}?output_format=mp3_44100_128`,
-
       {
-
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
-
           "xi-api-key":
             process.env.ELEVENLABS_API_KEY,
 
@@ -1126,98 +745,121 @@ async function generateTTS(
 
           Accept:
             "audio/mpeg"
-
         },
 
         body:
           JSON.stringify({
-
             text,
 
             model_id:
               "eleven_multilingual_v2",
 
             voice_settings: {
-
-              stability:
-                0.5,
-
-              similarity_boost:
-                0.75,
-
-              style:
-                0.15,
-
-              use_speaker_boost:
-                true
-
+              stability: 0.5,
+              similarity_boost: 0.75,
+              style: 0.15,
+              use_speaker_boost: true
             }
-
           })
-
       }
-
     );
 
-
   if (!response.ok) {
-
     console.error(
       "ERRO ELEVENLABS:",
       response.status,
       await response.text()
     );
 
-
     return null;
-
   }
-
 
   const arrayBuffer =
     await response.arrayBuffer();
 
-
   const audioId =
     crypto.randomUUID();
 
-
   audios.set(
-
     audioId,
-
     {
-
       buffer:
-        Buffer.from(
-          arrayBuffer
-        ),
+        Buffer.from(arrayBuffer),
 
       createdAt:
         Date.now()
-
     }
-
   );
-
 
   setTimeout(
-
     () => {
-
-      audios.delete(
-        audioId
-      );
-
+      audios.delete(audioId);
     },
-
     120000
-
   );
 
-
   return audioId;
+}
 
+
+// ======================================================
+// MONTAR E ENVIAR ALERTA
+// ======================================================
+
+async function enviarAlertaDonation(
+  donation,
+  extra = {}
+) {
+  let audioId = null;
+
+  if (alertConfig.vozAtiva) {
+    try {
+      audioId =
+        await generateTTS(
+          donation.name,
+          donation.amount,
+          donation.message
+        );
+    } catch (error) {
+      console.error(
+        "Erro ao gerar voz:",
+        error
+      );
+    }
+  }
+
+  const payload = {
+    type: "donation",
+
+    orderId:
+      String(donation.orderId),
+
+    amount:
+      donation.amount,
+
+    name:
+      donation.name,
+
+    message:
+      donation.message,
+
+    tier:
+      donation.tier,
+
+    audioUrl:
+      audioId
+        ? `/api/audio/${audioId}`
+        : null,
+
+    config:
+      alertConfig,
+
+    ...extra
+  };
+
+  broadcast(payload);
+
+  return payload;
 }
 
 
@@ -1226,15 +868,10 @@ async function generateTTS(
 // ======================================================
 
 app.get(
-
   "/api/health",
-
   (req, res) => {
-
     res.json({
-
-      ok:
-        true,
+      ok: true,
 
       mercadopagoConfigured:
         Boolean(
@@ -1261,11 +898,8 @@ app.get(
           process.env.SUPABASE_URL &&
           process.env.SUPABASE_SERVICE_KEY
         )
-
     });
-
   }
-
 );
 
 
@@ -1274,86 +908,50 @@ app.get(
 // ======================================================
 
 app.get(
-
   "/api/db-test",
-
   protegerPainel,
-
   async (req, res) => {
-
     try {
-
       const response =
         await supabaseRequest(
           "alert_config?id=eq.1&select=*"
         );
 
-
       const texto =
         await response.text();
 
-
       if (!response.ok) {
-
         return res
           .status(500)
           .json({
-
-            ok:
-              false,
-
-            supabase:
-              "erro",
-
-            status:
-              response.status
-
+            ok: false,
+            supabase: "erro",
+            status: response.status
           });
-
       }
-
 
       const data =
         JSON.parse(texto);
 
-
       res.json({
-
-        ok:
-          true,
-
-        supabase:
-          "conectado",
+        ok: true,
+        supabase: "conectado",
 
         registros:
           Array.isArray(data)
             ? data.length
             : 0
-
       });
-
-
     } catch (error) {
-
       res
         .status(500)
         .json({
-
-          ok:
-            false,
-
-          supabase:
-            "erro",
-
-          error:
-            error.message
-
+          ok: false,
+          supabase: "erro",
+          error: error.message
         });
-
     }
-
   }
-
 );
 
 
@@ -1362,19 +960,11 @@ app.get(
 // ======================================================
 
 app.get(
-
   "/api/config",
-
   protegerPainel,
-
   (req, res) => {
-
-    res.json(
-      alertConfig
-    );
-
+    res.json(alertConfig);
   }
-
 );
 
 
@@ -1383,41 +973,25 @@ app.get(
 // ======================================================
 
 app.post(
-
   "/api/config",
-
   protegerPainel,
-
   async (req, res) => {
-
     try {
-
       const body =
         req.body || {};
 
-
       const volumeMeme =
-        Number(
-          body.volumeMeme
-        );
+        Number(body.volumeMeme);
 
       const volumeVoz =
-        Number(
-          body.volumeVoz
-        );
+        Number(body.volumeVoz);
 
       const duracao =
-        Number(
-          body.duracao
-        );
-
+        Number(body.duracao);
 
       if (
-        Number.isFinite(
-          volumeMeme
-        )
+        Number.isFinite(volumeMeme)
       ) {
-
         alertConfig.volumeMeme =
           Math.min(
             1,
@@ -1426,16 +1000,11 @@ app.post(
               volumeMeme
             )
           );
-
       }
 
-
       if (
-        Number.isFinite(
-          volumeVoz
-        )
+        Number.isFinite(volumeVoz)
       ) {
-
         alertConfig.volumeVoz =
           Math.min(
             1,
@@ -1444,16 +1013,11 @@ app.post(
               volumeVoz
             )
           );
-
       }
 
-
       if (
-        Number.isFinite(
-          duracao
-        )
+        Number.isFinite(duracao)
       ) {
-
         alertConfig.duracao =
           Math.min(
             60,
@@ -1462,60 +1026,44 @@ app.post(
               duracao
             )
           );
-
       }
-
 
       if (
         typeof body.memesAtivos ===
         "boolean"
       ) {
-
         alertConfig.memesAtivos =
           body.memesAtivos;
-
       }
-
 
       if (
         typeof body.vozAtiva ===
         "boolean"
       ) {
-
         alertConfig.vozAtiva =
           body.vozAtiva;
-
       }
-
 
       if (
         typeof body.flashAtivo ===
         "boolean"
       ) {
-
         alertConfig.flashAtivo =
           body.flashAtivo;
-
       }
-
 
       if (
         typeof body.particulasAtivas ===
         "boolean"
       ) {
-
         alertConfig.particulasAtivas =
           body.particulasAtivas;
-
       }
-
 
       if (
         body.sons &&
-        typeof body.sons ===
-          "object"
+        typeof body.sons === "object"
       ) {
-
         const tiers = [
           "basic",
           "medium",
@@ -1524,85 +1072,50 @@ app.post(
           "legendary"
         ];
 
-
-        for (
-          const tier of tiers
-        ) {
-
+        for (const tier of tiers) {
           const som =
             body.sons[tier];
 
-
           if (
-            typeof som ===
-              "string" &&
+            typeof som === "string" &&
             allowedSounds.has(som)
           ) {
-
             alertConfig.sons[tier] =
               som;
-
           }
-
         }
-
       }
-
 
       await salvarConfigBanco();
 
-
       broadcast({
-
-        type:
-          "config",
-
-        config:
-          alertConfig
-
+        type: "config",
+        config: alertConfig
       });
-
 
       res.json({
-
-        ok:
-          true,
-
-        saved:
-          "supabase",
-
-        config:
-          alertConfig
-
+        ok: true,
+        saved: "supabase",
+        config: alertConfig
       });
-
 
       console.log(
         "Configurações salvas no Supabase."
       );
-
-
     } catch (error) {
-
       console.error(
         "Erro ao salvar configurações:",
         error
       );
 
-
       res
         .status(500)
         .json({
-
           error:
             "Erro ao salvar configurações no banco."
-
         });
-
     }
-
   }
-
 );
 
 
@@ -1611,100 +1124,38 @@ app.post(
 // ======================================================
 
 app.post(
-
   "/api/test-alert",
-
   protegerPainel,
-
   async (req, res) => {
-
     try {
-
       const requestedTier =
         String(
           req.body?.tier ||
           "basic"
         );
 
-
       const testValues = {
-
-        basic:
-          5,
-
-        medium:
-          15,
-
-        epic:
-          30,
-
-        special:
-          50,
-
-        legendary:
-          100
-
+        basic: 5,
+        medium: 15,
+        epic: 30,
+        special: 50,
+        legendary: 100
       };
 
-
       const tier =
-
         Object.prototype
           .hasOwnProperty
           .call(
             testValues,
             requestedTier
           )
-
           ? requestedTier
           : "basic";
-
 
       const amount =
         testValues[tier];
 
-
-      let audioId =
-        null;
-
-
-      if (
-        alertConfig.vozAtiva
-      ) {
-
-        try {
-
-          audioId =
-            await generateTTS(
-
-              "KevenZL",
-
-              amount,
-
-              "Este é um teste do alerta Pix."
-
-            );
-
-        } catch (error) {
-
-          console.error(
-            "Erro ao gerar voz de teste:",
-            error
-          );
-
-        }
-
-      }
-
-
-      const payload = {
-
-        type:
-          "donation",
-
-        test:
-          true,
-
+      const donation = {
         orderId:
           `teste_${crypto.randomUUID()}`,
 
@@ -1716,56 +1167,35 @@ app.post(
         message:
           "Este é um teste do alerta Pix.",
 
-        tier,
-
-        audioUrl:
-          audioId
-            ? `/api/audio/${audioId}`
-            : null,
-
-        config:
-          alertConfig
-
+        tier
       };
 
-
-      broadcast(
-        payload
-      );
-
+      const payload =
+        await enviarAlertaDonation(
+          donation,
+          {
+            test: true
+          }
+        );
 
       res.json({
-
-        ok:
-          true,
-
-        alert:
-          payload
-
+        ok: true,
+        alert: payload
       });
-
-
     } catch (error) {
-
       console.error(
         "Erro no teste:",
         error
       );
 
-
       res
         .status(500)
         .json({
-
           error:
             "Erro ao enviar alerta de teste."
-
         });
-
     }
-
   }
-
 );
 
 
@@ -1774,13 +1204,9 @@ app.post(
 // ======================================================
 
 app.post(
-
   "/api/create-pix",
-
   async (req, res) => {
-
     try {
-
       const {
         amount,
         name,
@@ -1788,28 +1214,21 @@ app.post(
         message = ""
       } = req.body;
 
-
       const value =
         Number(amount);
-
 
       if (
         !Number.isFinite(value) ||
         value < 1 ||
         value > 10000
       ) {
-
         return res
           .status(400)
           .json({
-
             error:
               "Valor inválido. Use entre R$ 1 e R$ 10.000."
-
           });
-
       }
-
 
       if (
         !name ||
@@ -1817,67 +1236,48 @@ app.post(
           .trim()
           .length < 2
       ) {
-
         return res
           .status(400)
           .json({
-
             error:
               "Informe seu nome."
-
           });
-
       }
-
 
       if (
         !email ||
         !String(email)
           .includes("@")
       ) {
-
         return res
           .status(400)
           .json({
-
             error:
               "Informe um e-mail válido."
-
           });
-
       }
-
 
       if (
         !process.env.MP_ACCESS_TOKEN
       ) {
-
         return res
           .status(500)
           .json({
-
             error:
               "Mercado Pago não configurado."
-
           });
-
       }
-
 
       const externalReference =
         `kevenzl_${crypto.randomUUID()}`;
 
-
       const idempotencyKey =
         crypto.randomUUID();
 
-
       const donation = {
-
         externalReference,
 
-        amount:
-          value,
+        amount: value,
 
         name:
           String(name).trim(),
@@ -1902,14 +1302,10 @@ app.post(
 
         paidAt:
           null
-
       };
 
-
       const orderBody = {
-
-        type:
-          "online",
+        type: "online",
 
         total_amount:
           value.toFixed(2),
@@ -1921,55 +1317,35 @@ app.post(
           "automatic",
 
         payer: {
-
           email:
             String(email).trim(),
 
           first_name:
             "APRO"
-
         },
 
         transactions: {
-
           payments: [
-
             {
-
               amount:
                 value.toFixed(2),
 
               payment_method: {
-
-                id:
-                  "pix",
-
-                type:
-                  "bank_transfer"
-
+                id: "pix",
+                type: "bank_transfer"
               }
-
             }
-
           ]
-
         }
-
       };
-
 
       const response =
         await fetch(
-
           "https://api.mercadopago.com/v1/orders",
-
           {
-
-            method:
-              "POST",
+            method: "POST",
 
             headers: {
-
               Authorization:
                 `Bearer ${process.env.MP_ACCESS_TOKEN}`,
 
@@ -1981,69 +1357,46 @@ app.post(
 
               "X-Idempotency-Key":
                 idempotencyKey
-
             },
 
             body:
-              JSON.stringify(
-                orderBody
-              )
-
+              JSON.stringify(orderBody)
           }
-
         );
-
 
       const rawText =
         await response.text();
 
-
       let data;
 
-
       try {
-
         data =
-          JSON.parse(
-            rawText
-          );
-
+          JSON.parse(rawText);
       } catch {
-
         data = {
-          raw:
-            rawText
+          raw: rawText
         };
-
       }
 
-
       if (!response.ok) {
-
         console.error(
           "Mercado Pago:",
           response.status,
           data
         );
 
-
         return res
           .status(
-            response.status ||
-            502
+            response.status || 502
           )
           .json({
-
             error:
               "Mercado Pago recusou a criação do Pix.",
 
             details:
               data
-
           });
-
       }
-
 
       const payment =
         data
@@ -2051,47 +1404,36 @@ app.post(
           ?.payments
           ?.[0];
 
-
       donation.orderId =
         String(data.id);
-
 
       donation.status =
         data.status ||
         payment?.status ||
         "pending";
 
-
       donations.set(
         donation.orderId,
         donation
       );
-
 
       const salvoNoBanco =
         await salvarDonationBanco(
           donation
         );
 
-
       if (salvoNoBanco) {
-
         console.log(
           "Doação salva no Supabase:",
           donation.orderId
         );
-
       } else {
-
         console.warn(
           "Pix criado, mas houve erro ao salvar no Supabase."
         );
-
       }
 
-
       res.json({
-
         orderId:
           data.id,
 
@@ -2121,31 +1463,21 @@ app.post(
           payment
             ?.qr_code_base64 ||
           null
-
       });
-
-
     } catch (error) {
-
       console.error(
         "Erro em /api/create-pix:",
         error
       );
 
-
       res
         .status(500)
         .json({
-
           error:
             "Erro interno ao criar o Pix."
-
         });
-
     }
-
   }
-
 );
 
 
@@ -2154,94 +1486,60 @@ app.post(
 // ======================================================
 
 app.post(
-
   "/api/webhook/mercadopago",
-
   async (req, res) => {
-
     try {
-
       if (
-        !validarWebhookMercadoPago(
-          req
-        )
+        !validarWebhookMercadoPago(req)
       ) {
-
         console.warn(
           "Webhook rejeitado: assinatura inválida."
         );
 
-
-        return res
-          .sendStatus(401);
-
+        return res.sendStatus(401);
       }
-
 
       const orderId =
         req.query?.["data.id"] ||
-        req.body
-          ?.data
-          ?.id;
-
+        req.body?.data?.id;
 
       if (
         !orderId ||
         !process.env.MP_ACCESS_TOKEN
       ) {
-
-        return res
-          .sendStatus(200);
-
+        return res.sendStatus(200);
       }
-
 
       res.sendStatus(200);
 
-
       const orderResponse =
         await fetch(
-
           `https://api.mercadopago.com/v1/orders/${encodeURIComponent(
             String(orderId)
           )}`,
-
           {
-
             headers: {
-
               Authorization:
                 `Bearer ${process.env.MP_ACCESS_TOKEN}`,
 
               Accept:
                 "application/json"
-
             }
-
           }
-
         );
 
-
-      if (
-        !orderResponse.ok
-      ) {
-
+      if (!orderResponse.ok) {
         console.error(
           "Erro consultando ordem:",
           orderResponse.status,
           await orderResponse.text()
         );
 
-
         return;
-
       }
-
 
       const order =
         await orderResponse.json();
-
 
       const payment =
         order
@@ -2249,114 +1547,78 @@ app.post(
           ?.payments
           ?.[0];
 
-
       let donation =
         donations.get(
           String(orderId)
         );
 
-
       if (!donation) {
-
         console.log(
           "Buscando doação no Supabase:",
           orderId
         );
-
 
         donation =
           await buscarDonationBanco(
             orderId
           );
 
-
         if (donation) {
-
           donations.set(
             String(orderId),
             donation
           );
-
         }
-
       }
 
-
       if (!donation) {
-
         console.log(
           "Doação não encontrada:",
           orderId
         );
 
-
         return;
-
       }
-
 
       donation.status =
         order.status ||
         payment?.status ||
         "pending";
 
-
       const approved =
-
-        order.status ===
-          "processed" ||
-
-        payment?.status ===
-          "processed" ||
-
-        payment?.status ===
-          "approved" ||
-
-        payment?.status_detail ===
-          "accredited";
-
+        order.status === "processed" ||
+        payment?.status === "processed" ||
+        payment?.status === "approved" ||
+        payment?.status_detail === "accredited";
 
       await atualizarDonationBanco(
-
         orderId,
-
         {
-
           status:
             donation.status,
 
           ...(approved
             ? {
-
                 paid_at:
                   donation.paidAt ||
                   new Date().toISOString()
-
               }
             : {})
-
         }
-
       );
-
 
       if (
         approved &&
         !donation.alertSent
       ) {
-
         donation.paidAt =
           donation.paidAt ||
           new Date().toISOString();
 
-
         const marcou =
           await atualizarDonationBanco(
-
             orderId,
-
             {
-
               status:
                 donation.status,
 
@@ -2365,119 +1627,39 @@ app.post(
 
               paid_at:
                 donation.paidAt
-
             }
-
           );
 
-
         if (!marcou) {
-
           console.error(
             "Não foi possível marcar alerta no banco."
           );
 
-
           return;
-
         }
-
 
         donation.alertSent =
           true;
 
-
-        let audioId =
-          null;
-
-
-        if (
-          alertConfig.vozAtiva
-        ) {
-
-          try {
-
-            audioId =
-              await generateTTS(
-
-                donation.name,
-
-                donation.amount,
-
-                donation.message
-
-              );
-
-          } catch (error) {
-
-            console.error(
-              "Erro ao gerar voz:",
-              error
-            );
-
-          }
-
-        }
-
-
-        broadcast({
-
-          type:
-            "donation",
-
-          orderId:
-            String(orderId),
-
-          amount:
-            donation.amount,
-
-          name:
-            donation.name,
-
-          message:
-            donation.message,
-
-          tier:
-            donation.tier,
-
-          audioUrl:
-            audioId
-              ? `/api/audio/${audioId}`
-              : null,
-
-          config:
-            alertConfig
-
-        });
-
+        await enviarAlertaDonation(
+          donation
+        );
 
         console.log(
           "Alerta enviado e registrado no Supabase."
         );
-
       }
-
-
     } catch (error) {
-
       console.error(
         "Webhook error:",
         error
       );
 
-
-      if (
-        !res.headersSent
-      ) {
-
+      if (!res.headersSent) {
         res.sendStatus(500);
-
       }
-
     }
-
   }
-
 );
 
 
@@ -2486,48 +1668,33 @@ app.post(
 // ======================================================
 
 app.get(
-
   "/api/audio/:audioId",
-
   (req, res) => {
-
     const audio =
       audios.get(
-        String(
-          req.params.audioId
-        )
+        String(req.params.audioId)
       );
 
-
     if (!audio) {
-
       return res
         .status(404)
         .send(
           "Áudio não encontrado."
         );
-
     }
-
 
     res.setHeader(
       "Content-Type",
       "audio/mpeg"
     );
 
-
     res.setHeader(
       "Cache-Control",
       "no-store"
     );
 
-
-    res.send(
-      audio.buffer
-    );
-
+    res.send(audio.buffer);
   }
-
 );
 
 
@@ -2536,27 +1703,18 @@ app.get(
 // ======================================================
 
 app.get(
-
   "/api/donations",
-
   protegerPainel,
-
   async (req, res) => {
-
     try {
-
       let limit =
-        Number(req.query.limit || 50);
+        Number(
+          req.query.limit || 50
+        );
 
-
-      if (
-        !Number.isFinite(limit)
-      ) {
-
+      if (!Number.isFinite(limit)) {
         limit = 50;
-
       }
-
 
       limit =
         Math.min(
@@ -2567,20 +1725,14 @@ app.get(
           )
         );
 
-
       const response =
         await supabaseRequest(
-
           `donations?select=id,order_id,amount,name,email,message,tier,status,alert_sent,created_at,paid_at&order=created_at.desc&limit=${limit}`
-
         );
 
-
       if (!response.ok) {
-
         const erro =
           await response.text();
-
 
         console.error(
           "Erro ao buscar histórico:",
@@ -2588,82 +1740,52 @@ app.get(
           erro
         );
 
-
         return res
           .status(500)
           .json({
-
             error:
               "Não foi possível carregar o histórico."
-
           });
-
       }
-
 
       const rows =
         await response.json();
 
-
       const totalResponse =
         await supabaseRequest(
-
           "donations?select=amount,status,paid_at"
-
         );
-
 
       let totalRecebido = 0;
       let totalPagas = 0;
 
-
-      if (
-        totalResponse.ok
-      ) {
-
+      if (totalResponse.ok) {
         const totalRows =
           await totalResponse.json();
-
 
         for (
           const donation of totalRows
         ) {
-
           const paga =
-
             donation.status === "processed" ||
-
             donation.status === "approved" ||
-
-            Boolean(
-              donation.paid_at
-            );
-
+            Boolean(donation.paid_at);
 
           if (paga) {
-
             totalRecebido +=
               Number(
                 donation.amount || 0
               );
 
-
             totalPagas++;
-
           }
-
         }
-
       }
 
-
       res.json({
-
-        ok:
-          true,
+        ok: true,
 
         resumo: {
-
           totalRecebido:
             Number(
               totalRecebido.toFixed(2)
@@ -2675,38 +1797,114 @@ app.get(
             Array.isArray(rows)
               ? rows.length
               : 0
-
         },
 
         donations:
           Array.isArray(rows)
             ? rows
             : []
-
       });
-
-
     } catch (error) {
-
       console.error(
         "Erro em /api/donations:",
         error
       );
 
+      res
+        .status(500)
+        .json({
+          error:
+            "Erro interno ao carregar histórico."
+        });
+    }
+  }
+);
+
+
+// ======================================================
+// REPETIR ALERTA DE UMA DOAÇÃO
+// ======================================================
+
+app.post(
+  "/api/donations/:orderId/repeat",
+  protegerPainel,
+  async (req, res) => {
+    try {
+      const orderId =
+        String(
+          req.params.orderId || ""
+        );
+
+      if (!orderId) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "ID da doação inválido."
+          });
+      }
+
+      const donation =
+        await buscarDonationBanco(
+          orderId
+        );
+
+      if (!donation) {
+        return res
+          .status(404)
+          .json({
+            error:
+              "Doação não encontrada."
+          });
+      }
+
+      const paga =
+        donation.status === "processed" ||
+        donation.status === "approved" ||
+        Boolean(donation.paidAt);
+
+      if (!paga) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Essa doação ainda não está paga."
+          });
+      }
+
+      const payload =
+        await enviarAlertaDonation(
+          donation,
+          {
+            replay: true
+          }
+        );
+
+      console.log(
+        "Alerta repetido manualmente:",
+        orderId
+      );
+
+      res.json({
+        ok: true,
+        message:
+          "Alerta repetido com sucesso.",
+        alert: payload
+      });
+    } catch (error) {
+      console.error(
+        "Erro ao repetir alerta:",
+        error
+      );
 
       res
         .status(500)
         .json({
-
           error:
-            "Erro interno ao carregar histórico."
-
+            "Não foi possível repetir o alerta."
         });
-
     }
-
   }
-
 );
 
 
@@ -2715,49 +1913,31 @@ app.get(
 // ======================================================
 
 app.get(
-
   "/api/status/:orderId",
-
   async (req, res) => {
-
     const orderId =
-      String(
-        req.params.orderId
-      );
-
+      String(req.params.orderId);
 
     let donation =
-      donations.get(
-        orderId
-      );
-
+      donations.get(orderId);
 
     if (!donation) {
-
       donation =
         await buscarDonationBanco(
           orderId
         );
-
     }
 
-
     if (!donation) {
-
       return res
         .status(404)
         .json({
-
           error:
             "Doação não encontrada."
-
         });
-
     }
 
-
     res.json({
-
       orderId:
         donation.orderId,
 
@@ -2775,11 +1955,8 @@ app.get(
 
       tier:
         donation.tier
-
     });
-
   }
-
 );
 
 
@@ -2788,11 +1965,8 @@ app.get(
 // ======================================================
 
 app.get(
-
   "/api/overlay/stream",
-
   (req, res) => {
-
     res.setHeader(
       "Content-Type",
       "text/event-stream"
@@ -2808,46 +1982,24 @@ app.get(
       "keep-alive"
     );
 
-
     res.flushHeaders?.();
 
-
-    subscribers.add(
-      res
-    );
-
+    subscribers.add(res);
 
     res.write(
-
       `data: ${JSON.stringify({
-
-        type:
-          "connected",
-
-        config:
-          alertConfig
-
+        type: "connected",
+        config: alertConfig
       })}\n\n`
-
     );
-
 
     req.on(
-
       "close",
-
       () => {
-
-        subscribers.delete(
-          res
-        );
-
+        subscribers.delete(res);
       }
-
     );
-
   }
-
 );
 
 
@@ -2856,23 +2008,16 @@ app.get(
 // ======================================================
 
 app.get(
-
   "/overlay",
-
   (req, res) => {
-
     res.sendFile(
-
       path.join(
         __dirname,
         "public",
         "overlay.html"
       )
-
     );
-
   }
-
 );
 
 
@@ -2881,23 +2026,16 @@ app.get(
 // ======================================================
 
 app.get(
-
   "/painel",
-
   (req, res) => {
-
     res.sendFile(
-
       path.join(
         __dirname,
         "public",
         "painel.html"
       )
-
     );
-
   }
-
 );
 
 
@@ -2906,40 +2044,28 @@ app.get(
 // ======================================================
 
 async function iniciarServidor() {
-
   console.log(
     "Iniciando KevenZL Pix Alertas..."
   );
-
 
   if (
     process.env.SUPABASE_URL &&
     process.env.SUPABASE_SERVICE_KEY
   ) {
-
     await carregarConfigBanco();
-
   } else {
-
     console.warn(
       "Supabase não configurado."
     );
-
   }
 
-
   app.listen(
-
     PORT,
-
     HOST,
-
     () => {
-
       console.log(
         `KevenZL Pix Alertas na porta ${PORT}`
       );
-
 
       console.log(
         "Mercado Pago:",
@@ -2948,14 +2074,12 @@ async function iniciarServidor() {
           : "NÃO CONFIGURADO"
       );
 
-
       console.log(
         "Webhook:",
         process.env.MP_WEBHOOK_SECRET
           ? "PROTEGIDO"
           : "NÃO CONFIGURADO"
       );
-
 
       console.log(
         "ElevenLabs:",
@@ -2964,14 +2088,12 @@ async function iniciarServidor() {
           : "NÃO CONFIGURADO"
       );
 
-
       console.log(
         "Painel:",
         process.env.PANEL_SECRET
           ? "PROTEGIDO"
           : "NÃO CONFIGURADO"
       );
-
 
       console.log(
         "Supabase:",
@@ -2980,12 +2102,8 @@ async function iniciarServidor() {
           ? "OK"
           : "NÃO CONFIGURADO"
       );
-
     }
-
   );
-
 }
-
 
 iniciarServidor();
