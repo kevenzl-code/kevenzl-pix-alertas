@@ -1221,6 +1221,8 @@ app.post(
       };
 
 
+      // IMPORTANTE:
+      // Em produção não usamos first_name: "APRO".
       const orderBody = {
         type: "online",
 
@@ -1235,10 +1237,7 @@ app.post(
 
         payer: {
           email:
-            String(email).trim(),
-
-          first_name:
-            "APRO"
+            String(email).trim()
         },
 
         transactions: {
@@ -1694,9 +1693,6 @@ app.get(
           }
 
 
-          /*
-            Testes NÃO entram no total recebido.
-          */
           if (
             paga &&
             !donation.is_test
@@ -1863,11 +1859,6 @@ app.delete(
       }
 
 
-      /*
-        PROTEÇÃO PRINCIPAL:
-        se não estiver marcada como teste,
-        o servidor se recusa a apagar.
-      */
       if (!donation.isTest) {
         return res
           .status(403)
@@ -1989,10 +1980,6 @@ app.post(
       }
 
 
-      /*
-        O filtro is_test=eq.true garante que
-        nenhuma doação real seja apagada.
-      */
       const response =
         await supabaseRequest(
           "donations?is_test=eq.true",
