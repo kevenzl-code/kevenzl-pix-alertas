@@ -22,13 +22,11 @@ function protegerPainel(req, res, next) {
   const segredoServidor =
     process.env.PANEL_SECRET;
 
-
   if (!segredoServidor) {
 
     console.error(
       "PANEL_SECRET não configurado no servidor."
     );
-
 
     return res.status(500).json({
       error:
@@ -37,15 +35,12 @@ function protegerPainel(req, res, next) {
 
   }
 
-
   const segredoRecebido =
-    req.headers["x-panel-secret"];
+    String(
+      req.get("x-panel-secret") || ""
+    );
 
-
-  if (
-    !segredoRecebido ||
-    segredoRecebido !== segredoServidor
-  ) {
+  if (!segredoRecebido) {
 
     return res.status(401).json({
       error:
@@ -54,8 +49,221 @@ function protegerPainel(req, res, next) {
 
   }
 
+  const recebido =
+    Buffer.from(segredoRecebido);
+
+  const esperado =
+    Buffer.from(segredoServidor);
+
+  const valido =
+    recebido.length === esperado.length &&
+    crypto.timingSafeEqual(
+      recebido,
+      esperado
+    );
+
+  if (!valido) {
+
+    return res.status(401).json({
+      error:
+        "Acesso não autorizado."
+    });
+
+  }
 
   next();
+}
+
+
+// ======================================================
+// VALIDAR WEBHOOK DO MERCADO PAGO
+// ======================================================
+
+function validarWebhookMercadoPago(req) {
+
+  const secret =
+    process.env.MP_WEBHOOK_SECRET;
+
+  if (!secret) {
+
+    console.error(
+      "MP_WEBHOOK_SECRET não configurado."
+    );
+
+    return false;
+  }
+
+
+  const xSignature =
+    String(
+      req.get("x-signature") || ""
+    );
+
+  const xRequestId =
+    String(
+      req.get("x-request-id") || ""
+    );
+
+
+  if (!xSignature) {
+
+    console.warn(
+      "Webhook sem x-signature."
+    );
+
+    return false;
+  }
+
+
+  const partes = {};
+
+  for (
+    const parte of xSignature.split(",")
+  ) {
+
+    const [
+      chave,
+      ...resto
+    ] = parte.split("=");
+
+    if (!chave || !resto.length) {
+      continue;
+    }
+
+    partes[
+      chave.trim()
+    ] =
+      resto.join("=")
+        .trim();
+
+  }
+
+
+  const ts =
+    partes.ts;
+
+  const v1 =
+    partes.v1;
+
+
+  if (!ts || !v1) {
+
+    console.warn(
+      "x-signature inválido."
+    );
+
+    return false;
+  }
+
+
+  let dataId =
+    req.query?.["data.id"];
+
+
+  if (
+    Array.isArray(dataId)
+  ) {
+
+    dataId =
+      dataId[0];
+
+  }
+
+
+  dataId =
+    dataId
+      ? String(dataId)
+      : "";
+
+
+  // Manifesto oficial do Mercado Pago:
+  // id:<data.id>;request-id:<x-request-id>;ts:<ts>;
+  //
+  // Se algum campo não existir,
+  // ele é omitido.
+
+  let manifest = "";
+
+
+  if (dataId) {
+
+    manifest +=
+      `id:${dataId};`;
+
+  }
+
+
+  if (xRequestId) {
+
+    manifest +=
+      `request-id:${xRequestId};`;
+
+  }
+
+
+  if (ts) {
+
+    manifest +=
+      `ts:${ts};`;
+
+  }
+
+
+  const assinaturaCalculada =
+    crypto
+      .createHmac(
+        "sha256",
+        secret
+      )
+      .update(manifest)
+      .digest("hex");
+
+
+  // Uma assinatura SHA-256 hexadecimal
+  // deve possuir 64 caracteres.
+
+  if (
+    !/^[a-fA-F0-9]{64}$/.test(v1)
+  ) {
+
+    console.warn(
+      "Assinatura Mercado Pago em formato inválido."
+    );
+
+    return false;
+
+  }
+
+
+  const calculadaBuffer =
+    Buffer.from(
+      assinaturaCalculada,
+      "hex"
+    );
+
+
+  const recebidaBuffer =
+    Buffer.from(
+      v1,
+      "hex"
+    );
+
+
+  if (
+    calculadaBuffer.length !==
+    recebidaBuffer.length
+  ) {
+
+    return false;
+
+  }
+
+
+  return crypto.timingSafeEqual(
+    calculadaBuffer,
+    recebidaBuffer
+  );
+
 }
 
 
@@ -63,11 +271,14 @@ function protegerPainel(req, res, next) {
 // MEMÓRIA TEMPORÁRIA
 // ======================================================
 
-const donations = new Map();
+const donations =
+  new Map();
 
-const subscribers = new Set();
+const subscribers =
+  new Set();
 
-const audios = new Map();
+const audios =
+  new Map();
 
 
 // ======================================================
@@ -76,19 +287,26 @@ const audios = new Map();
 
 let alertConfig = {
 
-  volumeMeme: 1,
+  volumeMeme:
+    1,
 
-  volumeVoz: 1,
+  volumeVoz:
+    1,
 
-  memesAtivos: true,
+  memesAtivos:
+    true,
 
-  vozAtiva: true,
+  vozAtiva:
+    true,
 
-  duracao: 12,
+  duracao:
+    12,
 
-  flashAtivo: true,
+  flashAtivo:
+    true,
 
-  particulasAtivas: true,
+  particulasAtivas:
+    true,
 
   sons: {
 
@@ -113,6 +331,20 @@ let alertConfig = {
 
 
 // ======================================================
+// SONS PERMITIDOS
+// ======================================================
+
+const allowedSounds =
+  new Set([
+    "/sounds/basico.mp3",
+    "/sounds/medio.mp3",
+    "/sounds/epico.mp3",
+    "/sounds/especial.mp3",
+    "/sounds/lendario.mp3"
+  ]);
+
+
+// ======================================================
 // VOZ PADRÃO ELEVENLABS
 // ======================================================
 
@@ -127,35 +359,22 @@ const DEFAULT_VOICE_ID =
 function tierFor(amount) {
 
   if (amount < 10) {
-
     return "basic";
-
   }
-
 
   if (amount < 25) {
-
     return "medium";
-
   }
-
 
   if (amount < 50) {
-
     return "epic";
-
   }
-
 
   if (amount < 100) {
-
     return "special";
-
   }
 
-
   return "legendary";
-
 }
 
 
@@ -166,26 +385,19 @@ function tierFor(amount) {
 function cleanText(text) {
 
   if (!text) {
-
     return "";
-
   }
 
-
   return String(text)
-
     .replace(
       /(https?:\/\/[^\s]+)/gi,
       ""
     )
-
     .replace(
       /\s+/g,
       " "
     )
-
     .trim()
-
     .slice(
       0,
       250
@@ -203,8 +415,9 @@ function broadcast(payload) {
   const data =
     `data: ${JSON.stringify(payload)}\n\n`;
 
-
-  for (const res of subscribers) {
+  for (
+    const res of subscribers
+  ) {
 
     try {
 
@@ -231,7 +444,9 @@ async function generateTTS(
   message
 ) {
 
-  if (!process.env.ELEVENLABS_API_KEY) {
+  if (
+    !process.env.ELEVENLABS_API_KEY
+  ) {
 
     console.log(
       "ElevenLabs não configurada."
@@ -259,13 +474,11 @@ async function generateTTS(
     value.toLocaleString(
       "pt-BR",
       {
-
         style:
           "currency",
 
         currency:
           "BRL"
-
       }
     );
 
@@ -304,7 +517,6 @@ async function generateTTS(
         method:
           "POST",
 
-
         headers: {
 
           "xi-api-key":
@@ -317,7 +529,6 @@ async function generateTTS(
             "audio/mpeg"
 
         },
-
 
         body:
           JSON.stringify({
@@ -357,13 +568,9 @@ async function generateTTS(
 
 
     console.error(
-
       "ERRO ELEVENLABS:",
-
       response.status,
-
       errorText
-
     );
 
 
@@ -391,12 +598,10 @@ async function generateTTS(
     audioId,
 
     {
-
       buffer,
 
       createdAt:
         Date.now()
-
     }
 
   );
@@ -442,23 +647,22 @@ app.get(
       ok:
         true,
 
-
       mercadopagoConfigured:
-
         Boolean(
           process.env.MP_ACCESS_TOKEN
         ),
 
+      webhookProtegido:
+        Boolean(
+          process.env.MP_WEBHOOK_SECRET
+        ),
 
       elevenlabsConfigured:
-
         Boolean(
           process.env.ELEVENLABS_API_KEY
         ),
 
-
       painelProtegido:
-
         Boolean(
           process.env.PANEL_SECRET
         )
@@ -634,29 +838,30 @@ app.post(
       ) {
 
         const tiers = [
-
           "basic",
-
           "medium",
-
           "epic",
-
           "special",
-
           "legendary"
-
         ];
 
 
-        for (const tier of tiers) {
+        for (
+          const tier of tiers
+        ) {
+
+          const som =
+            body.sons[tier];
+
 
           if (
-            typeof body.sons[tier] ===
-            "string"
+            typeof som ===
+              "string" &&
+            allowedSounds.has(som)
           ) {
 
             alertConfig.sons[tier] =
-              body.sons[tier];
+              som;
 
           }
 
@@ -768,7 +973,6 @@ app.post(
           )
 
           ? requestedTier
-
           : "basic";
 
 
@@ -800,11 +1004,8 @@ app.post(
         } catch (error) {
 
           console.error(
-
             "Erro ao gerar voz de teste:",
-
             error
-
           );
 
         }
@@ -834,11 +1035,8 @@ app.post(
         tier,
 
         audioUrl:
-
           audioId
-
             ? `/api/audio/${audioId}`
-
             : null,
 
         config:
@@ -905,15 +1103,10 @@ app.post(
     try {
 
       const {
-
         amount,
-
         name,
-
         email,
-
         message = ""
-
       } = req.body;
 
 
@@ -922,15 +1115,9 @@ app.post(
 
 
       if (
-
-        !Number.isFinite(
-          value
-        ) ||
-
+        !Number.isFinite(value) ||
         value < 1 ||
-
         value > 10000
-
       ) {
 
         return res
@@ -946,13 +1133,10 @@ app.post(
 
 
       if (
-
         !name ||
-
         String(name)
           .trim()
           .length < 2
-
       ) {
 
         return res
@@ -968,12 +1152,9 @@ app.post(
 
 
       if (
-
         !email ||
-
         !String(email)
           .includes("@")
-
       ) {
 
         return res
@@ -1058,7 +1239,6 @@ app.post(
         processing_mode:
           "automatic",
 
-
         payer: {
 
           email:
@@ -1069,7 +1249,6 @@ app.post(
             "APRO"
 
         },
-
 
         transactions: {
 
@@ -1109,7 +1288,6 @@ app.post(
             method:
               "POST",
 
-
             headers: {
 
               Authorization:
@@ -1125,7 +1303,6 @@ app.post(
                 idempotencyKey
 
             },
-
 
             body:
               JSON.stringify(
@@ -1154,27 +1331,19 @@ app.post(
       } catch (error) {
 
         data = {
-
           raw:
             rawText
-
         };
 
       }
 
 
-      if (
-        !response.ok
-      ) {
+      if (!response.ok) {
 
         console.error(
-
           "ERRO MERCADO PAGO COMPLETO:",
-
           JSON.stringify(
-
             {
-
               status:
                 response.status,
 
@@ -1183,25 +1352,18 @@ app.post(
 
               response:
                 data
-
             },
-
             null,
-
             2
-
           )
-
         );
 
 
         return res
-
           .status(
             response.status ||
             502
           )
-
           .json({
 
             error:
@@ -1230,22 +1392,16 @@ app.post(
 
 
       donation.status =
-
         data.status ||
-
         payment?.status ||
-
         "pending";
 
 
       donations.set(
-
         String(
           data.id
         ),
-
         donation
-
       );
 
 
@@ -1257,40 +1413,28 @@ app.post(
         status:
           donation.status,
 
-
         ticketUrl:
-
           payment
             ?.payment_method
             ?.ticket_url ||
-
           payment
             ?.ticket_url ||
-
           null,
-
 
         qrCode:
-
           payment
             ?.payment_method
             ?.qr_code ||
-
           payment
             ?.qr_code ||
-
           null,
 
-
         qrCodeBase64:
-
           payment
             ?.payment_method
             ?.qr_code_base64 ||
-
           payment
             ?.qr_code_base64 ||
-
           null
 
       });
@@ -1299,11 +1443,8 @@ app.post(
     } catch (error) {
 
       console.error(
-
         "Erro interno em /api/create-pix:",
-
         error
-
       );
 
 
@@ -1325,6 +1466,7 @@ app.post(
 
 // ======================================================
 // WEBHOOK MERCADO PAGO
+// PROTEGIDO COM HMAC-SHA256
 // ======================================================
 
 app.post(
@@ -1333,46 +1475,73 @@ app.post(
 
   async (req, res) => {
 
-    res.sendStatus(200);
-
-
     try {
 
+      const assinaturaValida =
+        validarWebhookMercadoPago(
+          req
+        );
+
+
+      if (!assinaturaValida) {
+
+        console.warn(
+          "Webhook Mercado Pago rejeitado: assinatura inválida."
+        );
+
+
+        return res
+          .sendStatus(401);
+
+      }
+
+
       console.log(
+        "Webhook Mercado Pago autenticado."
+      );
 
+
+      console.log(
         "Webhook recebido:",
-
         JSON.stringify(
           req.body
         )
-
       );
 
 
       const orderId =
+        req.query?.["data.id"] ||
         req.body
           ?.data
           ?.id;
 
 
       if (
-
         !orderId ||
-
         !process.env.MP_ACCESS_TOKEN
-
       ) {
 
-        return;
+        console.warn(
+          "Webhook válido, mas sem orderId ou MP_ACCESS_TOKEN."
+        );
+
+
+        return res
+          .sendStatus(200);
 
       }
+
+
+      // Respondemos ao Mercado Pago
+      // após validar a autenticidade.
+      res.sendStatus(200);
 
 
       const response =
         await fetch(
 
           `https://api.mercadopago.com/v1/orders/${encodeURIComponent(
-            orderId
+            String(orderId)
           )}`,
 
           {
@@ -1392,18 +1561,12 @@ app.post(
         );
 
 
-      if (
-        !response.ok
-      ) {
+      if (!response.ok) {
 
         console.error(
-
           "Erro ao consultar ordem no webhook:",
-
           response.status,
-
           await response.text()
-
         );
 
 
@@ -1429,16 +1592,11 @@ app.post(
         );
 
 
-      if (
-        !donation
-      ) {
+      if (!donation) {
 
         console.log(
-
           "Doação não encontrada na memória:",
-
           orderId
-
         );
 
 
@@ -1448,22 +1606,15 @@ app.post(
 
 
       donation.status =
-
         order.status ||
-
         payment?.status ||
-
         "pending";
 
 
       console.log(
-
         "Status da ordem:",
-
         donation.status,
-
         payment?.status_detail
-
       );
 
 
@@ -1483,11 +1634,8 @@ app.post(
 
 
       if (
-
         approved &&
-
         !donation.alertSent
-
       ) {
 
         donation.alertSent =
@@ -1515,15 +1663,11 @@ app.post(
 
               );
 
-
           } catch (error) {
 
             console.error(
-
               "Erro ao gerar voz:",
-
               error
-
             );
 
           }
@@ -1552,11 +1696,8 @@ app.post(
             donation.tier,
 
           audioUrl:
-
             audioId
-
               ? `/api/audio/${audioId}`
-
               : null,
 
           config:
@@ -1575,12 +1716,18 @@ app.post(
     } catch (error) {
 
       console.error(
-
         "Webhook error:",
-
         error
-
       );
+
+
+      if (
+        !res.headersSent
+      ) {
+
+        res.sendStatus(500);
+
+      }
 
     }
 
@@ -1601,22 +1748,16 @@ app.get(
 
     const audio =
       audios.get(
-
         String(
           req.params.audioId
         )
-
       );
 
 
-    if (
-      !audio
-    ) {
+    if (!audio) {
 
       return res
-
         .status(404)
-
         .send(
           "Áudio não encontrado."
         );
@@ -1625,20 +1766,14 @@ app.get(
 
 
     res.setHeader(
-
       "Content-Type",
-
       "audio/mpeg"
-
     );
 
 
     res.setHeader(
-
       "Cache-Control",
-
       "no-store"
-
     );
 
 
@@ -1663,22 +1798,16 @@ app.get(
 
     const donation =
       donations.get(
-
         String(
           req.params.orderId
         )
-
       );
 
 
-    if (
-      !donation
-    ) {
+    if (!donation) {
 
       return res
-
         .status(404)
-
         .json({
 
           error:
@@ -1727,29 +1856,20 @@ app.get(
   (req, res) => {
 
     res.setHeader(
-
       "Content-Type",
-
       "text/event-stream"
-
     );
 
 
     res.setHeader(
-
       "Cache-Control",
-
       "no-cache"
-
     );
 
 
     res.setHeader(
-
       "Connection",
-
       "keep-alive"
-
     );
 
 
@@ -1764,17 +1884,13 @@ app.get(
     res.write(
 
       `data: ${JSON.stringify(
-
         {
-
           type:
             "connected",
 
           config:
             alertConfig
-
         }
-
       )}\n\n`
 
     );
@@ -1812,13 +1928,9 @@ app.get(
     res.sendFile(
 
       path.join(
-
         __dirname,
-
         "public",
-
         "overlay.html"
-
       )
 
     );
@@ -1841,13 +1953,9 @@ app.get(
     res.sendFile(
 
       path.join(
-
         __dirname,
-
         "public",
-
         "painel.html"
-
       )
 
     );
@@ -1870,48 +1978,39 @@ app.listen(
   () => {
 
     console.log(
-
       `KevenZL Pix Alertas na porta ${PORT}`
-
     );
 
 
     console.log(
-
       "Mercado Pago:",
-
       process.env.MP_ACCESS_TOKEN
-
         ? "OK"
-
         : "NÃO CONFIGURADO"
-
     );
 
 
     console.log(
+      "Webhook Mercado Pago:",
+      process.env.MP_WEBHOOK_SECRET
+        ? "PROTEGIDO"
+        : "NÃO CONFIGURADO"
+    );
 
+
+    console.log(
       "ElevenLabs:",
-
       process.env.ELEVENLABS_API_KEY
-
         ? "OK"
-
         : "NÃO CONFIGURADO"
-
     );
 
 
     console.log(
-
       "Proteção do painel:",
-
       process.env.PANEL_SECRET
-
         ? "ATIVA"
-
         : "NÃO CONFIGURADA"
-
     );
 
   }
